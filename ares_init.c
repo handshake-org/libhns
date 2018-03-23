@@ -60,6 +60,7 @@
 #include "ares_nowarn.h"
 #include "ares_platform.h"
 #include "ares_private.h"
+#include "ares_addr.h"
 
 #ifdef WATT32
 #undef WIN32  /* Redefined in MingW/MSVC headers */
@@ -1237,7 +1238,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         /* Allocate room for another address, if necessary, else skip. */
         if(addressesIndex == addressesSize) {
           const size_t newSize = addressesSize + 4;
-          Address * const newMem = 
+          Address * const newMem =
             (Address*)ares_realloc(addresses, sizeof(Address) * newSize);
           if(newMem == NULL) {
             continue;
@@ -1299,7 +1300,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
           /* Save the address as the next element in addresses. */
           addresses[addressesIndex].metric =
             getBestRouteMetric(&ipaaEntry->Luid,
-                               (SOCKADDR_INET*)(namesrvr.sa), 
+                               (SOCKADDR_INET*)(namesrvr.sa),
                                ipaaEntry->Ipv6Metric);
         }
         else
@@ -1349,7 +1350,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
 
 done:
   ares_free(addresses);
-  
+
   if (ipaa)
     ares_free(ipaa);
 
@@ -1453,7 +1454,7 @@ static size_t next_suffix(const char** list, const size_t advance)
  *
  * Returns 1 and sets *outptr when returning a dynamically allocated string.
  *
- * Implementation supports Windows Server 2003 and newer 
+ * Implementation supports Windows Server 2003 and newer
  */
 static int get_SuffixList_Windows(char **outptr)
 {
@@ -2115,6 +2116,7 @@ static int config_nameserver(struct server_state **servers, int *nservers,
   struct ares_addr host;
   struct server_state *newserv;
   char *p, *txtaddr;
+
   /* On Windows, there may be more than one nameserver specified in the same
    * registry key, so we parse input as a space or comma seperated list.
    */
@@ -2140,12 +2142,8 @@ static int config_nameserver(struct server_state **servers, int *nservers,
         /* Reached end of input, done when this address is processed. */
         p = NULL;
 
-      /* Convert textual address to binary format. */
-      if (ares_inet_pton(AF_INET, txtaddr, &host.addrV4) == 1)
-        host.family = AF_INET;
-      else if (ares_inet_pton(AF_INET6, txtaddr, &host.addrV6) == 1)
-        host.family = AF_INET6;
-      else
+      /* Parse identity key & host if present. */
+      if (!ares_addr_from_string(&host, txtaddr, 53))
         continue;
 
       /* Resize servers state array. */
@@ -2164,6 +2162,13 @@ static int config_nameserver(struct server_state **servers, int *nservers,
       else
         memcpy(&newserv[*nservers].addr.addrV6, &host.addrV6,
                sizeof(host.addrV6));
+
+      newserv[*nservers].addr.key = NULL;
+      if (host.key) {
+        memcpy(&newserv[*nservers].addr.key_[0], &host.key_[0],
+               sizeof(host.key_));
+        newserv[*nservers].addr.key = &newserv[*nservers].addr.key_[0];
+      }
 
       /* Update arguments. */
       *servers = newserv;

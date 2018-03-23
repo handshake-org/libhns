@@ -131,6 +131,8 @@ struct ares_addr {
   } addr;
   int udp_port;  /* stored in network order */
   int tcp_port;  /* stored in network order */
+  unsigned char key_[33];
+  unsigned char *key;
 };
 #define addrV4 addr.addr4
 #define addrV6 addr.addr6
