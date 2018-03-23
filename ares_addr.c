@@ -25,26 +25,28 @@
 int
 ares_addr_from_string(
   struct ares_addr *addr,
-  char *src,
+  const char *src,
   unsigned short port
 ) {
+  char *s = (char *)src;
+
   assert(addr);
 
-  if (!src)
+  if (!s)
     return 0;
 
   addr->key = NULL;
 
-  char *at = strchr(src, '@');
+  char *at = strchr(s, '@');
 
   if (at) {
     char pubkey[54];
-    size_t pubkey_len = at - src;
+    size_t pubkey_len = at - s;
 
     if (pubkey_len > 53)
       return 0;
 
-    memcpy(pubkey, src, pubkey_len);
+    memcpy(pubkey, s, pubkey_len);
     pubkey[pubkey_len] = '\0';
 
     if (ares_base32_decode_size(pubkey) != 33)
@@ -54,7 +56,7 @@ ares_addr_from_string(
       return 0;
 
     addr->key = &addr->key_[0];
-    src = &at[1];
+    s = &at[1];
   }
 
   char host[INET6_ADDRSTRLEN + 1];
@@ -62,13 +64,13 @@ ares_addr_from_string(
   size_t host_len;
   char *port_s = NULL;
 
-  if (src[0] == '[') {
-    char *bracket = strchr(src, ']');
+  if (s[0] == '[') {
+    char *bracket = strchr(s, ']');
 
     if (!bracket)
       return 0;
 
-    host_start = &src[1];
+    host_start = &s[1];
     host_len = bracket - host_start;
 
     if (bracket[1] == ':')
@@ -78,19 +80,19 @@ ares_addr_from_string(
     else
       return 0;
   } else {
-    char *colon = strchr(src, ':');
+    char *colon = strchr(s, ':');
 
     // ipv6 with no port.
     if (colon && strchr(&colon[1], ':'))
       colon = NULL;
 
-    host_start = src;
+    host_start = s;
 
     if (colon) {
-      host_len = colon - src;
+      host_len = colon - s;
       port_s = &colon[1];
     } else {
-      host_len = strlen(src);
+      host_len = strlen(s);
       port_s = NULL;
     }
   }
@@ -106,10 +108,10 @@ ares_addr_from_string(
   if (port && port_s) {
     int i = 0;
     unsigned int word = 0;
-    char *s = port_s;
+    char *ps = port_s;
 
-    for (; *s; s++) {
-      int ch = ((int)*s) - 0x30;
+    for (; *ps; ps++) {
+      int ch = ((int)*ps) - 0x30;
 
       if (ch < 0 || ch > 9)
         return 0;
@@ -142,9 +144,9 @@ ares_addr_from_string(
   addr->family = af;
 
   if (addr->family == AF_INET)
-    memcpy(addr->addrV4, sin_addr, sizeof(addr->addrV4));
+    memcpy(&addr->addrV4, sin_addr, sizeof(addr->addrV4));
   else
-    memcpy(addr->addrV6, sin_addr, sizeof(addr->addrV6));
+    memcpy(&addr->addrV6, sin_addr, sizeof(addr->addrV6));
 
   addr->udp_port = htons(sin_port);
   addr->tcp_port = htons(sin_port);
@@ -165,12 +167,12 @@ ares_addr_to_string(
     return 0;
 
   unsigned short af = addr->family;
-  unsigned char *ip;
+  void *ip;
 
   if (addr->family == AF_INET)
-    ip = addr->addrV4;
+    ip = &addr->addrV4;
   else
-    ip = addr->addrV6;
+    ip = &addr->addrV6;
 
   unsigned short port = ntohs(addr->udp_port);
 

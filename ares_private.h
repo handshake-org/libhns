@@ -64,27 +64,32 @@
 #define INTERFACES_KEY "Interfaces"
 #define DOMAIN_KEY     "Domain"
 #define DHCPDOMAIN_KEY "DhcpDomain"
+#define PATH_HNS_CONF  "\\System32\\Drivers\\etc\\hns.conf" /* needs sysroot */
 
 #elif defined(WATT32)
 
 #define PATH_RESOLV_CONF "/dev/ENV/etc/resolv.conf"
+#define PATH_HNS_CONF    "/dev/ENV/etc/hns.conf"
 
 #elif defined(NETWARE)
 
 #define PATH_RESOLV_CONF "sys:/etc/resolv.cfg"
-#define PATH_HOSTS              "sys:/etc/hosts"
+#define PATH_HNS_CONF    "sys:/etc/hns.cfg"
+#define PATH_HOSTS       "sys:/etc/hosts"
 
 #elif defined(__riscos__)
 
-#define PATH_HOSTS             "InetDBase:Hosts"
+#define PATH_HOSTS     "InetDBase:Hosts"
+#define PATH_HNS_CONF  "/etc/hns.conf"
 
 #else
 
-#define PATH_RESOLV_CONF        "/etc/resolv.conf"
+#define PATH_RESOLV_CONF "/etc/resolv.conf"
+#define PATH_HNS_CONF    "/etc/hns.conf"
 #ifdef ETC_INET
-#define PATH_HOSTS              "/etc/inet/hosts"
+#define PATH_HOSTS       "/etc/inet/hosts"
 #else
-#define PATH_HOSTS              "/etc/hosts"
+#define PATH_HOSTS       "/etc/hosts"
 #endif
 
 #endif

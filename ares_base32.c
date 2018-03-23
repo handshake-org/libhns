@@ -288,7 +288,7 @@ ares_base32_decode_hex(char *str, unsigned char *out, int unpad) {
 
 int
 ares_base32_decode_size(char *str) {
-  int size = ares_base32_decode2(TABLE, str, NULL, false);
+  int size = ares_base32_decode2(TABLE, str, NULL, 0);
 
   if (size == -1)
     return strlen(str) * 5 / 8;
@@ -298,7 +298,7 @@ ares_base32_decode_size(char *str) {
 
 int
 ares_base32_decode_hex_size(char *str, unsigned char *out) {
-  int size = ares_base32_decode2(TABLE_HEX, str, NULL, false);
+  int size = ares_base32_decode2(TABLE_HEX, str, NULL, 0);
 
   if (size == -1)
     return strlen(str) * 5 / 8;
