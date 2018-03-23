@@ -1,3 +1,5 @@
+SUBDIRS = secp256k1
+
 AUTOMAKE_OPTIONS = foreign nostdinc
 
 ACLOCAL_AMFLAGS = -I m4
@@ -77,7 +79,7 @@ CARES_VERSION_INFO = -version-info 4:0:2
 # If either revision or age are omitted, they default to 0. Also note that age
 # must be less than or equal to the current interface number.
 #
-# Here are a set of rules to help you update your library version information: 
+# Here are a set of rules to help you update your library version information:
 #
 # 1.Start with version information of 0:0:0 for each libtool library.
 #
@@ -150,6 +152,8 @@ libcares_ladir = $(includedir)
 # what headers to install on 'make install':
 libcares_la_HEADERS = ares.h ares_version.h ares_dns.h \
 	ares_build.h ares_rules.h
+
+libcares_la_LIBADD = $(top_builddir)/secp256k1/.libs/libsecp256k1.la
 
 ahost_SOURCES = ahost.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
 ahost_LDADD = $(top_builddir)/libcares.la

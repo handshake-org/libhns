@@ -12,7 +12,7 @@ int
 ares_addr_from_string(
   struct ares_addr *addr,
   const char *src,
-  unsigned short port
+  unsigned int port
 );
 
 int
@@ -20,7 +20,7 @@ ares_addr_to_string(
   struct ares_addr *addr,
   char *dst,
   size_t dst_len,
-  unsigned short fb
+  unsigned int fb
 );
 
 int
@@ -28,6 +28,6 @@ ares_addr_to_full(
   struct ares_addr *addr,
   char *dst,
   size_t dst_len,
-  unsigned short fb
+  unsigned int fb
 );
 #endif

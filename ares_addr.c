@@ -26,7 +26,7 @@ int
 ares_addr_from_string(
   struct ares_addr *addr,
   const char *src,
-  unsigned short port
+  unsigned int port
 ) {
   char *s = (char *)src;
 
@@ -103,7 +103,7 @@ ares_addr_from_string(
   memcpy(host, host_start, host_len);
   host[host_len] = '\0';
 
-  unsigned short sin_port = port;
+  unsigned int sin_port = port;
 
   if (port && port_s) {
     int i = 0;
@@ -125,13 +125,13 @@ ares_addr_from_string(
       i += 1;
     }
 
-    sin_port = (unsigned short)word;
+    sin_port = (unsigned int)word;
   } else if (!port && port_s) {
     return 0;
   }
 
   unsigned char sin_addr[16];
-  unsigned short af;
+  unsigned int af;
 
   if (ares_inet_pton(AF_INET, host, sin_addr) == 1) {
     af = AF_INET;
@@ -159,14 +159,14 @@ ares_addr_to_string(
   struct ares_addr *addr,
   char *dst,
   size_t dst_len,
-  unsigned short fb
+  unsigned int fb
 ) {
   assert(addr);
 
   if (!dst)
     return 0;
 
-  unsigned short af = addr->family;
+  unsigned int af = addr->family;
   void *ip;
 
   if (addr->family == AF_INET)
@@ -174,7 +174,7 @@ ares_addr_to_string(
   else
     ip = &addr->addrV6;
 
-  unsigned short port = ntohs(addr->udp_port);
+  unsigned int port = ntohs(addr->udp_port);
 
   if (ares_inet_ntop(af, ip, dst, dst_len) == 0)
     return 0;
@@ -207,7 +207,7 @@ ares_addr_to_full(
   struct ares_addr *addr,
   char *dst,
   size_t dst_len,
-  unsigned short fb
+  unsigned int fb
 ) {
   if (!ares_addr_to_string(addr, dst, dst_len, fb))
     return 0;

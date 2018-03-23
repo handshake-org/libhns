@@ -10,6 +10,7 @@ CSOURCES = ares__close_sockets.c	\
   ares_cancel.c				\
   ares_data.c				\
   ares_destroy.c			\
+  ares_ec.c             \
   ares_expand_name.c			\
   ares_expand_string.c			\
   ares_fds.c				\
@@ -42,6 +43,7 @@ CSOURCES = ares__close_sockets.c	\
   ares_search.c				\
   ares_send.c				\
   ares_sha256.c				\
+  ares_sig0.c         \
   ares_strcasecmp.c			\
   ares_strdup.c				\
   ares_strerror.c			\
@@ -60,6 +62,7 @@ HHEADERS = ares.h			\
   ares_blake2b.h       \
   ares_data.h				\
   ares_dns.h				\
+  ares_ec.h         \
   ares_getenv.h				\
   ares_inet_net_pton.h		\
   ares_iphlpapi.h			\
@@ -71,6 +74,7 @@ HHEADERS = ares.h			\
   ares_private.h			\
   ares_rules.h				\
   ares_sha256.h			\
+  ares_sig0.h        \
   ares_strcasecmp.h			\
   ares_strdup.h				\
   ares_version.h			\

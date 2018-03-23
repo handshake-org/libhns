@@ -183,8 +183,8 @@ dnl Compilation based checks should not be done before this point.
 dnl **********************************************************************
 
 dnl **********************************************************************
-dnl Make sure that our checks for headers windows.h winsock.h winsock2.h 
-dnl and ws2tcpip.h take precedence over any other further checks which 
+dnl Make sure that our checks for headers windows.h winsock.h winsock2.h
+dnl and ws2tcpip.h take precedence over any other further checks which
 dnl could be done later using AC_CHECK_HEADER or AC_CHECK_HEADERS for
 dnl this specific header files. And do them before its results are used.
 dnl **********************************************************************
@@ -539,7 +539,7 @@ CURL_CHECK_STRUCT_TIMEVAL
 AC_CHECK_TYPE(long long,
    [AC_DEFINE(HAVE_LONGLONG, 1,
      [Define to 1 if the compiler supports the 'long long' data type.])]
-   longlong="yes"  
+   longlong="yes"
 )
 
 if test "xyes" = "x$longlong"; then
@@ -643,7 +643,7 @@ CARES_CHECK_CONSTANT(
 #include <sys/socket.h>
 #endif
 #endif
-  ], [PF_INET6], 
+  ], [PF_INET6],
      AC_DEFINE_UNQUOTED(HAVE_PF_INET6,1,[Define to 1 if you have PF_INET6.])
 )
 
@@ -667,7 +667,7 @@ CARES_CHECK_CONSTANT(
 #include <sys/socket.h>
 #endif
 #endif
-  ], [AF_INET6], 
+  ], [AF_INET6],
      AC_DEFINE_UNQUOTED(HAVE_AF_INET6,1,[Define to 1 if you have AF_INET6.])
 )
 
@@ -695,7 +695,7 @@ CARES_CHECK_STRUCT(
 #include <netinet/in.h>
 #endif
 #endif
-  ], [in6_addr], 
+  ], [in6_addr],
      AC_DEFINE_UNQUOTED(HAVE_STRUCT_IN6_ADDR,1,[Define to 1 if you have struct in6_addr.])
 )
 
@@ -722,7 +722,7 @@ CARES_CHECK_STRUCT(
 #include <netinet/in.h>
 #endif
 #endif
-  ], [sockaddr_in6], 
+  ], [sockaddr_in6],
      AC_DEFINE_UNQUOTED(HAVE_STRUCT_SOCKADDR_IN6,1,
        [Define to 1 if you have struct sockaddr_in6.]) ac_have_sockaddr_in6=yes
 )
@@ -843,7 +843,7 @@ AC_HELP_STRING([--with-random=FILE],
         else
           AC_MSG_WARN([cannot check for /dev/urandom while cross compiling; assuming none])
         fi
-        
+
     ]
 )
 if test -n "$RANDOM_FILE" && test X"$RANDOM_FILE" != Xno ; then
@@ -904,6 +904,7 @@ if test "x$build_tests" = "xyes" ; then
   AC_CONFIG_SUBDIRS([test])
 fi
 
+AC_CONFIG_SUBDIRS([secp256k1])
 AC_CONFIG_FILES([Makefile libcares.pc])
 AC_OUTPUT
 XC_AMEND_DISTCLEAN(['.'])
