@@ -1972,10 +1972,9 @@ static int init_by_hns_conf(ares_channel channel)
         break;
     }
     fclose(fp);
-  }
-  else {
+  } else {
     error = ERRNO;
-    switch(error) {
+    switch (error) {
     case ENOENT:
     case ESRCH:
       status = ARES_EOF;
@@ -1988,7 +1987,7 @@ static int init_by_hns_conf(ares_channel channel)
     }
   }
 
-  if(line)
+  if (line)
     ares_free(line);
 
   /* Handle errors. */

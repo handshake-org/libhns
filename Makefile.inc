@@ -6,6 +6,7 @@ CSOURCES = ares__close_sockets.c	\
   ares_addr.c				\
   ares_android.c				\
   ares_base32.c         \
+  ares_blake2b.c         \
   ares_cancel.c				\
   ares_data.c				\
   ares_destroy.c			\
@@ -40,6 +41,7 @@ CSOURCES = ares__close_sockets.c	\
   ares_query.c				\
   ares_search.c				\
   ares_send.c				\
+  ares_sha256.c				\
   ares_strcasecmp.c			\
   ares_strdup.c				\
   ares_strerror.c			\
@@ -55,6 +57,7 @@ HHEADERS = ares.h			\
   ares_addr.h       \
   ares_build.h				\
   ares_base32.h       \
+  ares_blake2b.h       \
   ares_data.h				\
   ares_dns.h				\
   ares_getenv.h				\
@@ -67,6 +70,7 @@ HHEADERS = ares.h			\
   ares_platform.h			\
   ares_private.h			\
   ares_rules.h				\
+  ares_sha256.h			\
   ares_strcasecmp.h			\
   ares_strdup.h				\
   ares_version.h			\
