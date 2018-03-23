@@ -26,6 +26,7 @@
 #include "ares_data.h"
 #include "ares_inet_net_pton.h"
 #include "ares_private.h"
+#include "ares_addr.h"
 
 
 int ares_get_servers(ares_channel channel,
@@ -172,6 +173,7 @@ int ares_set_servers(ares_channel channel,
       /* Fill servers state address data */
       for (i = 0, srvr = servers; srvr; i++, srvr = srvr->next)
         {
+          ares_addr_init(&channel->servers[i].addr);
           channel->servers[i].addr.family = srvr->family;
           channel->servers[i].addr.udp_port = 0;
           channel->servers[i].addr.tcp_port = 0;
@@ -221,6 +223,7 @@ int ares_set_servers_ports(ares_channel channel,
       /* Fill servers state address data */
       for (i = 0, srvr = servers; srvr; i++, srvr = srvr->next)
         {
+          ares_addr_init(&channel->servers[i].addr);
           channel->servers[i].addr.family = srvr->family;
           channel->servers[i].addr.udp_port = htons((unsigned short)srvr->udp_port);
           channel->servers[i].addr.tcp_port = htons((unsigned short)srvr->tcp_port);

@@ -8,6 +8,9 @@
 /* 73 + 53  + 1 = 127 - long enough for pubkey@[ipv6]:port */
 #define ARES_MAX_HOST 127
 
+void
+ares_addr_init(struct ares_addr *addr);
+
 int
 ares_addr_from_string(
   struct ares_addr *addr,

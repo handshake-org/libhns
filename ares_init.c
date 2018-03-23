@@ -487,6 +487,7 @@ static int init_by_options(ares_channel channel,
             return ARES_ENOMEM;
           for (i = 0; i < options->nservers; i++)
             {
+              ares_addr_init(&channel->servers[i].addr);
               channel->servers[i].addr.family = AF_INET;
               channel->servers[i].addr.udp_port = 0;
               channel->servers[i].addr.tcp_port = 0;
@@ -918,6 +919,8 @@ static int get_DNS_NetworkParams(char **outptr)
   for (ipAddr = &fi->DnsServerList; ipAddr; ipAddr = ipAddr->Next)
   {
     txtaddr = &ipAddr->IpAddress.String[0];
+
+    ares_addr_init(&namesrvr);
 
     /* Validate converting textual address to binary format. */
     if (ares_inet_pton(AF_INET, txtaddr, &namesrvr.addrV4) == 1)
@@ -1622,6 +1625,7 @@ static int init_by_resolv_conf(ares_channel channel)
 
   for (i = 0; def_nameservers[i]; i++)
   {
+    ares_addr_init(&servers[i].addr);
     servers[i].addr.addrV4.s_addr = htonl(def_nameservers[i]);
     servers[i].addr.family = AF_INET;
     servers[i].addr.udp_port = 0;
@@ -2075,6 +2079,7 @@ static int init_by_defaults(ares_channel channel)
       rc = ARES_ENOMEM;
       goto error;
     }
+    ares_addr_init(&channel->servers[0].addr);
     channel->servers[0].addr.family = AF_INET;
     channel->servers[0].addr.addrV4.s_addr = htonl(INADDR_LOOPBACK);
     channel->servers[0].addr.udp_port = 0;
@@ -2277,6 +2282,8 @@ static int config_nameserver(struct server_state **servers, int *nservers,
         /* Reached end of input, done when this address is processed. */
         p = NULL;
 
+      ares_addr_init(&host);
+
       /* Parse identity key & host if present. */
       if (!ares_addr_from_string(&host, txtaddr, 53))
         continue;
@@ -2288,6 +2295,7 @@ static int config_nameserver(struct server_state **servers, int *nservers,
         return ARES_ENOMEM;
 
       /* Store address data. */
+      ares_addr_init(&newserv[*nservers].addr);
       newserv[*nservers].addr.family = host.family;
       newserv[*nservers].addr.udp_port = 0;
       newserv[*nservers].addr.tcp_port = 0;

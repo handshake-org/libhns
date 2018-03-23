@@ -37,6 +37,7 @@
 #include "ares_inet_net_pton.h"
 #include "ares_platform.h"
 #include "ares_private.h"
+#include "ares_addr.h"
 
 #ifdef WATT32
 #undef WIN32
@@ -85,7 +86,9 @@ void ares_gethostbyaddr(ares_channel channel, const void *addr, int addrlen,
       callback(arg, ARES_ENOMEM, 0, NULL);
       return;
     }
+
   aquery->channel = channel;
+  ares_addr_init(&aquery->addr);
   if (family == AF_INET)
     memcpy(&aquery->addr.addrV4, addr, sizeof(aquery->addr.addrV4));
   else

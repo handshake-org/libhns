@@ -30,6 +30,7 @@
 #include "ares_inet_net_pton.h"
 #include "ares_nowarn.h"
 #include "ares_private.h"
+#include "ares_addr.h"
 
 int ares__get_hostent(FILE *fp, int family, struct hostent **host)
 {
@@ -39,6 +40,8 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
   size_t addrlen, linesize, naliases;
   struct ares_addr addr;
   struct hostent *hostent = NULL;
+
+  ares_addr_init(&addr);
 
   *host = NULL; /* Assume failure */
 

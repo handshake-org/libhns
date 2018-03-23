@@ -22,6 +22,13 @@
 #define INET6_ADDRSTRLEN 65
 #endif
 
+void
+ares_addr_init(struct ares_addr *addr) {
+  assert(addr);
+  memset(addr, 0, sizeof(struct ares_addr));
+  addr->family = AF_INET;
+}
+
 int
 ares_addr_from_string(
   struct ares_addr *addr,
@@ -30,12 +37,10 @@ ares_addr_from_string(
 ) {
   char *s = (char *)src;
 
-  assert(addr);
+  ares_addr_init(addr);
 
   if (!s)
     return 0;
-
-  addr->key = NULL;
 
   char *at = strchr(s, '@');
 
