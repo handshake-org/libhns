@@ -20,22 +20,7 @@ int
 ares_ec_randomize(ares_ec_t *ec, unsigned char *seed);
 
 int
-ares_ec_verify_privkey(ares_ec_t *ec, unsigned char *key);
-
-int
 ares_ec_verify_pubkey(ares_ec_t *ec, unsigned char *key);
-
-int
-ares_ec_create_pubkey(ares_ec_t *ec, unsigned char *key, unsigned char *pubkey);
-
-int
-ares_ec_sign_msg(
-  ares_ec_t *ec,
-  unsigned char *key,
-  unsigned char *msg,
-  unsigned char *sig,
-  int *rec
-);
 
 int
 ares_ec_verify_msg(
@@ -43,14 +28,5 @@ ares_ec_verify_msg(
   unsigned char *pubkey,
   unsigned char *msg,
   unsigned char *sig
-);
-
-int
-ares_ec_recover(
-  ares_ec_t *ec,
-  unsigned char *msg,
-  unsigned char *sig,
-  int rec,
-  unsigned char *pubkey
 );
 #endif

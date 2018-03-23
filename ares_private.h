@@ -98,6 +98,7 @@
 
 #include "ares_ipv6.h"
 #include "ares_llist.h"
+#include "ares_ec.h"
 
 #ifndef HAVE_GETENV
 #  include "ares_getenv.h"
@@ -336,6 +337,9 @@ struct ares_channeldata {
 extern void *(*ares_malloc)(size_t size);
 extern void *(*ares_realloc)(void *ptr, size_t size);
 extern void (*ares_free)(void *ptr);
+
+/* EC context */
+extern ares_ec_t *ares_ec;
 
 /* return true if now is exactly check time or later */
 int ares__timedout(struct timeval *now,

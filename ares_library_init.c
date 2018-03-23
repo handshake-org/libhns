@@ -43,6 +43,7 @@ static int          ares_init_flags;
 void *(*ares_malloc)(size_t size) = malloc;
 void *(*ares_realloc)(void *ptr, size_t size) = realloc;
 void (*ares_free)(void *ptr) = free;
+ares_ec_t *ares_ec = NULL;
 
 #ifdef USE_WINSOCK
 static HMODULE hnd_iphlpapi;
@@ -133,6 +134,7 @@ int ares_library_init(int flags)
         return res;  /* LCOV_EXCL_LINE: can't test Win32 init failure */
     }
 
+  ares_ec = ares_ec_alloc();
   ares_init_flags = flags;
 
   return ARES_SUCCESS;
@@ -169,6 +171,8 @@ void ares_library_cleanup(void)
 #endif
 
   ares_init_flags = ARES_LIB_INIT_NONE;
+  ares_ec_free(ares_ec);
+  ares_ec = NULL;
   ares_malloc = malloc;
   ares_realloc = realloc;
   ares_free = free;
