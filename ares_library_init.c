@@ -181,9 +181,9 @@ void ares_library_cleanup(void)
 
 int ares_library_initialized(void)
 {
-#ifdef USE_WINSOCK
+/* #ifdef USE_WINSOCK */
   if (!ares_initialized)
     return ARES_ENOTINITIALIZED;
-#endif
+/* #endif */
   return ARES_SUCCESS;
 }

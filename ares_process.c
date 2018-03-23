@@ -58,6 +58,7 @@
 #include "ares_dns.h"
 #include "ares_nowarn.h"
 #include "ares_private.h"
+#include "ares_sig0.h"
 
 
 static int try_again(int errnum);
@@ -1407,6 +1408,24 @@ static void end_query (ares_channel channel, struct query *query, int status,
              }
           }
     }
+
+  /* Verify signature if necessary */
+  if (status == ARES_SUCCESS) {
+    if (query->server >= 0 && query->server < channel->nservers) {
+      struct server_state *server = &channel->servers[query->server];
+      unsigned char *key = server->addr.key;
+      if (!ares_ec) {
+        status = ARES_ENOTINITIALIZED;
+      } else if (key) {
+        if (!ares_sig0_verify(ares_ec, key, abuf, alen))
+          status = ARES_EBADSIGNATURE;
+        else
+          printf("verified\n");
+      }
+    } else {
+      status = ARES_ENOTINITIALIZED;
+    }
+  }
 
   /* Invoke the callback */
   query->callback(query->arg, status, query->timeouts, abuf, alen);

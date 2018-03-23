@@ -135,6 +135,10 @@ extern "C" {
 /* More error codes */
 #define ARES_ECANCELLED         24          /* introduced in 1.7.0 */
 
+/* Even more error codes */
+#define ARES_EBADSIGNATURE      25
+#define ARES_EINSECURE          26
+
 /* Flag values */
 #define ARES_FLAG_USEVC         (1 << 0)
 #define ARES_FLAG_PRIMARY       (1 << 1)
