@@ -129,12 +129,8 @@ void ares_free_data(void *dataptr)
         case ARES_DATATYPE_DANE_REPLY:
           if (ptr->data.dane_reply.next)
             next_data = ptr->data.dane_reply.next;
-          if (ptr->data.dane_reply.protocol)
-            ares_free(ptr->data.dane_reply.protocol);
-          if (ptr->data.dane_reply.hash)
-            ares_free(ptr->data.dane_reply.hash);
-          if (ptr->data.dane_reply.cert)
-            ares_free(ptr->data.dane_reply.cert);
+          if (ptr->data.dane_reply.certificate)
+            ares_free(ptr->data.dane_reply.certificate);
           break;
 
         case ARES_DATATYPE_OPENPGPKEY_REPLY:
@@ -245,15 +241,11 @@ void *ares_malloc_data(ares_datatype type)
 
       case ARES_DATATYPE_DANE_REPLY:
         ptr->data.dane_reply.next = NULL;
-        ptr->data.dane_reply.type = 52;
-        ptr->data.dane_reply.port = 0;
-        ptr->data.dane_reply.protocol = NULL;
-        ptr->data.dane_reply.hash = NULL;
         ptr->data.dane_reply.usage = 0;
         ptr->data.dane_reply.selector = 0;
         ptr->data.dane_reply.matching_type = 0;
-        ptr->data.dane_reply.cert = NULL;
-        ptr->data.dane_reply.cert_len = 0;
+        ptr->data.dane_reply.certificate = NULL;
+        ptr->data.dane_reply.certificate_len = 0;
         break;
 
       case ARES_DATATYPE_OPENPGPKEY_REPLY:

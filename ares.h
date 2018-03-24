@@ -570,23 +570,11 @@ struct ares_sshfp_reply {
 
 struct ares_dane_reply {
   struct ares_dane_reply *next;
-
-  /* rr type */
-  unsigned int            type;
-
-  /* TLSA */
-  unsigned int            port;
-  char                   *protocol;
-
-  /* SMIMEA */
-  unsigned char          *hash;
-
-  /* shared properties */
   unsigned short          usage;
   unsigned short          selector;
   unsigned short          matching_type;
-  unsigned char          *cert;
-  size_t                  cert_len;
+  unsigned char          *certificate;
+  size_t                  certificate_len;
 };
 
 #define ares_tlsa_reply ares_dane_reply
@@ -597,6 +585,54 @@ struct ares_openpgpkey_reply {
   unsigned char                *pubkey;
   size_t                        pubkey_len;
 };
+
+/*
+ * DANE functions
+ */
+
+CARES_EXTERN int
+ares_tlsa_encode_name(
+  const char *name,
+  const char *protocol,
+  unsigned int port,
+  char *out,
+  size_t out_len
+);
+
+CARES_EXTERN size_t
+ares_tlsa_name_size(
+  const char *name,
+  const char *protocol,
+  unsigned int port
+);
+
+CARES_EXTERN int
+ares_tlsa_verify(
+  struct ares_tlsa_reply *tlsa_reply,
+  unsigned char *cert,
+  size_t cert_len
+);
+
+CARES_EXTERN int
+ares_smimea_encode_name(
+  const char *name,
+  const char *email,
+  char *out,
+  size_t out_len
+);
+
+CARES_EXTERN size_t
+ares_smimea_name_size(
+  const char *name,
+  const char *email
+);
+
+CARES_EXTERN int
+ares_smimea_verify(
+  struct ares_smimea_reply *smimea_reply,
+  unsigned char *cert,
+  size_t cert_len
+);
 
 /*
 ** Parse the buffer, starting at *abuf and of length alen bytes, previously

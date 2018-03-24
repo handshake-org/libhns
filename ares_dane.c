@@ -39,237 +39,8 @@
 #include "ares_dns.h"
 #include "ares_data.h"
 #include "ares_private.h"
-
-/* AIX portability check */
-#ifndef T_TLSA
-#  define T_TLSA 52
-#endif
-#ifndef T_SMIMEA
-#  define T_SMIMEA 53
-#endif
-
-static char
-to_char(uint8_t n) {
-  if (n >= 0x00 && n <= 0x09)
-    return n + '0';
-
-  if (n >= 0x0a && n <= 0x0f)
-    return (n - 10) + 'a';
-
-  return -1;
-}
-
-static int
-encode_hex(unsigned char *data, size_t data_len, char *str) {
-  if (data == NULL && data_len != 0)
-    return 0;
-
-  if (str == NULL)
-    return 0;
-
-  size_t size = data_len << 1;
-
-  int i;
-  int p = 0;
-  char ch;
-
-  for (i = 0; i < size; i++) {
-    if (i & 1) {
-      ch = to_char(data[p] & 15);
-      p += 1;
-    } else {
-      ch = to_char(data[p] >> 4);
-    }
-
-    if (ch == -1)
-      return 0;
-
-    str[i] = ch;
-  }
-
-  str[i] = '\0';
-
-  return 1;
-}
-
-static int
-read_labels(
-  const char *name,
-  char **left,
-  size_t *left_len,
-  char **right,
-  size_t *right_len
-) {
-  char *left_end = NULL;
-  char *right_end = NULL;
-  char *s = (char *)name;
-
-  if (s == NULL)
-    return 0;
-
-  while (*s) {
-    if (*s == '.') {
-      if (!left_end)
-        left_end = s;
-      else if (!right_end)
-        right_end = s;
-      else
-        break;
-    }
-    s += 1;
-  }
-
-  if (!*s)
-    return 0;
-
-  int leftlen = left_end - name;
-  int rightlen = right_end - (left_end + 1);
-
-  if (leftlen < 2 || rightlen < 2)
-    return 0;
-
-  if (name[0] != '_')
-    return 0;
-
-  if (left_end[1] != '_')
-    return 0;
-
-  *left = (char *)&name[1];
-  *left_len = leftlen - 1;
-  *right = &left_end[2];
-  *right_len = rightlen - 1;
-
-  return 1;
-}
-
-static int
-to_nibble(char s) {
-  if (s >= '0' && s <= '9')
-    return s - '0';
-
-  if (s >= 'A' && s <= 'F')
-    return (s - 'A') + 10;
-
-  if (s >= 'a' && s <= 'f')
-    return (s - 'a') + 10;
-
-  return -1;
-}
-
-static int
-decode_hex(const char *str, size_t len, unsigned char *data) {
-  if (str == NULL)
-    return 1;
-
-  if (data == NULL)
-    return 0;
-
-  unsigned char w;
-  int p = 0;
-  int i, n;
-
-  for (i = 0; i < len; i++) {
-    n = to_nibble(str[i]);
-
-    if (n == -1)
-      return 0;
-
-    if (i & 1) {
-      w |= (unsigned char)n;
-      data[p] = w;
-      p += 1;
-    } else {
-      w = ((unsigned char)n) << 4;
-    }
-  }
-
-  if (i & 1)
-    return 0;
-
-  return 1;
-}
-
-static int
-read_port(const char *str, size_t len, unsigned int *port) {
-  if (len > 5)
-    return 0;
-
-  unsigned long word = 0;
-  int i, ch;
-
-  for (i = 0; i < len; i++) {
-    ch = ((int)str[i]) - 0x30;
-
-    if (ch < 0 || ch > 9)
-      return 0;
-
-    word *= 10;
-    word += ch;
-  }
-
-  if (word > 0xffff)
-    return 0;
-
-  *port = word;
-
-  return 1;
-}
-
-static int
-read_protocol(const char *str, size_t len, char **protocol) {
-  char *proto = ares_malloc(len + 1);
-
-  if (!proto)
-    return 0;
-
-  memcpy(proto, str, len);
-  proto[len] = '\0';
-
-  *protocol = proto;
-
-  return 1;
-}
-
-static int
-read_hash(const char *str, size_t len, unsigned char **hash) {
-  if (len != 56)
-    return 0;
-
-  unsigned char *ha = ares_malloc(28);
-
-  if (!ha)
-    return 0;
-
-  if (!decode_hex(str, len, ha)) {
-    ares_free(ha);
-    return 0;
-  }
-
-  *hash = ha;
-
-  return 1;
-}
-
-static int
-read_smimea(const char *str, size_t len) {
-  if (len != 6)
-    return 0;
-
-  int i;
-  char c;
-
-  for (i = 0; i < 6; i++) {
-    c = str[i];
-
-    if (c >= 'A' && c <= 'Z')
-      c += ' ';
-
-    if (c != "smimea"[i])
-      return 0;
-  }
-
-  return 1;
-}
+#include "ares_sha256.h"
+/* #include "ares_sha512.h" */
 
 static int
 tag(
@@ -344,11 +115,11 @@ tag(
     size |= data[off++];
   }
 
-  /* Return: */
-  /* [0]: Offset after the header. */
-  /* [1]: Size of bytes to read next. */
+  /* Offset after the header. */
   if (off_out)
     *off_out = off;
+
+  /* Size of bytes to read next. */
   if (size_out)
     *size_out = size;
 
@@ -356,24 +127,29 @@ tag(
 }
 
 static int
-read(
+read_seq(
   const unsigned char *data,
   size_t data_len,
   int off,
   int *off_out,
   size_t *size_out
 ) {
-  // Read seq-header, update offset to after header.
+  /* Read seq-header, update offset to after header. */
   return tag(data, data_len, off, 0x10, 0, off_out, size_out);
 }
 
 static int
-gauge(const unsigned char *data, size_t data_len, int off, size_t *size_out) {
+gauge_seq(
+  const unsigned char *data,
+  size_t data_len,
+  int off,
+  size_t *size_out
+) {
   int pos;
   size_t size;
 
-  // Get total size of seq-header + data.
-  if (!read(data, data_len, off, &pos, &size))
+  /* Get total size of seq-header + data. */
+  if (!read_seq(data, data_len, off, &pos, &size))
     return 0;
 
   *size_out = (pos - off) + size;
@@ -382,18 +158,18 @@ gauge(const unsigned char *data, size_t data_len, int off, size_t *size_out) {
 }
 
 static int
-seq(const unsigned char *data, size_t data_len, int off, size_t *off_out) {
-  // Read seq-header, return offset after header.
-  return read(data, data_len, off, off_out, NULL);
+eat_seq(const unsigned char *data, size_t data_len, int off, int *off_out) {
+  /* Read seq-header, return offset after header. */
+  return read_seq(data, data_len, off, off_out, NULL);
 }
 
 static int
-skip(const unsigned char *data, size_t data_len, int off, int *off_out) {
+skip_seq(const unsigned char *data, size_t data_len, int off, int *off_out) {
   int offset;
   size_t size;
 
-  // Read seq-header, return offset after header+data.
-  if (!read(data, data_len, off, &offset, &size))
+  /* Read seq-header, return offset after header+data. */
+  if (!read_seq(data, data_len, off, &offset, &size))
     return 0;
 
   *off_out = offset + size;
@@ -402,11 +178,11 @@ skip(const unsigned char *data, size_t data_len, int off, int *off_out) {
 }
 
 static int
-iint(const unsigned char *data, size_t data_len, int off, int *off_out) {
+skip_int(const unsigned char *data, size_t data_len, int off, int *off_out) {
   int offset;
   size_t size;
 
-  // Read int-header, return offset after header+data.
+  /* Read int-header, return offset after header+data. */
   if (!tag(data, data_len, off, 0x02, 0, &offset, &size))
     return 0;
 
@@ -416,11 +192,11 @@ iint(const unsigned char *data, size_t data_len, int off, int *off_out) {
 }
 
 static int
-xint(const unsigned char *data, size_t data_len, int off, int *off_out) {
+skip_xint(const unsigned char *data, size_t data_len, int off, int *off_out) {
   int offset;
   size_t size;
 
-  // Read int-header, return offset after header+data.
+  /* Read int-header, return offset after header+data. */
   if (!tag(data, data_len, off, 0x00, 1, &offset, &size))
     return 0;
 
@@ -438,10 +214,10 @@ get_cert(
 ) {
   size_t size;
 
-  if (!gauge(data, cert_len, 0, &size))
+  if (!gauge_seq(data, cert_len, 0, &size))
     return 0;
 
-  *out = data;
+  *out = (unsigned char *)data;
   *out_len = size;
 
   return 1;
@@ -457,53 +233,53 @@ get_pubkeyinfo(
   int off = 0;
   size_t size;
 
-  // cert
-  if (!seq(data, data_len, off, &off))
+  /* cert */
+  if (!eat_seq(data, data_len, off, &off))
     return 0;
 
-  // tbs
-  if (!seq(data, data_len, off, &off))
+  /* tbs */
+  if (!eat_seq(data, data_len, off, &off))
     return 0;
 
-  // version
-  if (!xint(data, data_len, off, &off))
+  /* version */
+  if (!skip_xint(data, data_len, off, &off))
     return 0;
 
-  // serial
-  if (!iint(data, data_len, off, &off))
+  /* serial */
+  if (!skip_int(data, data_len, off, &off))
     return 0;
 
-  // alg ident
-  if (!skip(data, data_len, off, &off))
+  /* alg ident */
+  if (!skip_seq(data, data_len, off, &off))
     return 0;
 
-  // issuer
-  if (!skip(data, data_len, off, &off))
+  /* issuer */
+  if (!skip_seq(data, data_len, off, &off))
     return 0;
 
-  // validity
-  if (!skip(data, data_len, off, &off))
+  /* validity */
+  if (!skip_seq(data, data_len, off, &off))
     return 0;
 
-  // subject
-  if (!skip(data, data_len, off, &off))
+  /* subject */
+  if (!skip_seq(data, data_len, off, &off))
     return 0;
 
-  // pubkeyinfo
-  if (!gauge(data, data_len, off, &size))
+  /* pubkeyinfo */
+  if (!gauge_seq(data, data_len, off, &size))
     return 0;
 
   if (off + size >= data_len)
     return 0;
 
-  *out = &data[off];
+  *out = (unsigned char *)&data[off];
   *out_len = size;
 
   return 1;
 }
 
 static int
-ares_dane_verify(
+ares_dane_validate(
   unsigned char *cert,
   size_t cert_len,
   unsigned short selector,
@@ -518,11 +294,11 @@ ares_dane_verify(
   size_t hash_len = 0;
 
   switch (selector) {
-    case 0: // Full
+    case 0: /* Full */
       if (!get_cert(cert, cert_len, &data, &data_len))
         return 0;
       break;
-    case 1: // SPKI
+    case 1: /* SPKI */
       if (!get_pubkeyinfo(cert, cert_len, &data, &data_len))
         return 0;
       break;
@@ -532,13 +308,13 @@ ares_dane_verify(
     return 0;
 
   switch (matching_type) {
-    case 0: { // NONE
+    case 0: { /* NONE */
       hash = data;
       hash_len = data_len;
       break;
     }
 
-    case 1: { // SHA256
+    case 1: { /* SHA256 */
       ares_sha256_ctx ctx;
       ares_sha256_init(&ctx);
       ares_sha256_update(&ctx, data, data_len);
@@ -548,13 +324,15 @@ ares_dane_verify(
       break;
     }
 
-    case 2: { // SHA512
+    case 2: { /* SHA512 */
+#if 0
       ares_sha512_ctx ctx;
       ares_sha512_init(&ctx);
       ares_sha512_update(&ctx, data, data_len);
       ares_sha512_final(&ctx, &buf[0]);
       hash = &buf[0];
       hash_len = 64;
+#endif
       break;
     }
   }
@@ -569,205 +347,167 @@ ares_dane_verify(
 }
 
 int
-ares_tlsa_encode_name(
-  const char *name,
-  const char *protocol,
-  unsigned int port,
-  char *out,
-  size_t out_len
-) {
-  if (out) {
-    size_t size = ares_tlsa_encode_name(name, protocol, port, NULL, 0);
-    if (size > out_len)
-      return 0;
-  }
-  return sprintf(out, "_%u._%s.%s", port, protocol, name);
-}
-
-size_t
-ares_tlsa_name_size(
-  const char *name,
-  char *protocol,
-  unsigned int port
-) {
-  return ares_tlsa_encode_name(name, protocol, port, NULL, 0);
-}
-
-int
-ares_tlsa_decode_name(const char *name, char **protocol, unsigned int *port) {
-  char *a, *b;
-  size_t al, bl;
-
-  if (name == NULL || port == NULL || protocol == NULL)
-    return 0;
-
-  /* TLSA RR names exist as _[port]._[protocol].name. */
-
-  /* Parse the first two labels, minus the `_` prefixes. */
-  if (!read_labels(name, &a, &al, &b, &bl))
-    return 0;
-
-  /* Parse the port. */
-  if (!read_port(a, al, port))
-    return 0;
-
-  /* Parse the protocol name. */
-  if (!read_protocol(b, bl, protocol))
-    return 0;
-
-  return 1;
-}
-
-int
-ares_tlsa_verify(
-  struct ares_tlsa_reply *tlsa_reply,
+ares_dane_verify(
+  struct ares_dane_reply *dane_reply,
   unsigned char *cert,
   size_t cert_len
 ) {
-  if (tlsa_reply->type != T_TLSA)
+  if (!dane_reply->certificate)
     return 0;
 
-  if (!tlsa_reply->certificate)
-    return 0;
-
-  return ares_dane_verify(
+  return ares_dane_validate(
     cert,
     cert_len,
-    tlsa_reply->selector,
-    tlsa_reply->matching_type,
-    tlsa_reply->certificate,
-    tlsa_reply->certificate_len
+    dane_reply->selector,
+    dane_reply->matching_type,
+    dane_reply->certificate,
+    dane_reply->certificate_len
   );
 }
 
 int
-ares_tlsa_verify_name(
-  struct ares_tlsa_reply *tlsa_reply,
-  const char *protocol,
-  unsigned int port
-) {
-  if (tlsa_reply->type != T_TLSA)
-    return 0;
+ares_parse_dane_reply (const unsigned char *abuf, int alen,
+                      struct ares_dane_reply **dane_out, int expect)
+{
+  unsigned int qdcount, ancount, i;
+  const unsigned char *aptr, *vptr;
+  int status, rr_type, rr_class, rr_len;
+  long len;
+  char *hostname = NULL, *rr_name = NULL;
+  struct ares_dane_reply *dane_head = NULL;
+  struct ares_dane_reply *dane_last = NULL;
+  struct ares_dane_reply *dane_curr;
+  char *left, *right;
+  size_t left_len, right_len;
 
-  if (!tlsa_reply->protocol)
-    return 0;
+  /* Set *dane_out to NULL for all failure cases. */
+  *dane_out = NULL;
 
-  if (strcmp(tlsa_reply->protocol, protocol) != 0)
-    return 0;
+  /* Give up if abuf doesn't have room for a header. */
+  if (alen < HFIXEDSZ)
+    return ARES_EBADRESP;
 
-  if (tlsa_reply->port != port)
-    return 0;
+  if (DNS_HEADER_AD(abuf) == 0)
+    return ARES_EINSECURE;
 
-  return 1;
-}
+  /* Fetch the question and answer count from the header. */
+  qdcount = DNS_HEADER_QDCOUNT (abuf);
+  ancount = DNS_HEADER_ANCOUNT (abuf);
+  if (qdcount != 1)
+    return ARES_EBADRESP;
+  if (ancount == 0)
+    return ARES_ENODATA;
 
-int
-ares_smimea_encode_name(
-  const char *name,
-  const char *email,
-  char *out,
-  size_t out_len
-) {
-  char hex[57];
+  /* Expand the name from the question, and skip past the question. */
+  aptr = abuf + HFIXEDSZ;
+  status = ares_expand_name (aptr, abuf, alen, &hostname, &len);
+  if (status != ARES_SUCCESS)
+    return status;
 
-  if (out) {
-    size_t size = ares_smimea_encode_name(name, email, NULL, 0);
+  if (aptr + len + QFIXEDSZ > abuf + alen)
+    {
+      ares_free (hostname);
+      return ARES_EBADRESP;
+    }
+  aptr += len + QFIXEDSZ;
 
-    if (size > out_len)
-      return 0;
+  /* Examine each answer resource record (RR) in turn. */
+  for (i = 0; i < ancount; i++)
+    {
+      /* Decode the RR up to the data field. */
+      status = ares_expand_name (aptr, abuf, alen, &rr_name, &len);
+      if (status != ARES_SUCCESS)
+        {
+          break;
+        }
+      aptr += len;
+      if (aptr + RRFIXEDSZ > abuf + alen)
+        {
+          status = ARES_EBADRESP;
+          break;
+        }
+      rr_type = DNS_RR_TYPE (aptr);
+      rr_class = DNS_RR_CLASS (aptr);
+      rr_len = DNS_RR_LEN (aptr);
+      aptr += RRFIXEDSZ;
+      if (aptr + rr_len > abuf + alen)
+        {
+          status = ARES_EBADRESP;
+          break;
+        }
 
-    unsigned char hash[32];
+      /* Check if we are really looking at a DANE record */
+      if (rr_class == C_IN && rr_type == expect)
+        {
+          /* parse the DANE record itself */
+          if (rr_len < 3)
+            {
+              status = ARES_EBADRESP;
+              break;
+            }
 
-    ares_sha256_ctx ctx;
-    ares_sha256_init(&ctx);
-    ares_sha256_update(&ctx, email, strlen(email));
-    ares_sha256_final(&ctx, hash);
+          /* Allocate storage for this DANE answer appending it to the list */
+          dane_curr = ares_malloc_data(ARES_DATATYPE_DANE_REPLY);
+          if (!dane_curr)
+            {
+              status = ARES_ENOMEM;
+              break;
+            }
+          if (dane_last)
+            {
+              dane_last->next = dane_curr;
+            }
+          else
+            {
+              dane_head = dane_curr;
+            }
+          dane_last = dane_curr;
 
-    encode_hex(hash, 28, hex);
-  } else {
-    memset(hex, '0', sizeof(hex) - 1);
-    hex[56] = '\0';
-  }
+          vptr = aptr;
+          dane_curr->usage = *vptr;
+          vptr += 1;
+          dane_curr->selector = *vptr;
+          vptr += 1;
+          dane_curr->matching_type = *vptr;
+          vptr += 1;
 
-  return sprintf(out, "_%s._smimea.%s", hex, name);
-}
+          dane_curr->certificate_len = rr_len - 3;
 
-size_t
-ares_smimea_name_size(
-  const char *name,
-  char *protocol,
-  unsigned int port
-) {
-  return ares_smimea_encode_name(name, protocol, port, NULL, 0);
-}
+          if (dane_curr->certificate_len != 0) {
+            dane_curr->certificate = ares_malloc(dane_curr->certificate_len);
 
-int
-ares_smimea_decode_name(const char *name, unsigned char **hash) {
-  char *a, *b;
-  size_t al, bl;
+            if (!dane_curr->certificate) {
+              status = ARES_ENOMEM;
+              break;
+            }
 
-  if (name == NULL || hash == NULL)
-    return 0;
+            memcpy(dane_curr->certificate, vptr, dane_curr->certificate_len);
+          }
+        }
 
-  /* SMIMEA RR names exist as _[hash]._smimea.name. */
+      /* Don't lose memory in the next iteration */
+      ares_free (rr_name);
+      rr_name = NULL;
 
-  /* Parse the first two labels, minus the `_` prefixes. */
-  if (!read_labels(name, &a, &al, &b, &bl))
-    return 0;
+      /* Move on to the next record */
+      aptr += rr_len;
+    }
 
-  /* Parse the 28 byte hash (hex encoded). */
-  if (!read_hash(a, al, hash))
-    return 0;
+  if (hostname)
+    ares_free (hostname);
+  if (rr_name)
+    ares_free (rr_name);
 
-  /* Ensure the second label is `smimea`. */
-  if (!read_smimea(b, bl))
-    return 0;
+  /* clean up on error */
+  if (status != ARES_SUCCESS)
+    {
+      if (dane_head)
+        ares_free_data (dane_head);
+      return status;
+    }
 
-  return 1;
-}
+  /* everything looks fine, return the data */
+  *dane_out = dane_head;
 
-int
-ares_smimea_verify(
-  struct ares_smimea_reply *smimea_reply,
-  unsigned char *cert,
-  size_t cert_len
-) {
-  if (smimea_reply->type != T_SMIMEA)
-    return 0;
-
-  if (!smimea_reply->certificate)
-    return 0;
-
-  return ares_dane_verify(
-    cert,
-    cert_len,
-    smimea_reply->selector,
-    smimea_reply->matching_type,
-    smimea_reply->certificate,
-    smimea_reply->certificate_len
-  );
-}
-
-int
-ares_smimea_verify_name(
-  struct ares_smimea_reply *smimea_reply,
-  const char *email
-) {
-  if (smimea_reply->type != T_SMIMEA)
-    return 0;
-
-  if (!smimea_reply->hash)
-    return 0;
-
-  unsigned char hash[32];
-
-  ares_sha256_ctx ctx;
-  ares_sha256_init(&ctx);
-  ares_sha256_update(&ctx, email, strlen(email));
-  ares_sha256_final(&ctx, hash);
-
-  if (memcmp(smimea_reply->hash, hash, 28) != 0)
-    return 0;
-
-  return 1;
+  return ARES_SUCCESS;
 }
