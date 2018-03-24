@@ -197,7 +197,7 @@ read_hash(const char *str, size_t len, unsigned char **hash) {
     return 0;
 
   if (!decode_hex(str, len, ha)) {
-    free(ha);
+    ares_free(ha);
     return 0;
   }
 
