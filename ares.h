@@ -635,6 +635,17 @@ ares_smimea_verify(
 );
 
 /*
+ * SSHFP functions
+ */
+
+CARES_EXTERN int
+ares_sshfp_verify(
+  struct ares_sshfp_reply *sshfp_reply,
+  unsigned char *key,
+  size_t key_len
+);
+
+/*
 ** Parse the buffer, starting at *abuf and of length alen bytes, previously
 ** obtained from an ares_search call.  Put the results in *host, if nonnull.
 ** Also, if addrttls is nonnull, put up to *naddrttls IPv4 addresses along with

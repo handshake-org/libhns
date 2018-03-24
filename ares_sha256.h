@@ -2,6 +2,7 @@
 #define HEADER_CARES_SHA256_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

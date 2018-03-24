@@ -40,7 +40,7 @@
 #include "ares_data.h"
 #include "ares_private.h"
 #include "ares_sha256.h"
-/* #include "ares_sha512.h" */
+#include "ares_sha512.h"
 
 static int
 read_tag(
@@ -325,14 +325,12 @@ ares_dane_validate(
     }
 
     case 2: { /* SHA512 */
-#if 0
       ares_sha512_ctx ctx;
       ares_sha512_init(&ctx);
       ares_sha512_update(&ctx, data, data_len);
       ares_sha512_final(&ctx, &buf[0]);
       hash = &buf[0];
       hash_len = 64;
-#endif
       break;
     }
   }
