@@ -43,7 +43,7 @@
 /* #include "ares_sha512.h" */
 
 static int
-tag(
+read_tag(
   const unsigned char *data,
   size_t data_len,
   int off,
@@ -135,7 +135,7 @@ read_seq(
   size_t *size_out
 ) {
   /* Read seq-header, update offset to after header. */
-  return tag(data, data_len, off, 0x10, 0, off_out, size_out);
+  return read_tag(data, data_len, off, 0x10, 0, off_out, size_out);
 }
 
 static int
@@ -183,7 +183,7 @@ skip_int(const unsigned char *data, size_t data_len, int off, int *off_out) {
   size_t size;
 
   /* Read int-header, return offset after header+data. */
-  if (!tag(data, data_len, off, 0x02, 0, &offset, &size))
+  if (!read_tag(data, data_len, off, 0x02, 0, &offset, &size))
     return 0;
 
   *off_out = offset + size;
@@ -197,7 +197,7 @@ skip_xint(const unsigned char *data, size_t data_len, int off, int *off_out) {
   size_t size;
 
   /* Read int-header, return offset after header+data. */
-  if (!tag(data, data_len, off, 0x00, 1, &offset, &size))
+  if (!read_tag(data, data_len, off, 0x00, 1, &offset, &size))
     return 0;
 
   *off_out = offset + size;
