@@ -1932,6 +1932,29 @@ static int init_by_resolv_conf(ares_channel channel)
   return ARES_SUCCESS;
 }
 
+#ifdef WIN32
+static int get_hnsconf(char *out, size_t size)
+{
+  const char *root = getenv("SystemRoot");
+
+  if (root == NULL)
+    root = "C:\\Windows";
+
+  size_t rlen = strlen(root);
+  size_t clen = strlen(PATH_HNS_CONF);
+  size_t len = rlen + clen;
+
+  if (len > size - 1)
+    return 0;
+
+  memcpy(&out[0], root, rlen);
+  memcpy(&out[rlen], PATH_HNS_CONF, clen);
+  out[len] = '\0';
+
+  return 1;
+}
+#endif
+
 static int init_by_hns_conf(ares_channel channel)
 {
   int status = -1, nservers = 0, nsort = 0;
@@ -1952,7 +1975,17 @@ static int init_by_hns_conf(ares_channel channel)
   /* Only update search domains if they're not already specified */
   update_domains = (channel->ndomains == -1);
 
+#ifdef WIN32
+  char path[256];
+
+  if (!get_hnsconf(path, sizeof(path)))
+    return ARES_ENOMEM;
+
+  fp = fopen(path, "r");
+#else
   fp = fopen(PATH_HNS_CONF, "r");
+#endif
+
   if (fp) {
     while ((status = ares__read_line(fp, &line, &linesize)) == ARES_SUCCESS)
     {
@@ -2049,6 +2082,7 @@ static int init_by_defaults(ares_channel channel)
 
   if (channel->nservers == -1) {
     char **s = (char **)&ares_default_ns[0];
+    int i;
 
     channel->nservers = 0;
 
@@ -2063,7 +2097,6 @@ static int init_by_defaults(ares_channel channel)
       goto error;
     }
 
-    int i;
     for (i = 0; i < channel->nservers; i++) {
       const char *ns = ares_default_ns[i];
       if (!ares_addr_from_string(&channel->servers[i].addr, ns, 53)) {
