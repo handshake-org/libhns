@@ -57,8 +57,6 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
   struct ares_openpgpkey_reply *openpgpkey_head = NULL;
   struct ares_openpgpkey_reply *openpgpkey_last = NULL;
   struct ares_openpgpkey_reply *openpgpkey_curr;
-  char *a, *b;
-  size_t alen, blen;
 
   /* Set *openpgpkey_out to NULL for all failure cases. */
   *openpgpkey_out = NULL;

@@ -49,11 +49,15 @@
 #endif
 
 static int
-get_labels(const char *name, char **a, size_t *alen, char **b, size_t *blen) {
-  char *a_start = NULL;
-  char *b_start = NULL;
-  char *a_end = NULL;
-  char *b_end = NULL;
+read_labels(
+  const char *name,
+  char **left,
+  size_t *left_len,
+  char **right,
+  size_t *right_len
+) {
+  char *left_end = NULL;
+  char *right_end = NULL;
   char *s = (char *)name;
 
   if (s == NULL)
@@ -61,10 +65,10 @@ get_labels(const char *name, char **a, size_t *alen, char **b, size_t *blen) {
 
   while (*s) {
     if (*s == '.') {
-      if (!a_end)
-        a_end = s;
-      else if (!b_end)
-        b_end = s;
+      if (!left_end)
+        left_end = s;
+      else if (!right_end)
+        right_end = s;
       else
         break;
     }
@@ -74,25 +78,22 @@ get_labels(const char *name, char **a, size_t *alen, char **b, size_t *blen) {
   if (!*s)
     return 0;
 
-  if (!a_end || !b_end)
-    return 0;
+  int leftlen = left_end - name;
+  int rightlen = right_end - (left_end + 1);
 
-  int a_len = a_end - name;
-  int b_len = b_end - (a_end + 1);
-
-  if (a_len < 2 || b_len < 2)
+  if (leftlen < 2 || rightlen < 2)
     return 0;
 
   if (name[0] != '_')
     return 0;
 
-  if (a_end[1] != '_')
+  if (left_end[1] != '_')
     return 0;
 
-  *a = &name[1];
-  *alen = a_len - 1;
-  *b = &a_end[2];
-  *blen = b_len - 1;
+  *left = (char *)&name[1];
+  *left_len = leftlen - 1;
+  *right = &left_end[2];
+  *right_len = rightlen - 1;
 
   return 1;
 }
@@ -146,13 +147,11 @@ decode_hex(const char *str, size_t len, unsigned char *data) {
 
 static int
 read_port(const char *str, size_t len, unsigned int *port) {
-  int i;
-
   if (len > 5)
     return 0;
 
   unsigned long word = 0;
-  int ch;
+  int i, ch;
 
   for (i = 0; i < len; i++) {
     ch = ((int)str[i]) - 0x30;
@@ -173,6 +172,62 @@ read_port(const char *str, size_t len, unsigned int *port) {
 }
 
 static int
+read_protocol(const char *str, size_t len, char **protocol) {
+  char *proto = ares_malloc(len + 1);
+
+  if (!proto)
+    return 0;
+
+  memcpy(proto, str, len);
+  proto[len] = '\0';
+
+  *protocol = proto;
+
+  return 1;
+}
+
+static int
+read_hash(const char *str, size_t len, unsigned char **hash) {
+  if (len != 56)
+    return 0;
+
+  unsigned char *ha = ares_malloc(28);
+
+  if (!ha)
+    return 0;
+
+  if (!decode_hex(str, len, ha)) {
+    free(ha);
+    return 0;
+  }
+
+  *hash = ha;
+
+  return 1;
+}
+
+static int
+read_smimea(const char *str, size_t len) {
+  if (len != 6)
+    return 0;
+
+  int i;
+  char c;
+
+  for (i = 0; i < 6; i++) {
+    c = str[i];
+
+    if (c >= 'A' && c <= 'Z')
+      c += ' ';
+
+    if (c != "smimea"[i])
+      return 0;
+  }
+
+  return 1;
+}
+
+static int
 ares_parse_dane_reply (const unsigned char *abuf, int alen,
                       struct ares_dane_reply **dane_out, int expect)
 {
@@ -184,8 +239,8 @@ ares_parse_dane_reply (const unsigned char *abuf, int alen,
   struct ares_dane_reply *dane_head = NULL;
   struct ares_dane_reply *dane_last = NULL;
   struct ares_dane_reply *dane_curr;
-  char *a, *b;
-  size_t alen, blen;
+  char *left, *right;
+  size_t left_len, right_len;
 
   /* Set *dane_out to NULL for all failure cases. */
   *dane_out = NULL;
@@ -292,49 +347,51 @@ ares_parse_dane_reply (const unsigned char *abuf, int alen,
             memcpy(dane_curr->cert, vptr, dane_curr->cert_len);
           }
 
-          if (!get_labels(rr_name, &a, &alen, &b, &blen)) {
+          /* Parse the first two labels, minus the `_` prefixes. */
+          if (!read_labels(rr_name, &left, &left_len, &right, &right_len)) {
             status = ARES_EBADRESP;
             break;
           }
 
+          /* TLSA record. */
           if (rr_type == T_TLSA) {
-            if (!read_port(a, alen, &dane_curr->port)) {
+            /* TLSA RR names exist as _[port]._[protocol].name. */
+
+            /* Parse the port. */
+            if (!read_port(left, left_len, &dane_curr->port)) {
               status = ARES_EBADRESP;
               break;
             }
 
-            dane_curr->protocol = ares_malloc(blen + 1);
-
-            if (!dane_curr->protocol) {
+            /* Parse the protocol name. */
+            if (!read_protocol(right, right_len, &dane_curr->protocol)) {
               status = ARES_ENOMEM;
               break;
             }
 
-            memcpy(dane_curr->protocol, b, blen);
-            dane_curr->protocol[blen] = '\0';
-          } else {
-            if (alen != 56 || blen != 6) {
-              status = ARES_EBADRESP;
-              break;
-            }
-
-            if (ares_strncasecmp(b, "smimea", 6) != 0) {
-              status = ARES_EBADRESP;
-              break;
-            }
-
-            dane_curr->hash = ares_malloc(28);
-
-            if (!dane_curr->hash) {
-              status = ARES_ENOMEM;
-              break;
-            }
-
-            if (!decode_hex(a, alen, dane_curr->hash)) {
-              status = ARES_EBADRESP;
-              break;
-            }
+            continue;
           }
+
+          /* SMIMEA record. */
+          if (rr_type == T_SMIMEA) {
+            /* SMIMEA RR names exist as _[hash]._smimea.name. */
+
+            /* Parse the 28 byte hash (hex encoded). */
+            if (!read_hash(left, left_len, &dane_curr->hash)) {
+              status = ARES_EBADRESP;
+              break;
+            }
+
+            /* Ensure the second label is `smimea`. */
+            if (!read_smimea(right, right_len)) {
+              status = ARES_EBADRESP;
+              break;
+            }
+
+            continue;
+          }
+
+          /* Reserved for future use. */
         }
 
       /* Don't lose memory in the next iteration */
@@ -367,11 +424,13 @@ ares_parse_dane_reply (const unsigned char *abuf, int alen,
 int
 ares_parse_tlsa_reply (const unsigned char *abuf, int alen,
                       struct ares_tlsa_reply **tlsa_out)
+{
   return ares_parse_dane_reply(abuf, alen, tlsa_out, T_TLSA);
 }
 
 int
 ares_parse_smimea_reply (const unsigned char *abuf, int alen,
                       struct ares_smimea_reply **smimea_out)
+{
   return ares_parse_dane_reply(abuf, alen, smimea_out, T_SMIMEA);
 }

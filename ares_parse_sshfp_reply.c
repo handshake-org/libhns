@@ -57,8 +57,6 @@ ares_parse_sshfp_reply (const unsigned char *abuf, int alen,
   struct ares_sshfp_reply *sshfp_head = NULL;
   struct ares_sshfp_reply *sshfp_last = NULL;
   struct ares_sshfp_reply *sshfp_curr;
-  char *a, *b;
-  size_t alen, blen;
 
   /* Set *sshfp_out to NULL for all failure cases. */
   *sshfp_out = NULL;
