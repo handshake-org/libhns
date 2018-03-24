@@ -74,7 +74,7 @@ ares_smimea_encode_name(
   char hex[57];
 
   if (out) {
-    size_t size = ares_smimea_encode_name(name, email, NULL, 0);
+    size_t size = ares_smimea_name_size(name, email);
 
     if (size > out_len)
       return 0;
@@ -96,10 +96,7 @@ ares_smimea_encode_name(
 }
 
 size_t
-ares_smimea_name_size(
-  const char *name,
-  const char *email
-) {
+ares_smimea_name_size(const char *name, const char *email) {
   return ares_smimea_encode_name(name, email, NULL, 0);
 }
 

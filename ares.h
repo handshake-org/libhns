@@ -600,11 +600,7 @@ ares_tlsa_encode_name(
 );
 
 CARES_EXTERN size_t
-ares_tlsa_name_size(
-  const char *name,
-  const char *protocol,
-  unsigned int port
-);
+ares_tlsa_name_size(const char *name, const char *protocol, unsigned int port);
 
 CARES_EXTERN int
 ares_tlsa_verify(
@@ -622,10 +618,7 @@ ares_smimea_encode_name(
 );
 
 CARES_EXTERN size_t
-ares_smimea_name_size(
-  const char *name,
-  const char *email
-);
+ares_smimea_name_size(const char *name, const char *email);
 
 CARES_EXTERN int
 ares_smimea_verify(
