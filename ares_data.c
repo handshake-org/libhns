@@ -119,6 +119,31 @@ void ares_free_data(void *dataptr)
             ares_free(ptr->data.soa_reply.hostmaster);
           break;
 
+        case ARES_DATATYPE_SSHFP_REPLY:
+          if (ptr->data.sshfp_reply.next)
+            next_data = ptr->data.sshfp_reply.next;
+          if (ptr->data.sshfp_reply.fingerprint)
+            ares_free(ptr->data.sshfp_reply.fingerprint);
+          break;
+
+        case ARES_DATATYPE_DANE_REPLY:
+          if (ptr->data.dane_reply.next)
+            next_data = ptr->data.dane_reply.next;
+          if (ptr->data.dane_reply.protocol)
+            ares_free(ptr->data.dane_reply.protocol);
+          if (ptr->data.dane_reply.hash)
+            ares_free(ptr->data.dane_reply.hash);
+          if (ptr->data.dane_reply.cert)
+            ares_free(ptr->data.dane_reply.cert);
+          break;
+
+        case ARES_DATATYPE_OPENPGPKEY_REPLY:
+          if (ptr->data.openpgpkey_reply.next)
+            next_data = ptr->data.openpgpkey_reply.next;
+          if (ptr->data.openpgpkey_reply.pubkey)
+            ares_free(ptr->data.openpgpkey_reply.pubkey);
+          break;
+
         default:
           return;
       }
@@ -208,7 +233,34 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.soa_reply.retry = 0;
         ptr->data.soa_reply.expire = 0;
         ptr->data.soa_reply.minttl = 0;
-	break;
+        break;
+
+      case ARES_DATATYPE_SSHFP_REPLY:
+        ptr->data.sshfp_reply.next = NULL;
+        ptr->data.sshfp_reply.algorithm = 0;
+        ptr->data.sshfp_reply.digest_type = 0;
+        ptr->data.sshfp_reply.fingerprint = NULL;
+        ptr->data.sshfp_reply.fingerprint_len = 0;
+        break;
+
+      case ARES_DATATYPE_DANE_REPLY:
+        ptr->data.dane_reply.next = NULL;
+        ptr->data.dane_reply.type = 52;
+        ptr->data.dane_reply.port = 0;
+        ptr->data.dane_reply.protocol = NULL;
+        ptr->data.dane_reply.hash = NULL;
+        ptr->data.dane_reply.usage = 0;
+        ptr->data.dane_reply.selector = 0;
+        ptr->data.dane_reply.matching_type = 0;
+        ptr->data.dane_reply.cert = NULL;
+        ptr->data.dane_reply.cert_len = 0;
+        break;
+
+      case ARES_DATATYPE_OPENPGPKEY_REPLY:
+        ptr->data.openpgpkey_reply.next = NULL;
+        ptr->data.openpgpkey_reply.pubkey = NULL;
+        ptr->data.openpgpkey_reply.pubkey_len = 0;
+        break;
 
       default:
         ares_free(ptr);

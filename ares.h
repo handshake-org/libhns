@@ -560,6 +560,44 @@ struct ares_soa_reply {
   unsigned int minttl;
 };
 
+struct ares_sshfp_reply {
+  struct ares_sshfp_reply *next;
+  unsigned short           algorithm;
+  unsigned short           digest_type;
+  unsigned char           *fingerprint;
+  size_t                   fingerprint_len;
+};
+
+struct ares_dane_reply {
+  struct ares_dane_reply *next;
+
+  /* rr type */
+  unsigned int            type;
+
+  /* TLSA */
+  unsigned int            port;
+  char                   *protocol;
+
+  /* SMIMEA */
+  unsigned char          *hash;
+
+  /* shared properties */
+  unsigned short          usage;
+  unsigned short          selector;
+  unsigned short          matching_type;
+  unsigned char          *cert;
+  size_t                  cert_len;
+};
+
+#define ares_tlsa_reply ares_dane_reply
+#define ares_smimea_reply ares_dane_reply
+
+struct ares_openpgpkey_reply {
+  struct ares_openpgpkey_reply *next;
+  unsigned char                *pubkey;
+  size_t                        pubkey_len;
+};
+
 /*
 ** Parse the buffer, starting at *abuf and of length alen bytes, previously
 ** obtained from an ares_search call.  Put the results in *host, if nonnull.
@@ -614,6 +652,22 @@ CARES_EXTERN int ares_parse_naptr_reply(const unsigned char* abuf,
 CARES_EXTERN int ares_parse_soa_reply(const unsigned char* abuf,
 				      int alen,
 				      struct ares_soa_reply** soa_out);
+
+CARES_EXTERN int ares_parse_sshfp_reply(const unsigned char* abuf,
+				      int alen,
+				      struct ares_sshfp_reply** sshfp_out);
+
+CARES_EXTERN int ares_parse_tlsa_reply(const unsigned char* abuf,
+				      int alen,
+				      struct ares_tlsa_reply** tlsa_out);
+
+CARES_EXTERN int ares_parse_smimea_reply(const unsigned char* abuf,
+				      int alen,
+				      struct ares_smimea_reply** smimea_out);
+
+CARES_EXTERN int ares_parse_openpgpkey_reply(const unsigned char* abuf,
+				      int alen,
+				      struct ares_openpgpkey_reply** openpgpkey_out);
 
 CARES_EXTERN void ares_free_string(void *str);
 
