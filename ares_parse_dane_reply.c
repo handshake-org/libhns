@@ -49,185 +49,6 @@
 #endif
 
 static int
-read_labels(
-  const char *name,
-  char **left,
-  size_t *left_len,
-  char **right,
-  size_t *right_len
-) {
-  char *left_end = NULL;
-  char *right_end = NULL;
-  char *s = (char *)name;
-
-  if (s == NULL)
-    return 0;
-
-  while (*s) {
-    if (*s == '.') {
-      if (!left_end)
-        left_end = s;
-      else if (!right_end)
-        right_end = s;
-      else
-        break;
-    }
-    s += 1;
-  }
-
-  if (!*s)
-    return 0;
-
-  int leftlen = left_end - name;
-  int rightlen = right_end - (left_end + 1);
-
-  if (leftlen < 2 || rightlen < 2)
-    return 0;
-
-  if (name[0] != '_')
-    return 0;
-
-  if (left_end[1] != '_')
-    return 0;
-
-  *left = (char *)&name[1];
-  *left_len = leftlen - 1;
-  *right = &left_end[2];
-  *right_len = rightlen - 1;
-
-  return 1;
-}
-
-static int
-to_nibble(char s) {
-  if (s >= '0' && s <= '9')
-    return s - '0';
-
-  if (s >= 'A' && s <= 'F')
-    return (s - 'A') + 10;
-
-  if (s >= 'a' && s <= 'f')
-    return (s - 'a') + 10;
-
-  return -1;
-}
-
-static int
-decode_hex(const char *str, size_t len, unsigned char *data) {
-  if (str == NULL)
-    return 1;
-
-  if (data == NULL)
-    return 0;
-
-  unsigned char w;
-  int p = 0;
-  int i, n;
-
-  for (i = 0; i < len; i++) {
-    n = to_nibble(str[i]);
-
-    if (n == -1)
-      return 0;
-
-    if (i & 1) {
-      w |= (unsigned char)n;
-      data[p] = w;
-      p += 1;
-    } else {
-      w = ((unsigned char)n) << 4;
-    }
-  }
-
-  if (i & 1)
-    return 0;
-
-  return 1;
-}
-
-static int
-read_port(const char *str, size_t len, unsigned int *port) {
-  if (len > 5)
-    return 0;
-
-  unsigned long word = 0;
-  int i, ch;
-
-  for (i = 0; i < len; i++) {
-    ch = ((int)str[i]) - 0x30;
-
-    if (ch < 0 || ch > 9)
-      return 0;
-
-    word *= 10;
-    word += ch;
-  }
-
-  if (word > 0xffff)
-    return 0;
-
-  *port = word;
-
-  return 1;
-}
-
-static int
-read_protocol(const char *str, size_t len, char **protocol) {
-  char *proto = ares_malloc(len + 1);
-
-  if (!proto)
-    return 0;
-
-  memcpy(proto, str, len);
-  proto[len] = '\0';
-
-  *protocol = proto;
-
-  return 1;
-}
-
-static int
-read_hash(const char *str, size_t len, unsigned char **hash) {
-  if (len != 56)
-    return 0;
-
-  unsigned char *ha = ares_malloc(28);
-
-  if (!ha)
-    return 0;
-
-  if (!decode_hex(str, len, ha)) {
-    ares_free(ha);
-    return 0;
-  }
-
-  *hash = ha;
-
-  return 1;
-}
-
-static int
-read_smimea(const char *str, size_t len) {
-  if (len != 6)
-    return 0;
-
-  int i;
-  char c;
-
-  for (i = 0; i < 6; i++) {
-    c = str[i];
-
-    if (c >= 'A' && c <= 'Z')
-      c += ' ';
-
-    if (c != "smimea"[i])
-      return 0;
-  }
-
-  return 1;
-}
-
-static int
 ares_parse_dane_reply (const unsigned char *abuf, int alen,
                       struct ares_dane_reply **dane_out, int expect)
 {
@@ -356,16 +177,11 @@ ares_parse_dane_reply (const unsigned char *abuf, int alen,
           /* TLSA record. */
           if (rr_type == T_TLSA) {
             /* TLSA RR names exist as _[port]._[protocol].name. */
+            char **protocol = &dane_curr->protocol;
+            unsigned int *port = &dane_curr->port;
 
-            /* Parse the port. */
-            if (!read_port(left, left_len, &dane_curr->port)) {
+            if (!ares_tlsa_decode_name(rr_name, protocol, port)) {
               status = ARES_EBADRESP;
-              break;
-            }
-
-            /* Parse the protocol name. */
-            if (!read_protocol(right, right_len, &dane_curr->protocol)) {
-              status = ARES_ENOMEM;
               break;
             }
 
@@ -375,15 +191,7 @@ ares_parse_dane_reply (const unsigned char *abuf, int alen,
           /* SMIMEA record. */
           if (rr_type == T_SMIMEA) {
             /* SMIMEA RR names exist as _[hash]._smimea.name. */
-
-            /* Parse the 28 byte hash (hex encoded). */
-            if (!read_hash(left, left_len, &dane_curr->hash)) {
-              status = ARES_EBADRESP;
-              break;
-            }
-
-            /* Ensure the second label is `smimea`. */
-            if (!read_smimea(right, right_len)) {
+            if (!ares_smimea_decode_name(rr_name, &dane_curr->hash)) {
               status = ARES_EBADRESP;
               break;
             }
