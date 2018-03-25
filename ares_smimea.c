@@ -73,31 +73,26 @@ ares_smimea_encode_name(
 ) {
   char hex[57];
 
-  if (out) {
-    size_t size = ares_smimea_name_size(name, email);
+  size_t size = ares_smimea_name_size(name, email);
 
-    if (size > out_len)
-      return 0;
+  if (size > out_len)
+    return 0;
 
-    unsigned char hash[32];
+  unsigned char hash[32];
 
-    ares_sha256_ctx ctx;
-    ares_sha256_init(&ctx);
-    ares_sha256_update(&ctx, email, strlen(email));
-    ares_sha256_final(&ctx, hash);
+  ares_sha256_ctx ctx;
+  ares_sha256_init(&ctx);
+  ares_sha256_update(&ctx, email, strlen(email));
+  ares_sha256_final(&ctx, hash);
 
-    encode_hex(hash, 28, hex);
-  } else {
-    memset(hex, '0', sizeof(hex) - 1);
-    hex[56] = '\0';
-  }
+  encode_hex(hash, 28, hex);
 
   return sprintf(out, "_%s._smimea.%s", hex, name);
 }
 
 size_t
 ares_smimea_name_size(const char *name, const char *email) {
-  return ares_smimea_encode_name(name, email, NULL, 0);
+  return 1 + 56 + 1 + 1 + 6 + 1 + strlen(name);
 }
 
 int

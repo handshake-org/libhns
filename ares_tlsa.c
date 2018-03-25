@@ -27,17 +27,17 @@ ares_tlsa_encode_name(
   char *out,
   size_t out_len
 ) {
-  if (out) {
-    size_t size = ares_tlsa_name_size(name, protocol, port);
-    if (size > out_len)
-      return 0;
-  }
+  size_t size = ares_tlsa_name_size(name, protocol, port);
+
+  if (size > out_len)
+    return 0;
+
   return sprintf(out, "_%u._%s.%s", port, protocol, name);
 }
 
 size_t
 ares_tlsa_name_size(const char *name, const char *protocol, unsigned int port) {
-  return ares_tlsa_encode_name(name, protocol, port, NULL, 0);
+  return 1 + 5 + 1 + 1 + strlen(protocol) + 1 + strlen(name);
 }
 
 int

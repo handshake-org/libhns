@@ -460,6 +460,10 @@ void PushInt16(std::vector<byte>* data, int value) {
   data->push_back(value & 0x00ff);
 }
 
+void PushInt8(std::vector<byte>* data, int value) {
+  data->push_back(value & 0xff);
+}
+
 std::vector<byte> EncodeString(const std::string& name) {
   std::vector<byte> data;
   std::stringstream ss(name);
@@ -586,6 +590,38 @@ std::vector<byte> DNSNaptrRR::data() const {
   data.push_back(regexp_.size());
   data.insert(data.end(), regexp_.begin(), regexp_.end());
   data.insert(data.end(), encname.begin(), encname.end());
+  return data;
+}
+
+std::vector<byte> DNSSshfpRR::data() const {
+  std::vector<byte> data = DNSRR::data();
+  int len = (2 + fingerprint.size());
+  PushInt16(&data, len);
+  PushInt8(&data, algorithm);
+  PushInt8(&data, digest_type);
+  data.insert(data.end(), fingerprint.begin(), fingerprint.end());
+  return data;
+}
+
+std::vector<byte> DNSTlsaRR::data() const {
+  std::vector<byte> data = DNSRR::data();
+  int len = (3 + certificate.size());
+  PushInt16(&data, len);
+  PushInt8(&data, usage);
+  PushInt8(&data, selector);
+  PushInt8(&data, matching_type);
+  data.insert(data.end(), certificate.begin(), certificate.end());
+  return data;
+}
+
+std::vector<byte> DNSSmimeaRR::data() const {
+  std::vector<byte> data = DNSRR::data();
+  int len = (3 + certificate.size());
+  PushInt16(&data, len);
+  PushInt8(&data, usage);
+  PushInt8(&data, selector);
+  PushInt8(&data, matching_type);
+  data.insert(data.end(), certificate.begin(), certificate.end());
   return data;
 }
 

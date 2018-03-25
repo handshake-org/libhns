@@ -147,6 +147,9 @@ static const struct nv types[] = {
   { "RRSIG",    T_RRSIG },
   { "NSEC",     T_NSEC },
   { "DNSKEY",   T_DNSKEY },
+  { "TLSA",     T_TLSA },
+  { "SMIMEA",   T_SMIMEA },
+  { "OPENPGPKEY", T_OPENPGPKEY },
   { "ANY",      T_ANY }
 };
 static const int ntypes = sizeof(types) / sizeof(types[0]);
@@ -757,6 +760,9 @@ static const unsigned char *display_rr(const unsigned char *aptr,
     case T_RRSIG:
     case T_NSEC:
     case T_DNSKEY:
+    case T_TLSA:
+    case T_SMIMEA:
+    case T_OPENPGPKEY:
       printf("\t[RR type parsing unavailable]");
       break;
 

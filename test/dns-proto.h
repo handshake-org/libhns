@@ -38,6 +38,7 @@ std::string RRToString(const std::vector<byte>& packet,
 // Manipulate DNS protocol data.
 void PushInt32(std::vector<byte>* data, int value);
 void PushInt16(std::vector<byte>* data, int value);
+void PushInt8(std::vector<byte>* data, int value);
 std::vector<byte> EncodeString(const std::string& name);
 
 struct DNSQuestion {
@@ -181,6 +182,84 @@ struct DNSOptRR : public DNSRR {
     : DNSRR("", ns_t_opt, static_cast<ns_class>(udpsize), extrcode) {}
   virtual std::vector<byte> data() const;
   std::vector<DNSOption> opts_;
+};
+
+struct DNSSshfpRR : public DNSRR {
+  DNSSshfpRR(
+    const std::string& name,
+    int ttl,
+    int algorithm,
+    int digest_type,
+    const std::string& fp_hex
+  ) : DNSRR(name, ns_t_sshfp, ttl)
+    , algorithm(algorithm)
+    , digest_type(digest_type) {
+      size_t len = fp_hex.length();
+
+      for (size_t i = 0; i < len; i += 2) {
+        std::string byte = fp_hex.substr(i, 2);
+        unsigned char chr = (unsigned char)strtol(byte.c_str(), nullptr, 16);
+        fingerprint.push_back(chr);
+      }
+    }
+  virtual std::vector<byte> data() const;
+  int algorithm;
+  int digest_type;
+  std::vector<byte> fingerprint;
+};
+
+struct DNSTlsaRR : public DNSRR {
+  DNSTlsaRR(
+    const std::string& name,
+    int ttl,
+    int usage,
+    int selector,
+    int matching_type,
+    const std::string& cert_hex
+  ) : DNSRR(name, ns_t_tlsa, ttl)
+    , usage(usage)
+    , selector(selector)
+    , matching_type(matching_type) {
+      size_t len = cert_hex.length();
+
+      for (size_t i = 0; i < len; i += 2) {
+        std::string byte = cert_hex.substr(i, 2);
+        unsigned char chr = (unsigned char)strtol(byte.c_str(), nullptr, 16);
+        certificate.push_back(chr);
+      }
+    }
+  virtual std::vector<byte> data() const;
+  int usage;
+  int selector;
+  int matching_type;
+  std::vector<byte> certificate;
+};
+
+struct DNSSmimeaRR : public DNSRR {
+  DNSSmimeaRR(
+    const std::string& name,
+    int ttl,
+    int usage,
+    int selector,
+    int matching_type,
+    const std::string& cert_hex
+  ) : DNSRR(name, ns_t_smimea, ttl)
+    , usage(usage)
+    , selector(selector)
+    , matching_type(matching_type) {
+      size_t len = cert_hex.length();
+
+      for (size_t i = 0; i < len; i += 2) {
+        std::string byte = cert_hex.substr(i, 2);
+        unsigned char chr = (unsigned char)strtol(byte.c_str(), nullptr, 16);
+        certificate.push_back(chr);
+      }
+    }
+  virtual std::vector<byte> data() const;
+  int usage;
+  int selector;
+  int matching_type;
+  std::vector<byte> certificate;
 };
 
 struct DNSPacket {
