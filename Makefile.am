@@ -1,5 +1,3 @@
-SUBDIRS = secp256k1
-
 AUTOMAKE_OPTIONS = foreign nostdinc
 
 ACLOCAL_AMFLAGS = -I m4
@@ -33,7 +31,8 @@ AM_CPPFLAGS = -I$(top_builddir)/../include/curl \
               -I$(top_srcdir)
 else
 AM_CPPFLAGS = -I$(top_builddir) \
-              -I$(top_srcdir)
+              -I$(top_srcdir) \
+              -I$(top_srcdir)/secp256k1
 endif
 
 lib_LTLIBRARIES = libcares.la
@@ -102,6 +101,29 @@ CARES_VERSION_INFO = -version-info 4:0:2
 
 AM_LDFLAGS =
 
+#
+# Secp256k1
+#
+
+if USE_EXTERNAL_ASM
+COMMON_LIB = libcares_common.la
+noinst_LTLIBRARIES = $(COMMON_LIB)
+else
+COMMON_LIB =
+endif
+
+if USE_EXTERNAL_ASM
+if USE_ASM_ARM
+libcares_common_la_SOURCES = src/asm/field_10x26_arm.s
+endif
+endif
+
+libcares_la_LIBADD = $(COMMON_LIB)
+
+#
+# /Secp256k1
+#
+
 libcares_la_LDFLAGS_EXTRA =
 
 if CARES_LT_SHLIB_USE_VERSION_INFO
@@ -152,8 +174,6 @@ libcares_ladir = $(includedir)
 # what headers to install on 'make install':
 libcares_la_HEADERS = ares.h ares_version.h ares_dns.h \
 	ares_build.h ares_rules.h
-
-libcares_la_LIBADD = $(top_builddir)/secp256k1/.libs/libsecp256k1.la
 
 ahost_SOURCES = ahost.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
 ahost_LDADD = $(top_builddir)/libcares.la

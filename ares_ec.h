@@ -3,9 +3,9 @@
 
 #include <stdlib.h>
 
-#include "secp256k1/include/secp256k1.h"
+#include "secp256k1.h"
 
-typedef secp256k1_context ares_ec_t;
+typedef ares_secp256k1_context ares_ec_t;
 
 ares_ec_t *
 ares_ec_alloc(void);

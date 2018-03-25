@@ -297,13 +297,4 @@ if test -f "test/buildconf"; then
   fi
 fi
 
-#--------------------------------------------------------------------------
-# Run secp256k1's autogen.sh
-#
-cd secp256k1 || die
-if ! test -f configure; then
-  ./autogen.sh || die "secp256k1 autogen.sh failed."
-fi
-cd .. || die
-
 exit 0

@@ -508,6 +508,17 @@ IF (HAVE_WINDOWS_H)
 	SET (CARES_HAVE_WINDOWS_H 1)
 ENDIF()
 
+#
+# Secp256k1
+#
+
+SET (USE_FIELD_10X26 1)
+SET (USE_SCALAR_8X32 1)
+
+#
+# /Secp256k1
+#
+
 # Write ares_build.h configuration file.  This is an installed file.
 CONFIGURE_FILE (ares_build.h.cmake ${PROJECT_BINARY_DIR}/ares_build.h)
 
