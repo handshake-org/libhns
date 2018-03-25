@@ -87,7 +87,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[char foo;]])],
 AC_ARG_ENABLE(benchmark,
     AS_HELP_STRING([--enable-benchmark],[compile benchmark (default is yes)]),
     [use_benchmark=$enableval],
-    [use_benchmark=yes])
+    [use_benchmark=no])
 
 AC_ARG_ENABLE(coverage,
     AS_HELP_STRING([--enable-coverage],[enable compiler flags to support kcov coverage analysis]),
@@ -97,22 +97,22 @@ AC_ARG_ENABLE(coverage,
 AC_ARG_ENABLE(tests,
     AS_HELP_STRING([--enable-tests],[compile tests (default is yes)]),
     [use_tests=$enableval],
-    [use_tests=yes])
+    [use_tests=no])
 
 AC_ARG_ENABLE(openssl_tests,
     AS_HELP_STRING([--enable-openssl-tests],[enable OpenSSL tests, if OpenSSL is available (default is auto)]),
     [enable_openssl_tests=$enableval],
-    [enable_openssl_tests=auto])
+    [enable_openssl_tests=no])
 
 AC_ARG_ENABLE(experimental,
     AS_HELP_STRING([--enable-experimental],[allow experimental configure options (default is no)]),
     [use_experimental=$enableval],
-    [use_experimental=yes])
+    [use_experimental=no])
 
 AC_ARG_ENABLE(exhaustive_tests,
     AS_HELP_STRING([--enable-exhaustive-tests],[compile exhaustive tests (default is yes)]),
     [use_exhaustive_tests=$enableval],
-    [use_exhaustive_tests=yes])
+    [use_exhaustive_tests=no])
 
 AC_ARG_ENABLE(endomorphism,
     AS_HELP_STRING([--enable-endomorphism],[enable endomorphism (default is no)]),
@@ -122,7 +122,7 @@ AC_ARG_ENABLE(endomorphism,
 AC_ARG_ENABLE(ecmult_static_precomputation,
     AS_HELP_STRING([--enable-ecmult-static-precomputation],[enable precomputed ecmult table for signing (default is yes)]),
     [use_ecmult_static_precomputation=$enableval],
-    [use_ecmult_static_precomputation=auto])
+    [use_ecmult_static_precomputation=no])
 
 AC_ARG_ENABLE(module_ecdh,
     AS_HELP_STRING([--enable-module-ecdh],[enable ECDH shared secret computation (experimental)]),
@@ -143,7 +143,7 @@ AC_ARG_WITH([field], [AS_HELP_STRING([--with-field=64bit|32bit|auto],
 [Specify Field Implementation. Default is auto])],[req_field=$withval], [req_field=auto])
 
 AC_ARG_WITH([bignum], [AS_HELP_STRING([--with-bignum=gmp|no|auto],
-[Specify Bignum Implementation. Default is auto])],[req_bignum=$withval], [req_bignum=auto])
+[Specify Bignum Implementation. Default is auto])],[req_bignum=$withval], [req_bignum=no])
 
 AC_ARG_WITH([scalar], [AS_HELP_STRING([--with-scalar=64bit|32bit|auto],
 [Specify scalar implementation. Default is auto])],[req_scalar=$withval], [req_scalar=auto])
