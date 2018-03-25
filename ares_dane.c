@@ -287,6 +287,9 @@ ares_dane_validate(
   unsigned char *certificate,
   size_t certificate_len
 ) {
+  if (cert == NULL || certificate == NULL)
+    return 0;
+
   unsigned char *data = NULL;
   size_t data_len = 0;
   unsigned char buf[64];
@@ -350,9 +353,6 @@ ares_dane_verify(
   unsigned char *cert,
   size_t cert_len
 ) {
-  if (!dane_reply->certificate)
-    return 0;
-
   return ares_dane_validate(
     cert,
     cert_len,
@@ -385,7 +385,7 @@ ares_parse_dane_reply (const unsigned char *abuf, int alen,
   if (alen < HFIXEDSZ)
     return ARES_EBADRESP;
 
-  if (DNS_HEADER_AD(abuf) == 0)
+  if (DNS_HEADER_AD(abuf) != 1)
     return ARES_EINSECURE;
 
   /* Fetch the question and answer count from the header. */

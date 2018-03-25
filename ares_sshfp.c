@@ -26,12 +26,12 @@ ares_sshfp_verify(
   unsigned char *key,
   size_t key_len
 ) {
+  if (sshfp_reply == NULL || key == NULL)
+    return 0;
+
   unsigned char buf[64];
   unsigned char *hash = NULL;
   size_t hash_len = 0;
-
-  if (!sshfp_reply)
-    return 0;
 
   switch (sshfp_reply->digest_type) {
     case 1: { /* SHA1 */

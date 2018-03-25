@@ -14,6 +14,7 @@
  * without express or implied warranty.
  */
 
+#include <assert.h>
 #include "ares_setup.h"
 #include "ares.h"
 #include "ares_private.h"
@@ -71,7 +72,8 @@ ares_smimea_encode_name(
   char *out,
   size_t out_len
 ) {
-  char hex[57];
+  if (name == NULL || email == NULL)
+    return 0;
 
   size_t size = ares_smimea_name_size(name, email);
 
@@ -79,13 +81,14 @@ ares_smimea_encode_name(
     return 0;
 
   unsigned char hash[32];
+  char hex[57];
 
   ares_sha256_ctx ctx;
   ares_sha256_init(&ctx);
   ares_sha256_update(&ctx, email, strlen(email));
   ares_sha256_final(&ctx, hash);
 
-  encode_hex(hash, 28, hex);
+  assert(encode_hex(hash, 28, hex) == 1);
 
   return sprintf(out, "_%s._smimea.%s", hex, name);
 }

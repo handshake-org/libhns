@@ -262,6 +262,24 @@ struct DNSSmimeaRR : public DNSRR {
   std::vector<byte> certificate;
 };
 
+struct DNSOpenpgpkeyRR : public DNSRR {
+  DNSOpenpgpkeyRR(
+    const std::string& name,
+    int ttl,
+    const std::string& key_hex
+  ) : DNSRR(name, ns_t_openpgpkey, ttl) {
+      size_t len = key_hex.length();
+
+      for (size_t i = 0; i < len; i += 2) {
+        std::string byte = key_hex.substr(i, 2);
+        unsigned char chr = (unsigned char)strtol(byte.c_str(), nullptr, 16);
+        pubkey.push_back(chr);
+      }
+    }
+  virtual std::vector<byte> data() const;
+  std::vector<byte> pubkey;
+};
+
 struct DNSPacket {
   DNSPacket()
     : qid_(0), response_(false), opcode_(ns_o_query),

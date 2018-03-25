@@ -7,10 +7,13 @@
 namespace ares {
 namespace test {
 
+/* webmaster@example.com */
+#define email_hash "3bf70b30a9c57dc48b526e892ed3549ae4faec560a3906c413c1f32f"
+#define smimea_domain "_" email_hash "._smimea.example.com"
 #define fingerprint_hex \
   "0c72ac70b745ac19998811b131d662c9ac69dbdbe7cb23e5b514b56664c5d3d6"
 
-TEST_F(LibraryTest, ParseTlsaReplyOK) {
+TEST_F(LibraryTest, ParseSmimeaReplyOK) {
   std::string fp_hex(fingerprint_hex);
 
   DNSPacket pkt;
@@ -20,30 +23,31 @@ TEST_F(LibraryTest, ParseTlsaReplyOK) {
     .set_rd()
     .set_ra()
     .set_ad()
-    .add_question(new DNSQuestion("_443._tcp.www.ietf.org", ns_t_tlsa))
-    .add_answer(new DNSTlsaRR("_443._tcp.www.ietf.org", 1500, 3, 1, 1, fp_hex));
+    .add_question(new DNSQuestion(smimea_domain, ns_t_smimea))
+    .add_answer(new DNSSmimeaRR(smimea_domain, 1500, 3, 1, 1, fp_hex));
 
   std::vector<byte> data = pkt.data();
 
-  struct ares_tlsa_reply *tlsa = nullptr;
+  struct ares_smimea_reply *smimea = nullptr;
   EXPECT_EQ(ARES_SUCCESS,
-    ares_parse_tlsa_reply(data.data(), data.size(), &tlsa));
-  ASSERT_NE(nullptr, tlsa);
+    ares_parse_smimea_reply(data.data(), data.size(), &smimea));
+  ASSERT_NE(nullptr, smimea);
 
-  ASSERT_EQ(tlsa->usage, 3);
-  ASSERT_EQ(tlsa->selector, 1);
-  ASSERT_EQ(tlsa->matching_type, 1);
-  ASSERT_NE(tlsa->certificate, nullptr);
+  ASSERT_EQ(smimea->usage, 3);
+  ASSERT_EQ(smimea->selector, 1);
+  ASSERT_EQ(smimea->matching_type, 1);
+  ASSERT_NE(smimea->certificate, nullptr);
 
   ASSERT_EQ(
-    ares_tlsa_name_size("www.ietf.org", "tcp", 443),
-    strlen("_443._tcp.www.ietf.org"));
+    ares_smimea_name_size("example.com", "webmaster@example.com"),
+    strlen(smimea_domain));
 
   char enc_name[256];
 
-  ASSERT_NE(ares_tlsa_encode_name(
-    "www.ietf.org.", "tcp", 443, enc_name, 255), 0);
-  ASSERT_EQ(strcmp(enc_name, "_443._tcp.www.ietf.org."), 0);
+  ASSERT_NE(ares_smimea_encode_name(
+    "example.com", "webmaster@example.com", enc_name, 255), 0);
+
+  ASSERT_EQ(strcmp(enc_name, smimea_domain), 0);
 
   std::string cert_hex(
     "3082055130820439a003020102020821302c85a10fd0eb300d06092a"
@@ -106,9 +110,9 @@ TEST_F(LibraryTest, ParseTlsaReplyOK) {
     cert.push_back(chr);
   }
 
-  ASSERT_EQ(ares_tlsa_verify(tlsa, cert.data(), cert.size()), 1);
+  ASSERT_EQ(ares_smimea_verify(smimea, cert.data(), cert.size()), 1);
 
-  ares_free_data(tlsa);
+  ares_free_data(smimea);
 }
 
 }  // namespace test

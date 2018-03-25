@@ -625,6 +625,13 @@ std::vector<byte> DNSSmimeaRR::data() const {
   return data;
 }
 
+std::vector<byte> DNSOpenpgpkeyRR::data() const {
+  std::vector<byte> data = DNSRR::data();
+  PushInt16(&data, pubkey.size());
+  data.insert(data.end(), pubkey.begin(), pubkey.end());
+  return data;
+}
+
 std::vector<byte> DNSPacket::data() const {
   std::vector<byte> data;
   PushInt16(&data, qid_);

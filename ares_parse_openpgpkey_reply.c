@@ -65,7 +65,7 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
   if (alen < HFIXEDSZ)
     return ARES_EBADRESP;
 
-  if (DNS_HEADER_AD(abuf) == 0)
+  if (DNS_HEADER_AD(abuf) != 1)
     return ARES_EINSECURE;
 
   /* Fetch the question and answer count from the header. */
