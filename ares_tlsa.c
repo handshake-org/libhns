@@ -35,6 +35,9 @@ ares_tlsa_encode_name(
   if (size > out_len)
     return 0;
 
+  if (strlen(protocol) > 62)
+    return 0;
+
   port &= 0xffff;
 
   return sprintf(out, "_%u._%s.%s", port, protocol, name);

@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I ../m4
 GMOCK_DIR = gmock-1.8.0
 # Note use of -isystem to force use of local gMock/gTest even if there's an installed version.
-CPPFLAGS += -I$(ARES_SRC_DIR) -isystem $(GMOCK_DIR)
+CPPFLAGS += -I$(ARES_SRC_DIR) -I$(ARES_SRC_DIR)/secp256k1 -isystem $(GMOCK_DIR)
 CXXFLAGS += -Wall $(PTHREAD_CFLAGS)
 
 # Makefile.inc provides the various *SOURCES and *HEADERS defines
