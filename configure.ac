@@ -1111,8 +1111,6 @@ if test x"$use_precomp" = x"yes"; then
     [Define this symbol to use a statically generated ecmult table])
 fi
 
-AC_C_BIGENDIAN()
-
 if test x"$use_external_asm" = x"yes"; then
   AC_DEFINE(USE_EXTERNAL_ASM, 1,
     [Define this symbol if an external assembly implementation is used])

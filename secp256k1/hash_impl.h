@@ -27,7 +27,7 @@
     (h) = t1 + t2; \
 } while(0)
 
-#ifdef WORDS_BIGENDIAN
+#ifdef ARES_BIG_ENDIAN
 #define BE32(x) (x)
 #else
 #define BE32(p) ((((p) & 0xFF) << 24) | (((p) & 0xFF00) << 8) | (((p) & 0xFF0000) >> 8) | (((p) & 0xFF000000) >> 24))
