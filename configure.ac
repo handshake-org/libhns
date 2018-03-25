@@ -919,34 +919,40 @@ AM_PROG_AS
 AC_ARG_ENABLE(endomorphism,
   AS_HELP_STRING(
     [--enable-endomorphism],
-    [Enable endomorphism. Default is yes.)]),
+    [Enable endomorphism. Default is yes.)]
+  ),
   [use_endomorphism=$enableval],
   [use_endomorphism=no])
 
 AC_ARG_ENABLE(ecmult_static_precomputation,
   AS_HELP_STRING(
     [--enable-ecmult-static-precomputation],
-    [Enable precomputed ecmult table for signing. Default is yes.)]),
+    [Enable precomputed ecmult table for signing. Default is yes.)]
+  ),
   [use_precomp=$enableval],
   [use_precomp=yes])
 
 AC_ARG_WITH([field],
   [AS_HELP_STRING(
     [--with-field=64bit|32bit|auto],
-    [Specify Field Implementation. Default is auto.])],
+    [Specify Field Implementation. Default is auto.]
+  )],
   [req_field=$withval],
   [req_field=auto])
 
 AC_ARG_WITH([scalar],
-  [AS_HELP_STRING([
-    --with-scalar=64bit|32bit|auto],
-    [Specify scalar implementation. Default is auto.])],
+  [AS_HELP_STRING(
+    [--with-scalar=64bit|32bit|auto],
+    [Specify scalar implementation. Default is auto.]
+  )],
   [req_scalar=$withval],
   [req_scalar=auto])
 
 AC_ARG_WITH([asm],
-  [AS_HELP_STRING([--with-asm=x86_64|arm|no|auto]
-    [Specify assembly optimizations to use. Default is auto.])],
+  [AS_HELP_STRING(
+    [--with-asm=x86_64|arm|no|auto]
+    [Specify assembly optimizations to use. Default is auto.]
+  )],
   [req_asm=$withval],
   [req_asm=auto])
 
@@ -1118,7 +1124,10 @@ AC_MSG_NOTICE([Using assembly optimizations: $set_asm])
 AC_MSG_NOTICE([Using field implementation: $set_field])
 AC_MSG_NOTICE([Using scalar implementation: $set_scalar])
 
-AM_CONDITIONAL([USE_ECMULT_STATIC_PRECOMPUTATION], [test x"$use_precomp" = x"yes"])
+AM_CONDITIONAL(
+  [USE_ECMULT_STATIC_PRECOMPUTATION],
+  [test x"$use_precomp" = x"yes"])
+
 AM_CONDITIONAL([USE_EXTERNAL_ASM], [test x"$use_external_asm" = x"yes"])
 AM_CONDITIONAL([USE_ASM_ARM], [test x"$set_asm" = x"arm"])
 
