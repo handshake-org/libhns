@@ -29,7 +29,7 @@ ares_sshfp_verify(
   if (sshfp_reply == NULL || key == NULL)
     return 0;
 
-  unsigned char buf[64];
+  unsigned char buf[32];
   unsigned char *hash = NULL;
   size_t hash_len = 0;
 
@@ -41,6 +41,15 @@ ares_sshfp_verify(
       ares_sha1_final(&ctx, &buf[0]);
       hash = &buf[0];
       hash_len = 20;
+      break;
+    }
+    case 2: { /* SHA256 */
+      ares_sha256_ctx ctx;
+      ares_sha256_init(&ctx);
+      ares_sha256_update(&ctx, key, key_len);
+      ares_sha256_final(&ctx, &buf[0]);
+      hash = &buf[0];
+      hash_len = 32;
       break;
     }
   }
