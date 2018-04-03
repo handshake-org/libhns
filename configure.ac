@@ -904,9 +904,9 @@ if test "x$build_tests" = "xyes" ; then
   AC_CONFIG_SUBDIRS([test])
 fi
 
-#
-# Secp256k1
-#
+dnl
+dnl Secp256k1
+dnl
 
 AX_PROG_CC_FOR_BUILD
 AM_PROG_CC_C_O
@@ -1053,7 +1053,6 @@ else
   esac
 fi
 
-# select assembly optimization
 use_external_asm=no
 
 case $set_asm in
@@ -1071,7 +1070,6 @@ case $set_asm in
   ;;
 esac
 
-# select field implementation
 case $set_field in
   64bit)
     AC_DEFINE(USE_FIELD_5X52, 1,
@@ -1129,9 +1127,9 @@ AM_CONDITIONAL(
 AM_CONDITIONAL([USE_EXTERNAL_ASM], [test x"$use_external_asm" = x"yes"])
 AM_CONDITIONAL([USE_ASM_ARM], [test x"$set_asm" = x"arm"])
 
-#
-# /Secp256k1
-#
+dnl
+dnl /Secp256k1
+dnl
 
 AC_CONFIG_FILES([Makefile libcares.pc])
 AC_OUTPUT

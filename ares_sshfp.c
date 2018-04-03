@@ -19,6 +19,7 @@
 #include "ares.h"
 #include "ares_private.h"
 #include "ares_sha1.h"
+#include "ares_sha256.h"
 
 int
 ares_sshfp_verify(

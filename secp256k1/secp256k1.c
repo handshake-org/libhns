@@ -589,11 +589,3 @@ int ares_secp256k1_ec_pubkey_combine(const ares_secp256k1_context* ctx, ares_sec
     ares_secp256k1_pubkey_save(pubnonce, &Q);
     return 1;
 }
-
-#ifdef ENABLE_MODULE_ECDH
-# include "modules/ecdh/main_impl.h"
-#endif
-
-#ifdef ENABLE_MODULE_RECOVERY
-# include "modules/recovery/main_impl.h"
-#endif

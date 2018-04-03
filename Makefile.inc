@@ -96,48 +96,7 @@ HHEADERS = ares.h			\
   bitncmp.h				\
   nameser.h				\
   ares_setup.h				\
-  setup_once.h \
-  secp256k1/scalar.h \
-  secp256k1/scalar_4x64.h \
-  secp256k1/scalar_8x32.h \
-  secp256k1/scalar_low.h \
-  secp256k1/scalar_impl.h \
-  secp256k1/scalar_4x64_impl.h \
-  secp256k1/scalar_8x32_impl.h \
-  secp256k1/scalar_low_impl.h \
-  secp256k1/group.h \
-  secp256k1/group_impl.h \
-  secp256k1/num_gmp.h \
-  secp256k1/num_gmp_impl.h \
-  secp256k1/ecdsa.h \
-  secp256k1/ecdsa_impl.h \
-  secp256k1/eckey.h \
-  secp256k1/eckey_impl.h \
-  secp256k1/ecmult.h \
-  secp256k1/ecmult_impl.h \
-  secp256k1/ecmult_const.h \
-  secp256k1/ecmult_const_impl.h \
-  secp256k1/ecmult_gen.h \
-  secp256k1/ecmult_gen_impl.h \
-  secp256k1/num.h \
-  secp256k1/num_impl.h \
-  secp256k1/field_10x26.h \
-  secp256k1/field_10x26_impl.h \
-  secp256k1/field_5x52.h \
-  secp256k1/field_5x52_impl.h \
-  secp256k1/field_5x52_int128_impl.h \
-  secp256k1/field_5x52_asm_impl.h \
-  secp256k1/util.h \
-  secp256k1/scratch.h \
-  secp256k1/scratch_impl.h \
-  secp256k1/hash.h \
-  secp256k1/hash_impl.h \
-  secp256k1/field.h \
-  secp256k1/secp256k1_ecdh.h \
-  secp256k1/secp256k1_ecdh_impl.h \
-  secp256k1/secp256k1_recovery.h \
-  secp256k1/secp256k1_recovery_impl.h \
-  secp256k1/ecmult_static_context.h
+  setup_once.h
 
 MANPAGES = ares_cancel.3		\
   ares_create_query.3			\
