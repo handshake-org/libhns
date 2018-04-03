@@ -4,16 +4,16 @@
 # File version for 'aclocal' use. Keep it a single number.
 # serial 8
 
-dnl CARES_OVERRIDE_AUTOCONF
+dnl HNS_OVERRIDE_AUTOCONF
 dnl -------------------------------------------------
 dnl Placing a call to this macro in configure.ac after
 dnl the one to AC_INIT will make macros in this file
 dnl visible to the rest of the compilation overriding
 dnl those from Autoconf.
 
-AC_DEFUN([CARES_OVERRIDE_AUTOCONF], [
+AC_DEFUN([HNS_OVERRIDE_AUTOCONF], [
 AC_BEFORE([$0],[AC_PROG_LIBTOOL])
-# using cares-override.m4
+# using hns-override.m4
 ])
 
 dnl Override Autoconf's AC_LANG_PROGRAM (C)

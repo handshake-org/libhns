@@ -1,4 +1,4 @@
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 
 /* only do the following on windows

@@ -17,10 +17,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "ares_blake2b.h"
-#include "ares_blake2b-impl.h"
+#include "hns_blake2b.h"
+#include "hns_blake2b-impl.h"
 
-static const uint64_t ares_blake2b_IV[8] =
+static const uint64_t hns_blake2b_IV[8] =
 {
   0x6a09e667f3bcc908ULL, 0xbb67ae8584caa73bULL,
   0x3c6ef372fe94f82bULL, 0xa54ff53a5f1d36f1ULL,
@@ -28,7 +28,7 @@ static const uint64_t ares_blake2b_IV[8] =
   0x1f83d9abfb41bd6bULL, 0x5be0cd19137e2179ULL
 };
 
-static const uint8_t ares_blake2b_sigma[12][16] =
+static const uint8_t hns_blake2b_sigma[12][16] =
 {
   {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 } ,
   { 14, 10,  4,  8,  9, 15, 13,  6,  1, 12,  0,  2, 11,  7,  5,  3 } ,
@@ -45,45 +45,45 @@ static const uint8_t ares_blake2b_sigma[12][16] =
 };
 
 
-static void ares_blake2b_set_lastnode( ares_blake2b_ctx *S )
+static void hns_blake2b_set_lastnode( hns_blake2b_ctx *S )
 {
   S->f[1] = (uint64_t)-1;
 }
 
 /* Some helper functions, not necessarily useful */
-static int ares_blake2b_is_lastblock( const ares_blake2b_ctx *S )
+static int hns_blake2b_is_lastblock( const hns_blake2b_ctx *S )
 {
   return S->f[0] != 0;
 }
 
-static void ares_blake2b_set_lastblock( ares_blake2b_ctx *S )
+static void hns_blake2b_set_lastblock( hns_blake2b_ctx *S )
 {
-  if( S->last_node ) ares_blake2b_set_lastnode( S );
+  if( S->last_node ) hns_blake2b_set_lastnode( S );
 
   S->f[0] = (uint64_t)-1;
 }
 
-static void ares_blake2b_increment_counter( ares_blake2b_ctx *S, const uint64_t inc )
+static void hns_blake2b_increment_counter( hns_blake2b_ctx *S, const uint64_t inc )
 {
   S->t[0] += inc;
   S->t[1] += ( S->t[0] < inc );
 }
 
-static void ares_blake2b_init0( ares_blake2b_ctx *S )
+static void hns_blake2b_init0( hns_blake2b_ctx *S )
 {
   size_t i;
-  memset( S, 0, sizeof( ares_blake2b_ctx ) );
+  memset( S, 0, sizeof( hns_blake2b_ctx ) );
 
-  for( i = 0; i < 8; ++i ) S->h[i] = ares_blake2b_IV[i];
+  for( i = 0; i < 8; ++i ) S->h[i] = hns_blake2b_IV[i];
 }
 
 /* init xors IV with input parameter block */
-int ares_blake2b_init_param( ares_blake2b_ctx *S, const ares_blake2b_param *P )
+int hns_blake2b_init_param( hns_blake2b_ctx *S, const hns_blake2b_param *P )
 {
   const uint8_t *p = ( const uint8_t * )( P );
   size_t i;
 
-  ares_blake2b_init0( S );
+  hns_blake2b_init0( S );
 
   /* IV XOR ParamBlock */
   for( i = 0; i < 8; ++i )
@@ -95,11 +95,11 @@ int ares_blake2b_init_param( ares_blake2b_ctx *S, const ares_blake2b_param *P )
 
 
 
-int ares_blake2b_init( ares_blake2b_ctx *S, size_t outlen )
+int hns_blake2b_init( hns_blake2b_ctx *S, size_t outlen )
 {
-  ares_blake2b_param P[1];
+  hns_blake2b_param P[1];
 
-  if ( ( !outlen ) || ( outlen > ARES_BLAKE2B_OUTBYTES ) ) return -1;
+  if ( ( !outlen ) || ( outlen > HNS_BLAKE2B_OUTBYTES ) ) return -1;
 
   P->digest_length = (uint8_t)outlen;
   P->key_length    = 0;
@@ -113,17 +113,17 @@ int ares_blake2b_init( ares_blake2b_ctx *S, size_t outlen )
   memset( P->reserved, 0, sizeof( P->reserved ) );
   memset( P->salt,     0, sizeof( P->salt ) );
   memset( P->personal, 0, sizeof( P->personal ) );
-  return ares_blake2b_init_param( S, P );
+  return hns_blake2b_init_param( S, P );
 }
 
 
-int ares_blake2b_init_key( ares_blake2b_ctx *S, size_t outlen, const void *key, size_t keylen )
+int hns_blake2b_init_key( hns_blake2b_ctx *S, size_t outlen, const void *key, size_t keylen )
 {
-  ares_blake2b_param P[1];
+  hns_blake2b_param P[1];
 
-  if ( ( !outlen ) || ( outlen > ARES_BLAKE2B_OUTBYTES ) ) return -1;
+  if ( ( !outlen ) || ( outlen > HNS_BLAKE2B_OUTBYTES ) ) return -1;
 
-  if ( !key || !keylen || keylen > ARES_BLAKE2B_KEYBYTES ) return -1;
+  if ( !key || !keylen || keylen > HNS_BLAKE2B_KEYBYTES ) return -1;
 
   P->digest_length = (uint8_t)outlen;
   P->key_length    = (uint8_t)keylen;
@@ -138,25 +138,25 @@ int ares_blake2b_init_key( ares_blake2b_ctx *S, size_t outlen, const void *key, 
   memset( P->salt,     0, sizeof( P->salt ) );
   memset( P->personal, 0, sizeof( P->personal ) );
 
-  if( ares_blake2b_init_param( S, P ) < 0 ) return -1;
+  if( hns_blake2b_init_param( S, P ) < 0 ) return -1;
 
   {
-    uint8_t block[ARES_BLAKE2B_BLOCKBYTES];
-    memset( block, 0, ARES_BLAKE2B_BLOCKBYTES );
+    uint8_t block[HNS_BLAKE2B_BLOCKBYTES];
+    memset( block, 0, HNS_BLAKE2B_BLOCKBYTES );
     memcpy( block, key, keylen );
-    ares_blake2b_update( S, block, ARES_BLAKE2B_BLOCKBYTES );
-    secure_zero_memory( block, ARES_BLAKE2B_BLOCKBYTES ); /* Burn the key from stack */
+    hns_blake2b_update( S, block, HNS_BLAKE2B_BLOCKBYTES );
+    secure_zero_memory( block, HNS_BLAKE2B_BLOCKBYTES ); /* Burn the key from stack */
   }
   return 0;
 }
 
 #define G(r,i,a,b,c,d)                      \
   do {                                      \
-    a = a + b + m[ares_blake2b_sigma[r][2*i+0]]; \
+    a = a + b + m[hns_blake2b_sigma[r][2*i+0]]; \
     d = rotr64(d ^ a, 32);                  \
     c = c + d;                              \
     b = rotr64(b ^ c, 24);                  \
-    a = a + b + m[ares_blake2b_sigma[r][2*i+1]]; \
+    a = a + b + m[hns_blake2b_sigma[r][2*i+1]]; \
     d = rotr64(d ^ a, 16);                  \
     c = c + d;                              \
     b = rotr64(b ^ c, 63);                  \
@@ -174,7 +174,7 @@ int ares_blake2b_init_key( ares_blake2b_ctx *S, size_t outlen, const void *key, 
     G(r,7,v[ 3],v[ 4],v[ 9],v[14]); \
   } while(0)
 
-static void ares_blake2b_compress( ares_blake2b_ctx *S, const uint8_t block[ARES_BLAKE2B_BLOCKBYTES] )
+static void hns_blake2b_compress( hns_blake2b_ctx *S, const uint8_t block[HNS_BLAKE2B_BLOCKBYTES] )
 {
   uint64_t m[16];
   uint64_t v[16];
@@ -188,14 +188,14 @@ static void ares_blake2b_compress( ares_blake2b_ctx *S, const uint8_t block[ARES
     v[i] = S->h[i];
   }
 
-  v[ 8] = ares_blake2b_IV[0];
-  v[ 9] = ares_blake2b_IV[1];
-  v[10] = ares_blake2b_IV[2];
-  v[11] = ares_blake2b_IV[3];
-  v[12] = ares_blake2b_IV[4] ^ S->t[0];
-  v[13] = ares_blake2b_IV[5] ^ S->t[1];
-  v[14] = ares_blake2b_IV[6] ^ S->f[0];
-  v[15] = ares_blake2b_IV[7] ^ S->f[1];
+  v[ 8] = hns_blake2b_IV[0];
+  v[ 9] = hns_blake2b_IV[1];
+  v[10] = hns_blake2b_IV[2];
+  v[11] = hns_blake2b_IV[3];
+  v[12] = hns_blake2b_IV[4] ^ S->t[0];
+  v[13] = hns_blake2b_IV[5] ^ S->t[1];
+  v[14] = hns_blake2b_IV[6] ^ S->f[0];
+  v[15] = hns_blake2b_IV[7] ^ S->f[1];
 
   ROUND( 0 );
   ROUND( 1 );
@@ -218,25 +218,25 @@ static void ares_blake2b_compress( ares_blake2b_ctx *S, const uint8_t block[ARES
 #undef G
 #undef ROUND
 
-int ares_blake2b_update( ares_blake2b_ctx *S, const void *pin, size_t inlen )
+int hns_blake2b_update( hns_blake2b_ctx *S, const void *pin, size_t inlen )
 {
   const unsigned char * in = (const unsigned char *)pin;
   if( inlen > 0 )
   {
     size_t left = S->buflen;
-    size_t fill = ARES_BLAKE2B_BLOCKBYTES - left;
+    size_t fill = HNS_BLAKE2B_BLOCKBYTES - left;
     if( inlen > fill )
     {
       S->buflen = 0;
       memcpy( S->buf + left, in, fill ); /* Fill buffer */
-      ares_blake2b_increment_counter( S, ARES_BLAKE2B_BLOCKBYTES );
-      ares_blake2b_compress( S, S->buf ); /* Compress */
+      hns_blake2b_increment_counter( S, HNS_BLAKE2B_BLOCKBYTES );
+      hns_blake2b_compress( S, S->buf ); /* Compress */
       in += fill; inlen -= fill;
-      while(inlen > ARES_BLAKE2B_BLOCKBYTES) {
-        ares_blake2b_increment_counter(S, ARES_BLAKE2B_BLOCKBYTES);
-        ares_blake2b_compress( S, in );
-        in += ARES_BLAKE2B_BLOCKBYTES;
-        inlen -= ARES_BLAKE2B_BLOCKBYTES;
+      while(inlen > HNS_BLAKE2B_BLOCKBYTES) {
+        hns_blake2b_increment_counter(S, HNS_BLAKE2B_BLOCKBYTES);
+        hns_blake2b_compress( S, in );
+        in += HNS_BLAKE2B_BLOCKBYTES;
+        inlen -= HNS_BLAKE2B_BLOCKBYTES;
       }
     }
     memcpy( S->buf + S->buflen, in, inlen );
@@ -245,21 +245,21 @@ int ares_blake2b_update( ares_blake2b_ctx *S, const void *pin, size_t inlen )
   return 0;
 }
 
-int ares_blake2b_final( ares_blake2b_ctx *S, void *out, size_t outlen )
+int hns_blake2b_final( hns_blake2b_ctx *S, void *out, size_t outlen )
 {
-  uint8_t buffer[ARES_BLAKE2B_OUTBYTES] = {0};
+  uint8_t buffer[HNS_BLAKE2B_OUTBYTES] = {0};
   size_t i;
 
   if( out == NULL || outlen < S->outlen )
     return -1;
 
-  if( ares_blake2b_is_lastblock( S ) )
+  if( hns_blake2b_is_lastblock( S ) )
     return -1;
 
-  ares_blake2b_increment_counter( S, S->buflen );
-  ares_blake2b_set_lastblock( S );
-  memset( S->buf + S->buflen, 0, ARES_BLAKE2B_BLOCKBYTES - S->buflen ); /* Padding */
-  ares_blake2b_compress( S, S->buf );
+  hns_blake2b_increment_counter( S, S->buflen );
+  hns_blake2b_set_lastblock( S );
+  memset( S->buf + S->buflen, 0, HNS_BLAKE2B_BLOCKBYTES - S->buflen ); /* Padding */
+  hns_blake2b_compress( S, S->buf );
 
   for( i = 0; i < 8; ++i ) /* Output full hash to temp buffer */
     store64( buffer + sizeof( S->h[i] ) * i, S->h[i] );
@@ -270,9 +270,9 @@ int ares_blake2b_final( ares_blake2b_ctx *S, void *out, size_t outlen )
 }
 
 /* inlen, at least, should be uint64_t. Others can be size_t. */
-int ares_blake2b( void *out, size_t outlen, const void *in, size_t inlen, const void *key, size_t keylen )
+int hns_blake2b( void *out, size_t outlen, const void *in, size_t inlen, const void *key, size_t keylen )
 {
-  ares_blake2b_ctx S[1];
+  hns_blake2b_ctx S[1];
 
   /* Verify parameters */
   if ( NULL == in && inlen > 0 ) return -1;
@@ -281,20 +281,20 @@ int ares_blake2b( void *out, size_t outlen, const void *in, size_t inlen, const 
 
   if( NULL == key && keylen > 0 ) return -1;
 
-  if( !outlen || outlen > ARES_BLAKE2B_OUTBYTES ) return -1;
+  if( !outlen || outlen > HNS_BLAKE2B_OUTBYTES ) return -1;
 
-  if( keylen > ARES_BLAKE2B_KEYBYTES ) return -1;
+  if( keylen > HNS_BLAKE2B_KEYBYTES ) return -1;
 
   if( keylen > 0 )
   {
-    if( ares_blake2b_init_key( S, outlen, key, keylen ) < 0 ) return -1;
+    if( hns_blake2b_init_key( S, outlen, key, keylen ) < 0 ) return -1;
   }
   else
   {
-    if( ares_blake2b_init( S, outlen ) < 0 ) return -1;
+    if( hns_blake2b_init( S, outlen ) < 0 ) return -1;
   }
 
-  ares_blake2b_update( S, ( const uint8_t * )in, inlen );
-  ares_blake2b_final( S, out, outlen );
+  hns_blake2b_update( S, ( const uint8_t * )in, inlen );
+  hns_blake2b_final( S, out, outlen );
   return 0;
 }

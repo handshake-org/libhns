@@ -1,5 +1,5 @@
 /*
- * Original file name getopt.c  Initial import into the c-ares source tree
+ * Original file name getopt.c  Initial import into the hns source tree
  * on 2007-04-11.  Lifted from version 5.2 of the 'Open Mash' project with
  * the modified BSD license, BSD license without the advertising clause.
  *
@@ -46,7 +46,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ares_getopt.h"
+#include "hns_getopt.h"
 
 int   opterr = 1,     /* if error message should be printed */
       optind = 1;     /* index into parent argv vector */
@@ -59,11 +59,11 @@ char  *optarg;        /* argument associated with option */
 #define  EMSG    (char *)""
 
 /*
- * ares_getopt --
+ * hns_getopt --
  *    Parse argc/argv argument vector.
  */
 int
-ares_getopt(int nargc, char * const nargv[], const char *ostr)
+hns_getopt(int nargc, char * const nargv[], const char *ostr)
 {
     static char *place = EMSG;                /* option letter processing */
     char *oli;                                /* option letter list index */

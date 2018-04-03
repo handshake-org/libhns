@@ -11,7 +11,7 @@
 
 #include "dns-proto.h"
 
-namespace ares {
+namespace hns {
 
 static void ShowFile(const char* filename) {
   int fd = open(filename, O_RDONLY);
@@ -29,11 +29,11 @@ static void ShowFile(const char* filename) {
   std::cout << PacketToString(contents) << std::endl;
 }
 
-}  // namespace ares
+}  // namespace hns
 
 int main(int argc, char* argv[]) {
   for (int ii = 1; ii < argc; ++ii) {
-    ares::ShowFile(argv[ii]);
+    hns::ShowFile(argv[ii]);
   }
   return 0;
 }

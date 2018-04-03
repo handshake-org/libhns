@@ -13,17 +13,17 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_SET_LOCAL_DEV 3 "30 June 2010"
+.TH HNS_SET_LOCAL_DEV 3 "30 June 2010"
 .SH NAME
-ares_set_local_dev \- Bind to a specific network device when creating sockets.
+hns_set_local_dev \- Bind to a specific network device when creating sockets.
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B void ares_set_local_dev(ares_channel \fIchannel\fP, const char* \fIlocal_dev_name\fP)
+.B void hns_set_local_dev(hns_channel \fIchannel\fP, const char* \fIlocal_dev_name\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_set_local_dev\fP function causes all future sockets
+The \fBhns_set_local_dev\fP function causes all future sockets
 to be bound to this device with SO_BINDTODEVICE.  This forces communications
 to go over a certain interface, which can be useful on multi-homed machines.
 This option is only supported on Linux, and root privileges are required
@@ -31,9 +31,9 @@ for the option to work.  If SO_BINDTODEVICE is not supported or the
 setsocktop call fails (probably because of permissions), the error is
 silently ignored.
 .SH SEE ALSO
-.BR ares_set_local_ip4 (3)
-.BR ares_set_local_ip6 (3)
+.BR hns_set_local_ip4 (3)
+.BR hns_set_local_ip6 (3)
 .SH NOTES
-This function was added in c-ares 1.7.4
+This function was added in hns 1.7.4
 .SH AUTHOR
 Ben Greear

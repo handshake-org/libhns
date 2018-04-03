@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ares.h"
-// Include ares internal file for DNS protocol constants
+#include "hns.h"
+// Include hns internal file for DNS protocol constants
 #include "nameser.h"
 
 // Entrypoint for Clang's libfuzzer, exercising query creation.
@@ -16,7 +16,7 @@ int LLVMFuzzerTestOneInput(const unsigned char *data,
 
   unsigned char *buf = NULL;
   int buflen = 0;
-  ares_create_query(name, ns_c_in, ns_t_aaaa, 1234, 0, &buf, &buflen, 1024);
+  hns_create_query(name, ns_c_in, ns_t_aaaa, 1234, 0, &buf, &buflen, 1024);
   free(buf);
   free(name);
   return 0;

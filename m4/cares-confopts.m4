@@ -18,14 +18,14 @@
 # serial 11
 
 
-dnl CARES_CHECK_OPTION_CURLDEBUG
+dnl HNS_CHECK_OPTION_CURLDEBUG
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-curldebug or --disable-curldebug, and set
 dnl shell variable want_curldebug value as appropriate.
 
-AC_DEFUN([CARES_CHECK_OPTION_CURLDEBUG], [
-  AC_BEFORE([$0],[CARES_CHECK_CURLDEBUG])dnl
+AC_DEFUN([HNS_CHECK_OPTION_CURLDEBUG], [
+  AC_BEFORE([$0],[HNS_CHECK_CURLDEBUG])dnl
   AC_MSG_CHECKING([whether to enable curl debug memory tracking])
   OPT_CURLDEBUG_BUILD="default"
   AC_ARG_ENABLE(curldebug,
@@ -44,7 +44,7 @@ AC_HELP_STRING([--disable-curldebug],[Disable curl debug memory tracking]),
     *)
       dnl --enable-curldebug option used.
       dnl The use of this option value is a request to enable curl's
-      dnl debug memory tracking for the c-ares library. This is a big
+      dnl debug memory tracking for the hns library. This is a big
       dnl hack that can only be done when a whole bunch of requisites
       dnl are simultaneously satisfied. Later on, these requisites are
       dnl verified and if they are not fully satisfied the option will
@@ -57,15 +57,15 @@ AC_HELP_STRING([--disable-curldebug],[Disable curl debug memory tracking]),
 ])
 
 
-dnl CARES_CHECK_OPTION_DEBUG
+dnl HNS_CHECK_OPTION_DEBUG
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-debug or --disable-debug, and set shell
 dnl variable want_debug value as appropriate.
 
-AC_DEFUN([CARES_CHECK_OPTION_DEBUG], [
-  AC_BEFORE([$0],[CARES_CHECK_OPTION_WARNINGS])dnl
-  AC_BEFORE([$0],[CARES_CHECK_OPTION_CURLDEBUG])dnl
+AC_DEFUN([HNS_CHECK_OPTION_DEBUG], [
+  AC_BEFORE([$0],[HNS_CHECK_OPTION_WARNINGS])dnl
+  AC_BEFORE([$0],[HNS_CHECK_OPTION_CURLDEBUG])dnl
   AC_BEFORE([$0],[XC_CHECK_PROG_CC])dnl
   AC_MSG_CHECKING([whether to enable debug build options])
   OPT_DEBUG_BUILD="default"
@@ -91,14 +91,14 @@ AC_HELP_STRING([--disable-debug],[Disable debug build options]),
 ])
 
 
-dnl CARES_CHECK_OPTION_NONBLOCKING
+dnl HNS_CHECK_OPTION_NONBLOCKING
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-nonblocking or --disable-nonblocking, and
 dnl set shell variable want_nonblocking as appropriate.
 
-AC_DEFUN([CARES_CHECK_OPTION_NONBLOCKING], [
-  AC_BEFORE([$0],[CARES_CHECK_NONBLOCKING_SOCKET])dnl
+AC_DEFUN([HNS_CHECK_OPTION_NONBLOCKING], [
+  AC_BEFORE([$0],[HNS_CHECK_NONBLOCKING_SOCKET])dnl
   AC_MSG_CHECKING([whether to enable non-blocking communications])
   OPT_NONBLOCKING="default"
   AC_ARG_ENABLE(nonblocking,
@@ -123,14 +123,14 @@ AC_HELP_STRING([--disable-nonblocking],[Disable non-blocking communications]),
 ])
 
 
-dnl CARES_CHECK_OPTION_OPTIMIZE
+dnl HNS_CHECK_OPTION_OPTIMIZE
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-optimize or --disable-optimize, and set
 dnl shell variable want_optimize value as appropriate.
 
-AC_DEFUN([CARES_CHECK_OPTION_OPTIMIZE], [
-  AC_REQUIRE([CARES_CHECK_OPTION_DEBUG])dnl
+AC_DEFUN([HNS_CHECK_OPTION_OPTIMIZE], [
+  AC_REQUIRE([HNS_CHECK_OPTION_DEBUG])dnl
   AC_BEFORE([$0],[XC_CHECK_PROG_CC])dnl
   AC_MSG_CHECKING([whether to enable compiler optimizer])
   OPT_COMPILER_OPTIMIZE="default"
@@ -179,14 +179,14 @@ AC_HELP_STRING([--disable-optimize],[Disable compiler optimizations]),
 ])
 
 
-dnl CARES_CHECK_OPTION_SYMBOL_HIDING
+dnl HNS_CHECK_OPTION_SYMBOL_HIDING
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-symbol-hiding or --disable-symbol-hiding,
 dnl setting shell variable want_symbol_hiding value.
 
-AC_DEFUN([CARES_CHECK_OPTION_SYMBOL_HIDING], [
-  AC_BEFORE([$0],[CARES_CHECK_COMPILER_SYMBOL_HIDING])dnl
+AC_DEFUN([HNS_CHECK_OPTION_SYMBOL_HIDING], [
+  AC_BEFORE([$0],[HNS_CHECK_COMPILER_SYMBOL_HIDING])dnl
   AC_MSG_CHECKING([whether to enable hiding of library internal symbols])
   OPT_SYMBOL_HIDING="default"
   AC_ARG_ENABLE(symbol-hiding,
@@ -219,13 +219,13 @@ AC_HELP_STRING([--disable-symbol-hiding],[Disable hiding of library internal sym
 ])
 
 
-dnl CARES_CHECK_OPTION_EXPOSE_STATICS
+dnl HNS_CHECK_OPTION_EXPOSE_STATICS
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-expose-statics or --disable-expose-statics,
 dnl setting shell variable want_expose_statics value.
 
-AC_DEFUN([CARES_CHECK_OPTION_EXPOSE_STATICS], [
+AC_DEFUN([HNS_CHECK_OPTION_EXPOSE_STATICS], [
   AC_MSG_CHECKING([whether to expose internal static functions for testing])
   OPT_EXPOSE_STATICS="default"
   AC_ARG_ENABLE(expose-statics,
@@ -251,21 +251,21 @@ AC_HELP_STRING([--disable-expose-statics],[Disable exposure of internal static f
       ;;
   esac
   if test "$want_expose_statics" = "yes"; then
-    AC_DEFINE_UNQUOTED(CARES_EXPOSE_STATICS, 1,
+    AC_DEFINE_UNQUOTED(HNS_EXPOSE_STATICS, 1,
       [Defined for build that exposes internal static functions for testing.])
   fi
 ])
 
 
-dnl CARES_CHECK_OPTION_WARNINGS
+dnl HNS_CHECK_OPTION_WARNINGS
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-warnings or --disable-warnings, and set
 dnl shell variable want_warnings as appropriate.
 
-AC_DEFUN([CARES_CHECK_OPTION_WARNINGS], [
-  AC_REQUIRE([CARES_CHECK_OPTION_DEBUG])dnl
-  AC_BEFORE([$0],[CARES_CHECK_OPTION_WERROR])dnl
+AC_DEFUN([HNS_CHECK_OPTION_WARNINGS], [
+  AC_REQUIRE([HNS_CHECK_OPTION_DEBUG])dnl
+  AC_BEFORE([$0],[HNS_CHECK_OPTION_WERROR])dnl
   AC_BEFORE([$0],[XC_CHECK_PROG_CC])dnl
   AC_MSG_CHECKING([whether to enable strict compiler warnings])
   OPT_COMPILER_WARNINGS="default"
@@ -291,14 +291,14 @@ AC_HELP_STRING([--disable-warnings],[Disable strict compiler warnings]),
   AC_MSG_RESULT([$want_warnings])
 ])
 
-dnl CARES_CHECK_OPTION_WERROR
+dnl HNS_CHECK_OPTION_WERROR
 dnl -------------------------------------------------
 dnl Verify if configure has been invoked with option
 dnl --enable-werror or --disable-werror, and set
 dnl shell variable want_werror as appropriate.
 
-AC_DEFUN([CARES_CHECK_OPTION_WERROR], [
-  AC_BEFORE([$0],[CARES_CHECK_COMPILER])dnl
+AC_DEFUN([HNS_CHECK_OPTION_WERROR], [
+  AC_BEFORE([$0],[HNS_CHECK_COMPILER])dnl
   AC_MSG_CHECKING([whether to enable compiler warnings as errors])
   OPT_COMPILER_WERROR="default"
   AC_ARG_ENABLE(werror,
@@ -323,17 +323,17 @@ AC_HELP_STRING([--disable-werror],[Disable compiler warnings as errors]),
 ])
 
 
-dnl CARES_CHECK_NONBLOCKING_SOCKET
+dnl HNS_CHECK_NONBLOCKING_SOCKET
 dnl -------------------------------------------------
 dnl Check for how to set a socket into non-blocking state.
 
-AC_DEFUN([CARES_CHECK_NONBLOCKING_SOCKET], [
-  AC_REQUIRE([CARES_CHECK_OPTION_NONBLOCKING])dnl
-  AC_REQUIRE([CARES_CHECK_FUNC_FCNTL])dnl
-  AC_REQUIRE([CARES_CHECK_FUNC_IOCTL])dnl
-  AC_REQUIRE([CARES_CHECK_FUNC_IOCTLSOCKET])dnl
-  AC_REQUIRE([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL])dnl
-  AC_REQUIRE([CARES_CHECK_FUNC_SETSOCKOPT])dnl
+AC_DEFUN([HNS_CHECK_NONBLOCKING_SOCKET], [
+  AC_REQUIRE([HNS_CHECK_OPTION_NONBLOCKING])dnl
+  AC_REQUIRE([HNS_CHECK_FUNC_FCNTL])dnl
+  AC_REQUIRE([HNS_CHECK_FUNC_IOCTL])dnl
+  AC_REQUIRE([HNS_CHECK_FUNC_IOCTLSOCKET])dnl
+  AC_REQUIRE([HNS_CHECK_FUNC_IOCTLSOCKET_CAMEL])dnl
+  AC_REQUIRE([HNS_CHECK_FUNC_SETSOCKOPT])dnl
   #
   tst_method="unknown"
   if test "$want_nonblocking" = "yes"; then
@@ -362,7 +362,7 @@ AC_DEFUN([CARES_CHECK_NONBLOCKING_SOCKET], [
 ])
 
 
-dnl CARES_CONFIGURE_SYMBOL_HIDING
+dnl HNS_CONFIGURE_SYMBOL_HIDING
 dnl -------------------------------------------------
 dnl Depending on --enable-symbol-hiding or --disable-symbol-hiding
 dnl configure option, and compiler capability to actually honor such
@@ -371,25 +371,25 @@ dnl provide needed definitions for configuration and Makefile.am files.
 dnl This macro should not be used until all compilation tests have
 dnl been done to prevent interferences on other tests.
 
-AC_DEFUN([CARES_CONFIGURE_SYMBOL_HIDING], [
+AC_DEFUN([HNS_CONFIGURE_SYMBOL_HIDING], [
   AC_MSG_CHECKING([whether hiding of library internal symbols will actually happen])
-  CFLAG_CARES_SYMBOL_HIDING=""
+  CFLAG_HNS_SYMBOL_HIDING=""
   doing_symbol_hiding="no"
   if test x"$ac_cv_native_windows" != "xyes" &&
     test "$want_symbol_hiding" = "yes" &&
     test "$supports_symbol_hiding" = "yes"; then
     doing_symbol_hiding="yes"
-    CFLAG_CARES_SYMBOL_HIDING="$symbol_hiding_CFLAGS"
-    AC_DEFINE_UNQUOTED(CARES_SYMBOL_SCOPE_EXTERN, $symbol_hiding_EXTERN,
+    CFLAG_HNS_SYMBOL_HIDING="$symbol_hiding_CFLAGS"
+    AC_DEFINE_UNQUOTED(HNS_SYMBOL_SCOPE_EXTERN, $symbol_hiding_EXTERN,
       [Definition to make a library symbol externally visible.])
     AC_MSG_RESULT([yes])
   else
     AC_MSG_RESULT([no])
   fi
-  AM_CONDITIONAL(DOING_CARES_SYMBOL_HIDING, test x$doing_symbol_hiding = xyes)
-  AC_SUBST(CFLAG_CARES_SYMBOL_HIDING)
+  AM_CONDITIONAL(DOING_HNS_SYMBOL_HIDING, test x$doing_symbol_hiding = xyes)
+  AC_SUBST(CFLAG_HNS_SYMBOL_HIDING)
   if test "$doing_symbol_hiding" = "yes"; then
-    AC_DEFINE_UNQUOTED(CARES_SYMBOL_HIDING, 1,
+    AC_DEFINE_UNQUOTED(HNS_SYMBOL_HIDING, 1,
       [Defined for build with symbol hiding.])
   fi
 ])

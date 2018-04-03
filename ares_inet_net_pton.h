@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_INET_NET_PTON_H
-#define HEADER_CARES_INET_NET_PTON_H
+#ifndef HEADER_HNS_INET_NET_PTON_H
+#define HEADER_HNS_INET_NET_PTON_H
 
 /* Copyright (C) 2005-2013 by Daniel Stenberg et al
  *
@@ -17,9 +17,9 @@
  */
 
 #ifdef HAVE_INET_NET_PTON
-#define ares_inet_net_pton(w,x,y,z) inet_net_pton(w,x,y,z)
+#define hns_inet_net_pton(w,x,y,z) inet_net_pton(w,x,y,z)
 #else
-int ares_inet_net_pton(int af, const char *src, void *dst, size_t size);
+int hns_inet_net_pton(int af, const char *src, void *dst, size_t size);
 #endif
 
-#endif /* HEADER_CARES_INET_NET_PTON_H */
+#endif /* HEADER_HNS_INET_NET_PTON_H */

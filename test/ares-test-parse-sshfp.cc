@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseSshfpReplyOK) {
@@ -22,9 +22,9 @@ TEST_F(LibraryTest, ParseSshfpReplyOK) {
 
   std::vector<byte> data = pkt.data();
 
-  struct ares_sshfp_reply *sshfp = nullptr;
-  EXPECT_EQ(ARES_SUCCESS,
-    ares_parse_sshfp_reply(data.data(), data.size(), &sshfp));
+  struct hns_sshfp_reply *sshfp = nullptr;
+  EXPECT_EQ(HNS_SUCCESS,
+    hns_parse_sshfp_reply(data.data(), data.size(), &sshfp));
   ASSERT_NE(nullptr, sshfp);
 
   ASSERT_EQ(sshfp->algorithm, 1);
@@ -44,10 +44,10 @@ TEST_F(LibraryTest, ParseSshfpReplyOK) {
     key.push_back(chr);
   }
 
-  ASSERT_EQ(ares_sshfp_verify(sshfp, key.data(), key.size()), 1);
+  ASSERT_EQ(hns_sshfp_verify(sshfp, key.data(), key.size()), 1);
 
-  ares_free_data(sshfp);
+  hns_free_data(sshfp);
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

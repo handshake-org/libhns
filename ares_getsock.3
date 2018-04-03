@@ -13,19 +13,19 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_GETSOCK 3 "11 March 2010"
+.TH HNS_GETSOCK 3 "11 March 2010"
 .SH NAME
-ares_getsock \- get socket descriptors to wait on
+hns_getsock \- get socket descriptors to wait on
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_getsock(ares_channel \fIchannel\fP, ares_socket_t *\fIsocks\fP,
+.B int hns_getsock(hns_channel \fIchannel\fP, hns_socket_t *\fIsocks\fP,
 .B int \fInumsocks\fP);
 .fi
 .SH DESCRIPTION
 The
-.B ares_getsock
+.B hns_getsock
 function retrieves the set of socket descriptors which the calling
 application should wait on for reading and/or writing for the
 processing of name service queries pending on the name service channel
@@ -38,20 +38,20 @@ Socket descriptors will be set in the socket descriptor array pointed to by
 This function can only return information about up to 16 sockets. If more are
 in use (however unlikely that is), they are simply not reported back.
 .SH RETURN VALUES
-\fBares_getsock\fP returns a bitmask for what actions to wait for on the
-different sockets. The ares.h header file provides these convenience macros to
+\fBhns_getsock\fP returns a bitmask for what actions to wait for on the
+different sockets. The hns.h header file provides these convenience macros to
 extract the information appropriately:
 
 .nf
-#define ARES_GETSOCK_MAXNUM 16 /* ares_getsock() can return info about
+#define HNS_GETSOCK_MAXNUM 16 /* hns_getsock() can return info about
                                   this many sockets */
-#define ARES_GETSOCK_READABLE(bits,num) (bits & (1<< (num)))
-#define ARES_GETSOCK_WRITABLE(bits,num) (bits & (1 << ((num) + \
-                                         ARES_GETSOCK_MAXNUM)))
+#define HNS_GETSOCK_READABLE(bits,num) (bits & (1<< (num)))
+#define HNS_GETSOCK_WRITABLE(bits,num) (bits & (1 << ((num) + \
+                                         HNS_GETSOCK_MAXNUM)))
 .fi
 .SH NOTES
-This function was added in c-ares 1.3.1
+This function was added in hns 1.3.1
 .SH SEE ALSO
-.BR ares_timeout (3),
-.BR ares_fds (3),
-.BR ares_process (3)
+.BR hns_timeout (3),
+.BR hns_fds (3),
+.BR hns_process (3)

@@ -15,35 +15,35 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
-#include "ares.h"
-#include "ares_library_init.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_library_init.h"
+#include "hns_private.h"
 
 /* library-private global and unique instance vars */
 
 #ifdef USE_WINSOCK
-fpGetNetworkParams_t ares_fpGetNetworkParams = ZERO_NULL;
-fpSystemFunction036_t ares_fpSystemFunction036 = ZERO_NULL;
-fpGetAdaptersAddresses_t ares_fpGetAdaptersAddresses = ZERO_NULL;
-fpGetBestRoute2_t ares_fpGetBestRoute2 = ZERO_NULL;
+fpGetNetworkParams_t hns_fpGetNetworkParams = ZERO_NULL;
+fpSystemFunction036_t hns_fpSystemFunction036 = ZERO_NULL;
+fpGetAdaptersAddresses_t hns_fpGetAdaptersAddresses = ZERO_NULL;
+fpGetBestRoute2_t hns_fpGetBestRoute2 = ZERO_NULL;
 #endif
 
 #if defined(ANDROID) || defined(__ANDROID__)
-#include "ares_android.h"
+#include "hns_android.h"
 #endif
 
 /* library-private global vars with source visibility restricted to this file */
 
-static unsigned int ares_initialized;
-static int          ares_init_flags;
+static unsigned int hns_initialized;
+static int          hns_init_flags;
 
 /* library-private global vars with visibility across the whole library */
-void *(*ares_malloc)(size_t size) = malloc;
-void *(*ares_realloc)(void *ptr, size_t size) = realloc;
-void (*ares_free)(void *ptr) = free;
-ares_ec_t *ares_ec = NULL;
+void *(*hns_malloc)(size_t size) = malloc;
+void *(*hns_realloc)(void *ptr, size_t size) = realloc;
+void (*hns_free)(void *ptr) = free;
+hns_ec_t *hns_ec = NULL;
 
 #ifdef USE_WINSOCK
 static HMODULE hnd_iphlpapi;
@@ -51,35 +51,35 @@ static HMODULE hnd_advapi32;
 #endif
 
 
-static int ares_win32_init(void)
+static int hns_win32_init(void)
 {
 #ifdef USE_WINSOCK
 
   hnd_iphlpapi = 0;
   hnd_iphlpapi = LoadLibraryW(L"iphlpapi.dll");
   if (!hnd_iphlpapi)
-    return ARES_ELOADIPHLPAPI;
+    return HNS_ELOADIPHLPAPI;
 
-  ares_fpGetNetworkParams = (fpGetNetworkParams_t)
+  hns_fpGetNetworkParams = (fpGetNetworkParams_t)
     GetProcAddress(hnd_iphlpapi, "GetNetworkParams");
-  if (!ares_fpGetNetworkParams)
+  if (!hns_fpGetNetworkParams)
     {
       FreeLibrary(hnd_iphlpapi);
-      return ARES_EADDRGETNETWORKPARAMS;
+      return HNS_EADDRGETNETWORKPARAMS;
     }
 
-  ares_fpGetAdaptersAddresses = (fpGetAdaptersAddresses_t)
+  hns_fpGetAdaptersAddresses = (fpGetAdaptersAddresses_t)
     GetProcAddress(hnd_iphlpapi, "GetAdaptersAddresses");
-  if (!ares_fpGetAdaptersAddresses)
+  if (!hns_fpGetAdaptersAddresses)
     {
       /* This can happen on clients before WinXP, I don't
          think it should be an error, unless we don't want to
          support Windows 2000 anymore */
     }
 
-  ares_fpGetBestRoute2 = (fpGetBestRoute2_t)
+  hns_fpGetBestRoute2 = (fpGetBestRoute2_t)
     GetProcAddress(hnd_iphlpapi, "GetBestRoute2");
-  if (!ares_fpGetBestRoute2)
+  if (!hns_fpGetBestRoute2)
     {
       /* This can happen on clients before Vista, I don't
          think it should be an error, unless we don't want to
@@ -89,23 +89,23 @@ static int ares_win32_init(void)
   /*
    * When advapi32.dll is unavailable or advapi32.dll has no SystemFunction036,
    * also known as RtlGenRandom, which is the case for Windows versions prior
-   * to WinXP then c-ares uses portable rand() function. Then don't error here.
+   * to WinXP then hns uses portable rand() function. Then don't error here.
    */
 
   hnd_advapi32 = 0;
   hnd_advapi32 = LoadLibraryW(L"advapi32.dll");
   if (hnd_advapi32)
     {
-      ares_fpSystemFunction036 = (fpSystemFunction036_t)
+      hns_fpSystemFunction036 = (fpSystemFunction036_t)
         GetProcAddress(hnd_advapi32, "SystemFunction036");
     }
 
 #endif
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
 
-static void ares_win32_cleanup(void)
+static void hns_win32_cleanup(void)
 {
 #ifdef USE_WINSOCK
   if (hnd_advapi32)
@@ -116,74 +116,74 @@ static void ares_win32_cleanup(void)
 }
 
 
-int ares_library_init(int flags)
+int hns_library_init(int flags)
 {
   int res;
 
-  if (ares_initialized)
+  if (hns_initialized)
     {
-      ares_initialized++;
-      return ARES_SUCCESS;
+      hns_initialized++;
+      return HNS_SUCCESS;
     }
-  ares_initialized++;
+  hns_initialized++;
 
-  if (flags & ARES_LIB_INIT_WIN32)
+  if (flags & HNS_LIB_INIT_WIN32)
     {
-      res = ares_win32_init();
-      if (res != ARES_SUCCESS)
+      res = hns_win32_init();
+      if (res != HNS_SUCCESS)
         return res;  /* LCOV_EXCL_LINE: can't test Win32 init failure */
     }
 
-  ares_ec = ares_ec_alloc();
-  ares_init_flags = flags;
+  hns_ec = hns_ec_alloc();
+  hns_init_flags = flags;
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-int ares_library_init_mem(int flags,
+int hns_library_init_mem(int flags,
                           void *(*amalloc)(size_t size),
                           void (*afree)(void *ptr),
                           void *(*arealloc)(void *ptr, size_t size))
 {
   if (amalloc)
-    ares_malloc = amalloc;
+    hns_malloc = amalloc;
   if (arealloc)
-    ares_realloc = arealloc;
+    hns_realloc = arealloc;
   if (afree)
-    ares_free = afree;
-  return ares_library_init(flags);
+    hns_free = afree;
+  return hns_library_init(flags);
 }
 
 
-void ares_library_cleanup(void)
+void hns_library_cleanup(void)
 {
-  if (!ares_initialized)
+  if (!hns_initialized)
     return;
-  ares_initialized--;
-  if (ares_initialized)
+  hns_initialized--;
+  if (hns_initialized)
     return;
 
-  if (ares_init_flags & ARES_LIB_INIT_WIN32)
-    ares_win32_cleanup();
+  if (hns_init_flags & HNS_LIB_INIT_WIN32)
+    hns_win32_cleanup();
 
 #if defined(ANDROID) || defined(__ANDROID__)
-  ares_library_cleanup_android();
+  hns_library_cleanup_android();
 #endif
 
-  ares_init_flags = ARES_LIB_INIT_NONE;
-  ares_ec_free(ares_ec);
-  ares_ec = NULL;
-  ares_malloc = malloc;
-  ares_realloc = realloc;
-  ares_free = free;
+  hns_init_flags = HNS_LIB_INIT_NONE;
+  hns_ec_free(hns_ec);
+  hns_ec = NULL;
+  hns_malloc = malloc;
+  hns_realloc = realloc;
+  hns_free = free;
 }
 
 
-int ares_library_initialized(void)
+int hns_library_initialized(void)
 {
 #ifdef USE_WINSOCK
-  if (!ares_initialized)
-    return ARES_ENOTINITIALIZED;
+  if (!hns_initialized)
+    return HNS_ENOTINITIALIZED;
 #endif
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }

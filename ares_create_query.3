@@ -13,14 +13,14 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_CREATE_QUERY 3 "17 Aug 2012"
+.TH HNS_CREATE_QUERY 3 "17 Aug 2012"
 .SH NAME
-ares_create_query \- Compose a single-question DNS query buffer
+hns_create_query \- Compose a single-question DNS query buffer
 .SH SYNOPSIS
 .nf
-#include <ares.h>
+#include <hns.h>
 
-int ares_create_query(const char *\fIname\fP,
+int hns_create_query(const char *\fIname\fP,
                       int \fIdnsclass\fP,
                       int \fItype\fP,
                       unsigned short \fIid\fP,
@@ -30,7 +30,7 @@ int ares_create_query(const char *\fIname\fP,
                       int \fImax_udp_size\fP)
 .fi
 .SH DESCRIPTION
-The \fIares_create_query(3)\fP function composes a DNS query with a single
+The \fIhns_create_query(3)\fP function composes a DNS query with a single
 question.  The parameter \fIname\fP gives the query name as a NUL-terminated C
 string of period-separated labels optionally ending with a period; periods and
 backslashes within a label must be escaped with a backlash.
@@ -47,30 +47,30 @@ stored in the variable pointed to by \fIbuf\fP, and the length of which will
 be stored in the variable pointed to by \fIbuflen\fP.
 
 It is the caller's responsibility to free this buffer using
-\fIares_free_string(3)\fP when it is no longer needed.  The parameter
+\fIhns_free_string(3)\fP when it is no longer needed.  The parameter
 \fImax_udp_size\fP should be nonzero to activate EDNS. Usage of
-\fIares_create_query(3)\fP\ with \fImax_udp_size\fP set to zero is equivalent
-to using \fIares_mkquery(3)\fP.
+\fIhns_create_query(3)\fP\ with \fImax_udp_size\fP set to zero is equivalent
+to using \fIhns_mkquery(3)\fP.
 .SH RETURN VALUES
-.B ares_create_query
+.B hns_create_query
 can return any of the following values:
 .TP 15
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 Construction of the DNS query succeeded.
 .TP 15
-.B ARES_EBADNAME
+.B HNS_EBADNAME
 The query name
 .I name
 could not be encoded as a domain name, either because it contained a
 zero-length label or because it contained a label of more than 63
 characters.
 .TP 15
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .SH AVAILABILITY
-Added in c-ares 1.10.0
+Added in hns 1.10.0
 .SH SEE ALSO
-.BR ares_expand_name (3),
-.BR ares_free_string (3),
-.BR ares_mkquery (3)
+.BR hns_expand_name (3),
+.BR hns_free_string (3),
+.BR hns_mkquery (3)
 .SH AUTHOR

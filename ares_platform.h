@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_PLATFORM_H
-#define HEADER_CARES_PLATFORM_H
+#ifndef HEADER_HNS_PLATFORM_H
+#define HEADER_HNS_PLATFORM_H
 
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
@@ -18,7 +18,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #if defined(WIN32) && !defined(MSDOS)
 
@@ -30,7 +30,7 @@ typedef enum {
   WIN_CE
 } win_platform;
 
-win_platform ares__getplatform(void);
+win_platform hns__getplatform(void);
 
 #endif
 
@@ -40,4 +40,4 @@ struct servent *getservbyport(int port, const char *proto);
 
 #endif
 
-#endif /* HEADER_CARES_PLATFORM_H */
+#endif /* HEADER_HNS_PLATFORM_H */

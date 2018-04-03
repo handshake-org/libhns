@@ -18,7 +18,7 @@
 
 #ifndef HAVE_BITNCMP
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 #include "bitncmp.h"
 
 /*
@@ -33,7 +33,7 @@
  * author:
  *	Paul Vixie (ISC), June 1996
  */
-int ares__bitncmp(const void *l, const void *r, int n)
+int hns__bitncmp(const void *l, const void *r, int n)
 {
   unsigned int lb, rb;
   int x, b;

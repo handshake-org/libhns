@@ -18,11 +18,11 @@
 # serial 75
 
 
-dnl CARES_CHECK_COMPILER
+dnl HNS_CHECK_COMPILER
 dnl -------------------------------------------------
 dnl Verify if the C compiler being used is known.
 
-AC_DEFUN([CARES_CHECK_COMPILER], [
+AC_DEFUN([HNS_CHECK_COMPILER], [
   #
   compiler_id="unknown"
   compiler_num="0"
@@ -36,18 +36,18 @@ AC_DEFUN([CARES_CHECK_COMPILER], [
   #
   flags_prefer_cppflags="no"
   #
-  CARES_CHECK_COMPILER_DEC_C
-  CARES_CHECK_COMPILER_HPUX_C
-  CARES_CHECK_COMPILER_IBM_C
-  CARES_CHECK_COMPILER_INTEL_C
-  CARES_CHECK_COMPILER_CLANG
-  CARES_CHECK_COMPILER_GNU_C
-  CARES_CHECK_COMPILER_LCC
-  CARES_CHECK_COMPILER_SGI_MIPSPRO_C
-  CARES_CHECK_COMPILER_SGI_MIPS_C
-  CARES_CHECK_COMPILER_SUNPRO_C
-  CARES_CHECK_COMPILER_TINY_C
-  CARES_CHECK_COMPILER_WATCOM_C
+  HNS_CHECK_COMPILER_DEC_C
+  HNS_CHECK_COMPILER_HPUX_C
+  HNS_CHECK_COMPILER_IBM_C
+  HNS_CHECK_COMPILER_INTEL_C
+  HNS_CHECK_COMPILER_CLANG
+  HNS_CHECK_COMPILER_GNU_C
+  HNS_CHECK_COMPILER_LCC
+  HNS_CHECK_COMPILER_SGI_MIPSPRO_C
+  HNS_CHECK_COMPILER_SGI_MIPS_C
+  HNS_CHECK_COMPILER_SUNPRO_C
+  HNS_CHECK_COMPILER_TINY_C
+  HNS_CHECK_COMPILER_WATCOM_C
   #
   if test "$compiler_id" = "unknown"; then
   cat <<_EOF 1>&2
@@ -58,8 +58,8 @@ AC_DEFUN([CARES_CHECK_COMPILER], [
 ***
 *** Whatever settings are present in CFLAGS will be used for this run.
 ***
-*** If you wish to help the c-ares project to better support your compiler
-*** you can report this and the required info on the c-ares development
+*** If you wish to help the hns project to better support your compiler
+*** you can report this and the required info on the hns development
 *** mailing list: http://cool.haxx.se/mailman/listinfo/c-ares/
 ***
 _EOF
@@ -67,12 +67,12 @@ _EOF
 ])
 
 
-dnl CARES_CHECK_COMPILER_CLANG
+dnl HNS_CHECK_COMPILER_CLANG
 dnl -------------------------------------------------
 dnl Verify if compiler being used is clang.
 
-AC_DEFUN([CARES_CHECK_COMPILER_CLANG], [
-  AC_BEFORE([$0],[CARES_CHECK_COMPILER_GNU_C])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_CLANG], [
+  AC_BEFORE([$0],[HNS_CHECK_COMPILER_GNU_C])dnl
   AC_MSG_CHECKING([if compiler is clang])
   CURL_CHECK_DEF([__clang__], [], [silent])
   if test "$curl_cv_have_def___clang__" = "yes"; then
@@ -101,11 +101,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_CLANG], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_DEC_C
+dnl HNS_CHECK_COMPILER_DEC_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is DEC C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_DEC_C], [
+AC_DEFUN([HNS_CHECK_COMPILER_DEC_C], [
   AC_MSG_CHECKING([if compiler is DEC/Compaq/HP C])
   CURL_CHECK_DEF([__DECC], [], [silent])
   CURL_CHECK_DEF([__DECC_VER], [], [silent])
@@ -125,13 +125,13 @@ AC_DEFUN([CARES_CHECK_COMPILER_DEC_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_GNU_C
+dnl HNS_CHECK_COMPILER_GNU_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is GNU C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_GNU_C], [
-  AC_REQUIRE([CARES_CHECK_COMPILER_INTEL_C])dnl
-  AC_REQUIRE([CARES_CHECK_COMPILER_CLANG])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_GNU_C], [
+  AC_REQUIRE([HNS_CHECK_COMPILER_INTEL_C])dnl
+  AC_REQUIRE([HNS_CHECK_COMPILER_CLANG])dnl
   AC_MSG_CHECKING([if compiler is GNU C])
   CURL_CHECK_DEF([__GNUC__], [], [silent])
   if test "$curl_cv_have_def___GNUC__" = "yes" &&
@@ -162,11 +162,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_GNU_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_HPUX_C
+dnl HNS_CHECK_COMPILER_HPUX_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is HP-UX C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_HPUX_C], [
+AC_DEFUN([HNS_CHECK_COMPILER_HPUX_C], [
   AC_MSG_CHECKING([if compiler is HP-UX C])
   CURL_CHECK_DEF([__HP_cc], [], [silent])
   if test "$curl_cv_have_def___HP_cc" = "yes"; then
@@ -184,11 +184,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_HPUX_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_IBM_C
+dnl HNS_CHECK_COMPILER_IBM_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is IBM C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_IBM_C], [
+AC_DEFUN([HNS_CHECK_COMPILER_IBM_C], [
   AC_MSG_CHECKING([if compiler is IBM C])
   CURL_CHECK_DEF([__IBMC__], [], [silent])
   if test "$curl_cv_have_def___IBMC__" = "yes"; then
@@ -214,12 +214,12 @@ AC_DEFUN([CARES_CHECK_COMPILER_IBM_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_INTEL_C
+dnl HNS_CHECK_COMPILER_INTEL_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is Intel C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_INTEL_C], [
-  AC_BEFORE([$0],[CARES_CHECK_COMPILER_GNU_C])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_INTEL_C], [
+  AC_BEFORE([$0],[HNS_CHECK_COMPILER_GNU_C])dnl
   AC_MSG_CHECKING([if compiler is Intel C])
   CURL_CHECK_DEF([__INTEL_COMPILER], [], [silent])
   if test "$curl_cv_have_def___INTEL_COMPILER" = "yes"; then
@@ -256,11 +256,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_INTEL_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_LCC
+dnl HNS_CHECK_COMPILER_LCC
 dnl -------------------------------------------------
 dnl Verify if compiler being used is LCC.
 
-AC_DEFUN([CARES_CHECK_COMPILER_LCC], [
+AC_DEFUN([HNS_CHECK_COMPILER_LCC], [
   AC_MSG_CHECKING([if compiler is LCC])
   CURL_CHECK_DEF([__LCC__], [], [silent])
   if test "$curl_cv_have_def___LCC__" = "yes"; then
@@ -278,12 +278,12 @@ AC_DEFUN([CARES_CHECK_COMPILER_LCC], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_SGI_MIPS_C
+dnl HNS_CHECK_COMPILER_SGI_MIPS_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is SGI MIPS C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_SGI_MIPS_C], [
-  AC_REQUIRE([CARES_CHECK_COMPILER_SGI_MIPSPRO_C])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_SGI_MIPS_C], [
+  AC_REQUIRE([HNS_CHECK_COMPILER_SGI_MIPSPRO_C])dnl
   AC_MSG_CHECKING([if compiler is SGI MIPS C])
   CURL_CHECK_DEF([__GNUC__], [], [silent])
   CURL_CHECK_DEF([__sgi], [], [silent])
@@ -304,12 +304,12 @@ AC_DEFUN([CARES_CHECK_COMPILER_SGI_MIPS_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_SGI_MIPSPRO_C
+dnl HNS_CHECK_COMPILER_SGI_MIPSPRO_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is SGI MIPSpro C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_SGI_MIPSPRO_C], [
-  AC_BEFORE([$0],[CARES_CHECK_COMPILER_SGI_MIPS_C])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_SGI_MIPSPRO_C], [
+  AC_BEFORE([$0],[HNS_CHECK_COMPILER_SGI_MIPS_C])dnl
   AC_MSG_CHECKING([if compiler is SGI MIPSpro C])
   CURL_CHECK_DEF([__GNUC__], [], [silent])
   CURL_CHECK_DEF([_COMPILER_VERSION], [], [silent])
@@ -331,11 +331,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_SGI_MIPSPRO_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_SUNPRO_C
+dnl HNS_CHECK_COMPILER_SUNPRO_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is SunPro C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_SUNPRO_C], [
+AC_DEFUN([HNS_CHECK_COMPILER_SUNPRO_C], [
   AC_MSG_CHECKING([if compiler is SunPro C])
   CURL_CHECK_DEF([__SUNPRO_C], [], [silent])
   if test "$curl_cv_have_def___SUNPRO_C" = "yes"; then
@@ -353,11 +353,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_SUNPRO_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_TINY_C
+dnl HNS_CHECK_COMPILER_TINY_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is Tiny C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_TINY_C], [
+AC_DEFUN([HNS_CHECK_COMPILER_TINY_C], [
   AC_MSG_CHECKING([if compiler is Tiny C])
   CURL_CHECK_DEF([__TINYC__], [], [silent])
   if test "$curl_cv_have_def___TINYC__" = "yes"; then
@@ -375,11 +375,11 @@ AC_DEFUN([CARES_CHECK_COMPILER_TINY_C], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_WATCOM_C
+dnl HNS_CHECK_COMPILER_WATCOM_C
 dnl -------------------------------------------------
 dnl Verify if compiler being used is Watcom C.
 
-AC_DEFUN([CARES_CHECK_COMPILER_WATCOM_C], [
+AC_DEFUN([HNS_CHECK_COMPILER_WATCOM_C], [
   AC_MSG_CHECKING([if compiler is Watcom C])
   CURL_CHECK_DEF([__WATCOMC__], [], [silent])
   if test "$curl_cv_have_def___WATCOMC__" = "yes"; then
@@ -408,7 +408,7 @@ AC_DEFUN([CARES_CHECK_COMPILER_WATCOM_C], [
 ])
 
 
-dnl CARES_CONVERT_INCLUDE_TO_ISYSTEM
+dnl HNS_CONVERT_INCLUDE_TO_ISYSTEM
 dnl -------------------------------------------------
 dnl Changes standard include paths present in CFLAGS
 dnl and CPPFLAGS into isystem include paths. This is
@@ -416,9 +416,9 @@ dnl done to prevent GNUC from generating warnings on
 dnl headers from these locations, although on ancient
 dnl GNUC versions these warnings are not silenced.
 
-AC_DEFUN([CARES_CONVERT_INCLUDE_TO_ISYSTEM], [
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
-  AC_REQUIRE([CARES_CHECK_COMPILER])dnl
+AC_DEFUN([HNS_CONVERT_INCLUDE_TO_ISYSTEM], [
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
+  AC_REQUIRE([HNS_CHECK_COMPILER])dnl
   if test "$compiler_id" = "GNU_C" ||
     test "$compiler_id" = "CLANG"; then
     tmp_has_include="no"
@@ -455,13 +455,13 @@ AC_DEFUN([CARES_CONVERT_INCLUDE_TO_ISYSTEM], [
 ])
 
 
-dnl CARES_COMPILER_WORKS_IFELSE ([ACTION-IF-WORKS], [ACTION-IF-NOT-WORKS])
+dnl HNS_COMPILER_WORKS_IFELSE ([ACTION-IF-WORKS], [ACTION-IF-NOT-WORKS])
 dnl -------------------------------------------------
 dnl Verify if the C compiler seems to work with the
 dnl settings that are 'active' at the time the test
 dnl is performed.
 
-AC_DEFUN([CARES_COMPILER_WORKS_IFELSE], [
+AC_DEFUN([HNS_COMPILER_WORKS_IFELSE], [
   dnl compilation capability verification
   tmp_compiler_works="unknown"
   AC_COMPILE_IFELSE([
@@ -525,21 +525,21 @@ AC_DEFUN([CARES_COMPILER_WORKS_IFELSE], [
 ])
 
 
-dnl CARES_SET_COMPILER_BASIC_OPTS
+dnl HNS_SET_COMPILER_BASIC_OPTS
 dnl -------------------------------------------------
 dnl Sets compiler specific options/flags which do not
 dnl depend on configure's debug, optimize or warnings
 dnl options.
 
-AC_DEFUN([CARES_SET_COMPILER_BASIC_OPTS], [
-  AC_REQUIRE([CARES_CHECK_COMPILER])dnl
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
+AC_DEFUN([HNS_SET_COMPILER_BASIC_OPTS], [
+  AC_REQUIRE([HNS_CHECK_COMPILER])dnl
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
   #
   if test "$compiler_id" != "unknown"; then
     #
     if test "$compiler_id" = "GNU_C" ||
       test "$compiler_id" = "CLANG"; then
-      CARES_CONVERT_INCLUDE_TO_ISYSTEM
+      HNS_CONVERT_INCLUDE_TO_ISYSTEM
     fi
     #
     tmp_save_CPPFLAGS="$CPPFLAGS"
@@ -676,7 +676,7 @@ AC_DEFUN([CARES_SET_COMPILER_BASIC_OPTS], [
       CFLAGS="$tmp_save_CFLAGS $tmp_CFLAGS"
       squeeze CPPFLAGS
       squeeze CFLAGS
-      CARES_COMPILER_WORKS_IFELSE([
+      HNS_COMPILER_WORKS_IFELSE([
         AC_MSG_RESULT([yes])
         AC_MSG_NOTICE([compiler options added: $tmp_CFLAGS $tmp_CPPFLAGS])
       ],[
@@ -692,15 +692,15 @@ AC_DEFUN([CARES_SET_COMPILER_BASIC_OPTS], [
 ])
 
 
-dnl CARES_SET_COMPILER_DEBUG_OPTS
+dnl HNS_SET_COMPILER_DEBUG_OPTS
 dnl -------------------------------------------------
 dnl Sets compiler specific options/flags which depend
 dnl on configure's debug option.
 
-AC_DEFUN([CARES_SET_COMPILER_DEBUG_OPTS], [
-  AC_REQUIRE([CARES_CHECK_OPTION_DEBUG])dnl
-  AC_REQUIRE([CARES_CHECK_COMPILER])dnl
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
+AC_DEFUN([HNS_SET_COMPILER_DEBUG_OPTS], [
+  AC_REQUIRE([HNS_CHECK_OPTION_DEBUG])dnl
+  AC_REQUIRE([HNS_CHECK_COMPILER])dnl
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
   #
   if test "$compiler_id" != "unknown"; then
     #
@@ -710,8 +710,8 @@ AC_DEFUN([CARES_SET_COMPILER_DEBUG_OPTS], [
     tmp_options=""
     tmp_CFLAGS="$CFLAGS"
     tmp_CPPFLAGS="$CPPFLAGS"
-    CARES_VAR_STRIP([tmp_CFLAGS],[$flags_dbg_all])
-    CARES_VAR_STRIP([tmp_CPPFLAGS],[$flags_dbg_all])
+    HNS_VAR_STRIP([tmp_CFLAGS],[$flags_dbg_all])
+    HNS_VAR_STRIP([tmp_CPPFLAGS],[$flags_dbg_all])
     #
     if test "$want_debug" = "yes"; then
       AC_MSG_CHECKING([if compiler accepts debug enabling options])
@@ -731,7 +731,7 @@ AC_DEFUN([CARES_SET_COMPILER_DEBUG_OPTS], [
     fi
     squeeze CPPFLAGS
     squeeze CFLAGS
-    CARES_COMPILER_WORKS_IFELSE([
+    HNS_COMPILER_WORKS_IFELSE([
       AC_MSG_RESULT([yes])
       AC_MSG_NOTICE([compiler options added: $tmp_options])
     ],[
@@ -746,15 +746,15 @@ AC_DEFUN([CARES_SET_COMPILER_DEBUG_OPTS], [
 ])
 
 
-dnl CARES_SET_COMPILER_OPTIMIZE_OPTS
+dnl HNS_SET_COMPILER_OPTIMIZE_OPTS
 dnl -------------------------------------------------
 dnl Sets compiler specific options/flags which depend
 dnl on configure's optimize option.
 
-AC_DEFUN([CARES_SET_COMPILER_OPTIMIZE_OPTS], [
-  AC_REQUIRE([CARES_CHECK_OPTION_OPTIMIZE])dnl
-  AC_REQUIRE([CARES_CHECK_COMPILER])dnl
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
+AC_DEFUN([HNS_SET_COMPILER_OPTIMIZE_OPTS], [
+  AC_REQUIRE([HNS_CHECK_OPTION_OPTIMIZE])dnl
+  AC_REQUIRE([HNS_CHECK_COMPILER])dnl
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
   #
   if test "$compiler_id" != "unknown"; then
     #
@@ -775,10 +775,10 @@ AC_DEFUN([CARES_SET_COMPILER_OPTIMIZE_OPTS], [
     if test "$want_optimize" = "assume_no" ||
        test "$want_optimize" = "assume_yes"; then
       AC_MSG_CHECKING([if compiler optimizer assumed setting might be used])
-      CARES_VAR_MATCH_IFELSE([tmp_CFLAGS],[$flags_opt_all],[
+      HNS_VAR_MATCH_IFELSE([tmp_CFLAGS],[$flags_opt_all],[
         honor_optimize_option="no"
       ])
-      CARES_VAR_MATCH_IFELSE([tmp_CPPFLAGS],[$flags_opt_all],[
+      HNS_VAR_MATCH_IFELSE([tmp_CPPFLAGS],[$flags_opt_all],[
         honor_optimize_option="no"
       ])
       AC_MSG_RESULT([$honor_optimize_option])
@@ -793,8 +793,8 @@ AC_DEFUN([CARES_SET_COMPILER_OPTIMIZE_OPTS], [
     fi
     #
     if test "$honor_optimize_option" = "yes"; then
-      CARES_VAR_STRIP([tmp_CFLAGS],[$flags_opt_all])
-      CARES_VAR_STRIP([tmp_CPPFLAGS],[$flags_opt_all])
+      HNS_VAR_STRIP([tmp_CFLAGS],[$flags_opt_all])
+      HNS_VAR_STRIP([tmp_CPPFLAGS],[$flags_opt_all])
       if test "$want_optimize" = "yes"; then
         AC_MSG_CHECKING([if compiler accepts optimizer enabling options])
         tmp_options="$flags_opt_yes"
@@ -812,7 +812,7 @@ AC_DEFUN([CARES_SET_COMPILER_OPTIMIZE_OPTS], [
       fi
       squeeze CPPFLAGS
       squeeze CFLAGS
-      CARES_COMPILER_WORKS_IFELSE([
+      HNS_COMPILER_WORKS_IFELSE([
         AC_MSG_RESULT([yes])
         AC_MSG_NOTICE([compiler options added: $tmp_options])
       ],[
@@ -828,15 +828,15 @@ AC_DEFUN([CARES_SET_COMPILER_OPTIMIZE_OPTS], [
 ])
 
 
-dnl CARES_SET_COMPILER_WARNING_OPTS
+dnl HNS_SET_COMPILER_WARNING_OPTS
 dnl -------------------------------------------------
 dnl Sets compiler options/flags which depend on
 dnl configure's warnings given option.
 
-AC_DEFUN([CARES_SET_COMPILER_WARNING_OPTS], [
-  AC_REQUIRE([CARES_CHECK_OPTION_WARNINGS])dnl
-  AC_REQUIRE([CARES_CHECK_COMPILER])dnl
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
+AC_DEFUN([HNS_SET_COMPILER_WARNING_OPTS], [
+  AC_REQUIRE([HNS_CHECK_OPTION_WARNINGS])dnl
+  AC_REQUIRE([HNS_CHECK_COMPILER])dnl
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
   #
   if test "$compiler_id" != "unknown"; then
     #
@@ -1141,7 +1141,7 @@ AC_DEFUN([CARES_SET_COMPILER_WARNING_OPTS], [
       CFLAGS="$tmp_save_CFLAGS $tmp_CFLAGS"
       squeeze CPPFLAGS
       squeeze CFLAGS
-      CARES_COMPILER_WORKS_IFELSE([
+      HNS_COMPILER_WORKS_IFELSE([
         AC_MSG_RESULT([yes])
         AC_MSG_NOTICE([compiler options added: $tmp_CFLAGS $tmp_CPPFLAGS])
       ],[
@@ -1157,12 +1157,12 @@ AC_DEFUN([CARES_SET_COMPILER_WARNING_OPTS], [
 ])
 
 
-dnl CARES_SHFUNC_SQUEEZE
+dnl HNS_SHFUNC_SQUEEZE
 dnl -------------------------------------------------
 dnl Declares a shell function squeeze() which removes
 dnl redundant whitespace out of a shell variable.
 
-AC_DEFUN([CARES_SHFUNC_SQUEEZE], [
+AC_DEFUN([HNS_SHFUNC_SQUEEZE], [
 squeeze() {
   _sqz_result=""
   eval _sqz_input=\[$][$]1
@@ -1179,21 +1179,21 @@ squeeze() {
 ])
 
 
-dnl CARES_CHECK_CURLDEBUG
+dnl HNS_CHECK_CURLDEBUG
 dnl -------------------------------------------------
 dnl Settings which depend on configure's curldebug given
 dnl option, and other additional configure pre-requisites.
-dnl Using the curl debug memory tracking feature in c-ares
+dnl Using the curl debug memory tracking feature in hns
 dnl is a hack that actually can only be used/enabled when
-dnl c-ares is built directly in curl's CVS tree, as a static
+dnl hns is built directly in curl's CVS tree, as a static
 dnl library or as a shared one on those systems on which
 dnl shared libraries support undefined symbols, along with
 dnl an equally configured libcurl.
 
-AC_DEFUN([CARES_CHECK_CURLDEBUG], [
+AC_DEFUN([HNS_CHECK_CURLDEBUG], [
   AC_REQUIRE([XC_LIBTOOL])dnl
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
-  cares_builddir=`pwd`
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
+  hns_builddir=`pwd`
   supports_curldebug="unknown"
   if test "$want_curldebug" = "yes"; then
     if test "x$enable_shared" != "xno" &&
@@ -1213,31 +1213,31 @@ AC_DEFUN([CARES_CHECK_CURLDEBUG], [
         AC_MSG_WARN([shared library does not support undefined symbols.])
       fi
       if test ! -f "$srcdir/../include/curl/curlbuild.h.dist"; then
-        AC_MSG_WARN([c-ares source not embedded in curl's CVS tree.])
+        AC_MSG_WARN([hns source not embedded in curl's CVS tree.])
         supports_curldebug="no"
       elif test ! -f "$srcdir/../include/curl/Makefile.in"; then
         AC_MSG_WARN([curl's buildconf has not been run.])
         supports_curldebug="no"
-      elif test ! -f "$cares_builddir/../libcurl.pc" ||
-        test ! -f "$cares_builddir/../include/curl/curlbuild.h"; then
+      elif test ! -f "$hns_builddir/../libcurl.pc" ||
+        test ! -f "$hns_builddir/../include/curl/curlbuild.h"; then
         AC_MSG_WARN([curl's configure has not been run.])
         supports_curldebug="no"
-      elif test ! -f "$cares_builddir/../lib/curl_config.h"; then
+      elif test ! -f "$hns_builddir/../lib/curl_config.h"; then
         AC_MSG_WARN([libcurl's curl_config.h is missing.])
         supports_curldebug="no"
-      elif test ! -f "$cares_builddir/../config.status"; then
+      elif test ! -f "$hns_builddir/../config.status"; then
         AC_MSG_WARN([curl's config.status is missing.])
         supports_curldebug="no"
       fi
       if test "$supports_curldebug" != "no"; then
-        grep '^#define USE_ARES' "$cares_builddir/../lib/curl_config.h" >/dev/null
+        grep '^#define USE_HNS' "$hns_builddir/../lib/curl_config.h" >/dev/null
         if test "$?" -ne "0"; then
-          AC_MSG_WARN([libcurl configured without c-ares support.])
+          AC_MSG_WARN([libcurl configured without hns support.])
           supports_curldebug="no"
         fi
       fi
       if test "$supports_curldebug" != "no"; then
-        grep 'CPPFLAGS.*CURLDEBUG' "$cares_builddir/../config.status" >/dev/null
+        grep 'CPPFLAGS.*CURLDEBUG' "$hns_builddir/../config.status" >/dev/null
         if test "$?" -ne "0"; then
           AC_MSG_WARN([libcurl configured without curldebug support.])
           supports_curldebug="no"
@@ -1270,13 +1270,13 @@ AC_DEFUN([CARES_CHECK_CURLDEBUG], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_HALT_ON_ERROR
+dnl HNS_CHECK_COMPILER_HALT_ON_ERROR
 dnl -------------------------------------------------
 dnl Verifies if the compiler actually halts after the
 dnl compilation phase without generating any object
 dnl code file, when the source compiles with errors.
 
-AC_DEFUN([CARES_CHECK_COMPILER_HALT_ON_ERROR], [
+AC_DEFUN([HNS_CHECK_COMPILER_HALT_ON_ERROR], [
   AC_MSG_CHECKING([if compiler halts on compilation errors])
   AC_COMPILE_IFELSE([
     AC_LANG_PROGRAM([[
@@ -1292,15 +1292,15 @@ AC_DEFUN([CARES_CHECK_COMPILER_HALT_ON_ERROR], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE
+dnl HNS_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE
 dnl -------------------------------------------------
 dnl Verifies if the compiler actually halts after the
 dnl compilation phase without generating any object
 dnl code file, when the source code tries to define a
 dnl type for a constant array with negative dimension.
 
-AC_DEFUN([CARES_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE], [
-  AC_REQUIRE([CARES_CHECK_COMPILER_HALT_ON_ERROR])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE], [
+  AC_REQUIRE([HNS_CHECK_COMPILER_HALT_ON_ERROR])dnl
   AC_MSG_CHECKING([if compiler halts on negative sized arrays])
   AC_COMPILE_IFELSE([
     AC_LANG_PROGRAM([[
@@ -1317,15 +1317,15 @@ AC_DEFUN([CARES_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_STRUCT_MEMBER_SIZE
+dnl HNS_CHECK_COMPILER_STRUCT_MEMBER_SIZE
 dnl -------------------------------------------------
 dnl Verifies if the compiler is capable of handling the
 dnl size of a struct member, struct which is a function
 dnl result, as a compilation-time condition inside the
 dnl type definition of a constant array.
 
-AC_DEFUN([CARES_CHECK_COMPILER_STRUCT_MEMBER_SIZE], [
-  AC_REQUIRE([CARES_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_STRUCT_MEMBER_SIZE], [
+  AC_REQUIRE([HNS_CHECK_COMPILER_ARRAY_SIZE_NEGATIVE])dnl
   AC_MSG_CHECKING([if compiler struct member size checking works])
   tst_compiler_check_one_works="unknown"
   AC_COMPILE_IFELSE([
@@ -1379,15 +1379,15 @@ AC_DEFUN([CARES_CHECK_COMPILER_STRUCT_MEMBER_SIZE], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_SYMBOL_HIDING
+dnl HNS_CHECK_COMPILER_SYMBOL_HIDING
 dnl -------------------------------------------------
 dnl Verify if compiler supports hiding library internal symbols, setting
 dnl shell variable supports_symbol_hiding value as appropriate, as well as
 dnl variables symbol_hiding_CFLAGS and symbol_hiding_EXTERN when supported.
 
-AC_DEFUN([CARES_CHECK_COMPILER_SYMBOL_HIDING], [
-  AC_REQUIRE([CARES_CHECK_COMPILER])dnl
-  AC_BEFORE([$0],[CARES_CONFIGURE_SYMBOL_HIDING])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_SYMBOL_HIDING], [
+  AC_REQUIRE([HNS_CHECK_COMPILER])dnl
+  AC_BEFORE([$0],[HNS_CONFIGURE_SYMBOL_HIDING])dnl
   AC_MSG_CHECKING([if compiler supports hiding library internal symbols])
   supports_symbol_hiding="no"
   symbol_hiding_CFLAGS=""
@@ -1487,15 +1487,15 @@ AC_DEFUN([CARES_CHECK_COMPILER_SYMBOL_HIDING], [
 ])
 
 
-dnl CARES_CHECK_COMPILER_PROTOTYPE_MISMATCH
+dnl HNS_CHECK_COMPILER_PROTOTYPE_MISMATCH
 dnl -------------------------------------------------
 dnl Verifies if the compiler actually halts after the
 dnl compilation phase without generating any object
 dnl code file, when the source code tries to redefine
 dnl a prototype which does not match previous one.
 
-AC_DEFUN([CARES_CHECK_COMPILER_PROTOTYPE_MISMATCH], [
-  AC_REQUIRE([CARES_CHECK_COMPILER_HALT_ON_ERROR])dnl
+AC_DEFUN([HNS_CHECK_COMPILER_PROTOTYPE_MISMATCH], [
+  AC_REQUIRE([HNS_CHECK_COMPILER_HALT_ON_ERROR])dnl
   AC_MSG_CHECKING([if compiler halts on function prototype mismatch])
   AC_COMPILE_IFELSE([
     AC_LANG_PROGRAM([[
@@ -1523,7 +1523,7 @@ AC_DEFUN([CARES_CHECK_COMPILER_PROTOTYPE_MISMATCH], [
 ])
 
 
-dnl CARES_VAR_MATCH (VARNAME, VALUE)
+dnl HNS_VAR_MATCH (VARNAME, VALUE)
 dnl -------------------------------------------------
 dnl Verifies if shell variable VARNAME contains VALUE.
 dnl Contents of variable VARNAME and VALUE are handled
@@ -1531,7 +1531,7 @@ dnl as whitespace separated lists of words. If at least
 dnl one word of VALUE is present in VARNAME the match
 dnl is considered positive, otherwise false.
 
-AC_DEFUN([CARES_VAR_MATCH], [
+AC_DEFUN([HNS_VAR_MATCH], [
   ac_var_match_word="no"
   for word1 in $[$1]; do
     for word2 in [$2]; do
@@ -1543,15 +1543,15 @@ AC_DEFUN([CARES_VAR_MATCH], [
 ])
 
 
-dnl CARES_VAR_MATCH_IFELSE (VARNAME, VALUE,
+dnl HNS_VAR_MATCH_IFELSE (VARNAME, VALUE,
 dnl                        [ACTION-IF-MATCH], [ACTION-IF-NOT-MATCH])
 dnl -------------------------------------------------
 dnl This performs a CURL_VAR_MATCH check and executes
 dnl first branch if the match is positive, otherwise
 dnl the second branch is executed.
 
-AC_DEFUN([CARES_VAR_MATCH_IFELSE], [
-  CARES_VAR_MATCH([$1],[$2])
+AC_DEFUN([HNS_VAR_MATCH_IFELSE], [
+  HNS_VAR_MATCH([$1],[$2])
   if test "$ac_var_match_word" = "yes"; then
   ifelse($3,,:,[$3])
   ifelse($4,,,[else
@@ -1560,14 +1560,14 @@ AC_DEFUN([CARES_VAR_MATCH_IFELSE], [
 ])
 
 
-dnl CARES_VAR_STRIP (VARNAME, VALUE)
+dnl HNS_VAR_STRIP (VARNAME, VALUE)
 dnl -------------------------------------------------
 dnl Contents of variable VARNAME and VALUE are handled
 dnl as whitespace separated lists of words. Each word
 dnl from VALUE is removed from VARNAME when present.
 
-AC_DEFUN([CARES_VAR_STRIP], [
-  AC_REQUIRE([CARES_SHFUNC_SQUEEZE])dnl
+AC_DEFUN([HNS_VAR_STRIP], [
+  AC_REQUIRE([HNS_SHFUNC_SQUEEZE])dnl
   ac_var_stripped=""
   for word1 in $[$1]; do
     ac_var_strip_word="no"

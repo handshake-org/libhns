@@ -8,6 +8,6 @@ if [ "$BUILD_TYPE" != "cmake" ]; then
 else
     mkdir cmakebld
     cd cmakebld
-    cmake -DCMAKE_BUILD_TYPE=DEBUG -DCARES_STATIC=ON -DCARES_STATIC_PIC=ON -DCARES_BUILD_TESTS=ON ..
+    cmake -DCMAKE_BUILD_TYPE=DEBUG -DHNS_STATIC=ON -DHNS_STATIC_PIC=ON -DHNS_BUILD_TESTS=ON ..
     make
 fi

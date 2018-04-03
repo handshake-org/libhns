@@ -9,12 +9,12 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: c-ares
-URL: http://daniel.haxx.se/projects/c-ares/
+Name: hns
+URL: http://daniel.haxx.se/projects/hns/
 Description: asynchronous DNS lookup library
 Version: @VERSION@
 Requires: 
 Requires.private: 
-Cflags: -I${includedir} @CPPFLAG_CARES_STATICLIB@
-Libs: -L${libdir} -lcares
-Libs.private: @CARES_PRIVATE_LIBS@
+Cflags: -I${includedir} @CPPFLAG_HNS_STATICLIB@
+Libs: -L${libdir} -lhns
+Libs.private: @HNS_PRIVATE_LIBS@

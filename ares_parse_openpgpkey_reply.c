@@ -15,7 +15,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -35,10 +35,10 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_dns.h"
-#include "ares_data.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_dns.h"
+#include "hns_data.h"
+#include "hns_private.h"
 
 /* AIX portability check */
 #ifndef T_OPENPGPKEY
@@ -46,46 +46,46 @@
 #endif
 
 int
-ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
-                      struct ares_openpgpkey_reply **openpgpkey_out)
+hns_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
+                      struct hns_openpgpkey_reply **openpgpkey_out)
 {
   unsigned int qdcount, ancount, i;
   const unsigned char *aptr;
   int status, rr_type, rr_class, rr_len;
   long len;
   char *hostname = NULL, *rr_name = NULL;
-  struct ares_openpgpkey_reply *openpgpkey_head = NULL;
-  struct ares_openpgpkey_reply *openpgpkey_last = NULL;
-  struct ares_openpgpkey_reply *openpgpkey_curr;
+  struct hns_openpgpkey_reply *openpgpkey_head = NULL;
+  struct hns_openpgpkey_reply *openpgpkey_last = NULL;
+  struct hns_openpgpkey_reply *openpgpkey_curr;
 
   /* Set *openpgpkey_out to NULL for all failure cases. */
   *openpgpkey_out = NULL;
 
   /* Give up if abuf doesn't have room for a header. */
   if (alen < HFIXEDSZ)
-    return ARES_EBADRESP;
+    return HNS_EBADRESP;
 
   if (DNS_HEADER_AD(abuf) != 1)
-    return ARES_EINSECURE;
+    return HNS_EINSECURE;
 
   /* Fetch the question and answer count from the header. */
   qdcount = DNS_HEADER_QDCOUNT (abuf);
   ancount = DNS_HEADER_ANCOUNT (abuf);
   if (qdcount != 1)
-    return ARES_EBADRESP;
+    return HNS_EBADRESP;
   if (ancount == 0)
-    return ARES_ENODATA;
+    return HNS_ENODATA;
 
   /* Expand the name from the question, and skip past the question. */
   aptr = abuf + HFIXEDSZ;
-  status = ares_expand_name (aptr, abuf, alen, &hostname, &len);
-  if (status != ARES_SUCCESS)
+  status = hns_expand_name (aptr, abuf, alen, &hostname, &len);
+  if (status != HNS_SUCCESS)
     return status;
 
   if (aptr + len + QFIXEDSZ > abuf + alen)
     {
-      ares_free (hostname);
-      return ARES_EBADRESP;
+      hns_free (hostname);
+      return HNS_EBADRESP;
     }
   aptr += len + QFIXEDSZ;
 
@@ -93,15 +93,15 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
   for (i = 0; i < ancount; i++)
     {
       /* Decode the RR up to the data field. */
-      status = ares_expand_name (aptr, abuf, alen, &rr_name, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name (aptr, abuf, alen, &rr_name, &len);
+      if (status != HNS_SUCCESS)
         {
           break;
         }
       aptr += len;
       if (aptr + RRFIXEDSZ > abuf + alen)
         {
-          status = ARES_EBADRESP;
+          status = HNS_EBADRESP;
           break;
         }
       rr_type = DNS_RR_TYPE (aptr);
@@ -110,7 +110,7 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
       aptr += RRFIXEDSZ;
       if (aptr + rr_len > abuf + alen)
         {
-          status = ARES_EBADRESP;
+          status = HNS_EBADRESP;
           break;
         }
 
@@ -118,10 +118,10 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
       if (rr_class == C_IN && rr_type == T_OPENPGPKEY)
         {
           /* Allocate storage for this OPENPGPKEY answer appending it */
-          openpgpkey_curr = ares_malloc_data(ARES_DATATYPE_OPENPGPKEY_REPLY);
+          openpgpkey_curr = hns_malloc_data(HNS_DATATYPE_OPENPGPKEY_REPLY);
           if (!openpgpkey_curr)
             {
-              status = ARES_ENOMEM;
+              status = HNS_ENOMEM;
               break;
             }
           if (openpgpkey_last)
@@ -137,10 +137,10 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
           openpgpkey_curr->pubkey_len = rr_len;
 
           if (openpgpkey_curr->pubkey_len != 0) {
-            openpgpkey_curr->pubkey = ares_malloc(openpgpkey_curr->pubkey_len);
+            openpgpkey_curr->pubkey = hns_malloc(openpgpkey_curr->pubkey_len);
 
             if (!openpgpkey_curr->pubkey) {
-              status = ARES_ENOMEM;
+              status = HNS_ENOMEM;
               break;
             }
 
@@ -149,7 +149,7 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
         }
 
       /* Don't lose memory in the next iteration */
-      ares_free (rr_name);
+      hns_free (rr_name);
       rr_name = NULL;
 
       /* Move on to the next record */
@@ -157,20 +157,20 @@ ares_parse_openpgpkey_reply (const unsigned char *abuf, int alen,
     }
 
   if (hostname)
-    ares_free (hostname);
+    hns_free (hostname);
   if (rr_name)
-    ares_free (rr_name);
+    hns_free (rr_name);
 
   /* clean up on error */
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     {
       if (openpgpkey_head)
-        ares_free_data (openpgpkey_head);
+        hns_free_data (openpgpkey_head);
       return status;
     }
 
   /* everything looks fine, return the data */
   *openpgpkey_out = openpgpkey_head;
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }

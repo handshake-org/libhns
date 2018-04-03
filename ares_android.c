@@ -16,10 +16,10 @@
 
 #include <jni.h>
 
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_android.h"
-#include "ares_private.h"
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_android.h"
+#include "hns_private.h"
 
 static JavaVM *android_jvm = NULL;
 static jobject android_connectivity_manager = NULL;
@@ -73,17 +73,17 @@ static jmethodID jni_get_method_id(JNIEnv *env, jclass cls,
   return mid;
 }
 
-void ares_library_init_jvm(JavaVM *jvm)
+void hns_library_init_jvm(JavaVM *jvm)
 {
   android_jvm = jvm;
 }
 
-int ares_library_init_android(jobject connectivity_manager)
+int hns_library_init_android(jobject connectivity_manager)
 {
   JNIEnv *env = NULL;
   int need_detatch = 0;
   int res;
-  int ret = ARES_ENOTINITIALIZED;
+  int ret = HNS_ENOTINITIALIZED;
   jclass obj_cls = NULL;
 
   if (android_jvm == NULL)
@@ -105,8 +105,8 @@ int ares_library_init_android(jobject connectivity_manager)
     goto cleanup;
 
   /* Initialization has succeeded. Now attempt to cache the methods that will be
-   * called by ares_get_android_server_list. */
-  ret = ARES_SUCCESS;
+   * called by hns_get_android_server_list. */
+  ret = HNS_SUCCESS;
 
   /* ConnectivityManager in API 1. */
   obj_cls = jni_get_class(env, "android/net/ConnectivityManager");
@@ -184,14 +184,14 @@ done:
   return ret;
 }
 
-int ares_library_android_initialized(void)
+int hns_library_android_initialized(void)
 {
   if (android_jvm == NULL || android_connectivity_manager == NULL)
-    return ARES_ENOTINITIALIZED;
-  return ARES_SUCCESS;
+    return HNS_ENOTINITIALIZED;
+  return HNS_SUCCESS;
 }
 
-void ares_library_cleanup_android(void)
+void hns_library_cleanup_android(void)
 {
   JNIEnv *env = NULL;
   int need_detatch = 0;
@@ -224,7 +224,7 @@ void ares_library_cleanup_android(void)
     (*android_jvm)->DetachCurrentThread(android_jvm);
 }
 
-char **ares_get_android_server_list(size_t max_servers,
+char **hns_get_android_server_list(size_t max_servers,
                                     size_t *num_servers)
 {
   JNIEnv *env = NULL;
@@ -281,7 +281,7 @@ char **ares_get_android_server_list(size_t max_servers,
      }
 
      Note: The JNI ConnectivityManager object and all method IDs were previously
-           initialized in ares_library_init_android.
+           initialized in hns_library_init_android.
    */
 
   active_network = (*env)->CallObjectMethod(env, android_connectivity_manager,
@@ -307,12 +307,12 @@ char **ares_get_android_server_list(size_t max_servers,
     goto done;
   *num_servers = (size_t)nserv;
 
-  dns_list = ares_malloc(sizeof(*dns_list)*(*num_servers));
+  dns_list = hns_malloc(sizeof(*dns_list)*(*num_servers));
   for (i=0; i<*num_servers; i++)
   {
     server = (*env)->CallObjectMethod(env, server_list, android_list_get_mid,
                                       (jint)i);
-    dns_list[i] = ares_malloc(64);
+    dns_list[i] = hns_malloc(64);
     dns_list[i][0] = 0;
     if (server == NULL)
     {

@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseTxtReplyOK) {
@@ -18,24 +18,24 @@ TEST_F(LibraryTest, ParseTxtReplyOK) {
     .add_answer(new DNSTxtRR("example.com", 100, {expected2a, expected2b}));
   std::vector<byte> data = pkt.data();
 
-  struct ares_txt_reply* txt = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  struct hns_txt_reply* txt = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_txt_reply(data.data(), data.size(), &txt));
   ASSERT_NE(nullptr, txt);
   EXPECT_EQ(std::vector<byte>(expected1.data(), expected1.data() + expected1.size()),
             std::vector<byte>(txt->txt, txt->txt + txt->length));
 
-  struct ares_txt_reply* txt2 = txt->next;
+  struct hns_txt_reply* txt2 = txt->next;
   ASSERT_NE(nullptr, txt2);
   EXPECT_EQ(std::vector<byte>(expected2a.data(), expected2a.data() + expected2a.size()),
             std::vector<byte>(txt2->txt, txt2->txt + txt2->length));
 
-  struct ares_txt_reply* txt3 = txt2->next;
+  struct hns_txt_reply* txt3 = txt2->next;
   ASSERT_NE(nullptr, txt3);
   EXPECT_EQ(std::vector<byte>(expected2b.data(), expected2b.data() + expected2b.size()),
             std::vector<byte>(txt3->txt, txt3->txt + txt3->length));
   EXPECT_EQ(nullptr, txt3->next);
 
-  ares_free_data(txt);
+  hns_free_data(txt);
 }
 
 TEST_F(LibraryTest, ParseTxtExtReplyOK) {
@@ -49,27 +49,27 @@ TEST_F(LibraryTest, ParseTxtExtReplyOK) {
     .add_answer(new DNSTxtRR("example.com", 100, {expected2a, expected2b}));
   std::vector<byte> data = pkt.data();
 
-  struct ares_txt_ext* txt = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_txt_reply_ext(data.data(), data.size(), &txt));
+  struct hns_txt_ext* txt = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_txt_reply_ext(data.data(), data.size(), &txt));
   ASSERT_NE(nullptr, txt);
   EXPECT_EQ(std::vector<byte>(expected1.data(), expected1.data() + expected1.size()),
             std::vector<byte>(txt->txt, txt->txt + txt->length));
   EXPECT_EQ(1, txt->record_start);
 
-  struct ares_txt_ext* txt2 = txt->next;
+  struct hns_txt_ext* txt2 = txt->next;
   ASSERT_NE(nullptr, txt2);
   EXPECT_EQ(std::vector<byte>(expected2a.data(), expected2a.data() + expected2a.size()),
             std::vector<byte>(txt2->txt, txt2->txt + txt2->length));
   EXPECT_EQ(1, txt2->record_start);
 
-  struct ares_txt_ext* txt3 = txt2->next;
+  struct hns_txt_ext* txt3 = txt2->next;
   ASSERT_NE(nullptr, txt3);
   EXPECT_EQ(std::vector<byte>(expected2b.data(), expected2b.data() + expected2b.size()),
             std::vector<byte>(txt3->txt, txt3->txt + txt3->length));
   EXPECT_EQ(nullptr, txt3->next);
   EXPECT_EQ(0, txt3->record_start);
 
-  ares_free_data(txt);
+  hns_free_data(txt);
 }
 
 TEST_F(LibraryTest, ParseTxtMalformedReply1) {
@@ -98,8 +98,8 @@ TEST_F(LibraryTest, ParseTxtMalformedReply1) {
     0x12, 'a', 'b',  // invalid length
   };
 
-  struct ares_txt_reply* txt = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  struct hns_txt_reply* txt = nullptr;
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_txt_reply(data.data(), data.size(), &txt));
   ASSERT_EQ(nullptr, txt);
 }
 
@@ -126,8 +126,8 @@ TEST_F(LibraryTest, ParseTxtMalformedReply2) {
     // truncated
   };
 
-  struct ares_txt_reply* txt = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  struct hns_txt_reply* txt = nullptr;
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_txt_reply(data.data(), data.size(), &txt));
   ASSERT_EQ(nullptr, txt);
 }
 
@@ -157,8 +157,8 @@ TEST_F(LibraryTest, ParseTxtMalformedReply3) {
     0x02, 'a', 'b',
   };
 
-  struct ares_txt_reply* txt = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  struct hns_txt_reply* txt = nullptr;
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_txt_reply(data.data(), data.size(), &txt));
   ASSERT_EQ(nullptr, txt);
 }
 
@@ -179,8 +179,8 @@ TEST_F(LibraryTest, ParseTxtMalformedReply4) {
     0x00, // TRUNCATED
   };
 
-  struct ares_txt_reply* txt = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  struct hns_txt_reply* txt = nullptr;
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_txt_reply(data.data(), data.size(), &txt));
   ASSERT_EQ(nullptr, txt);
 }
 
@@ -195,13 +195,13 @@ TEST_F(LibraryTest, ParseTxtReplyErrors) {
     .add_answer(new DNSTxtRR("example.com", 100, {expected1}))
     .add_answer(new DNSTxtRR("example.com", 100, {expected2a, expected2b}));
   std::vector<byte> data = pkt.data();
-  struct ares_txt_reply* txt = nullptr;
+  struct hns_txt_reply* txt = nullptr;
 
   // No question.
   pkt.questions_.clear();
   data = pkt.data();
   txt = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_txt_reply(data.data(), data.size(), &txt));
   EXPECT_EQ(nullptr, txt);
   pkt.add_question(new DNSQuestion("example.com", ns_t_mx));
 
@@ -210,7 +210,7 @@ TEST_F(LibraryTest, ParseTxtReplyErrors) {
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("Axample.com", ns_t_txt));
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  EXPECT_EQ(HNS_ENODATA, hns_parse_txt_reply(data.data(), data.size(), &txt));
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("example.com", ns_t_txt));
 #endif
@@ -219,7 +219,7 @@ TEST_F(LibraryTest, ParseTxtReplyErrors) {
   pkt.add_question(new DNSQuestion("example.com", ns_t_mx));
   data = pkt.data();
   txt = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_txt_reply(data.data(), data.size(), &txt));
   EXPECT_EQ(nullptr, txt);
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("example.com", ns_t_mx));
@@ -228,14 +228,14 @@ TEST_F(LibraryTest, ParseTxtReplyErrors) {
   pkt.answers_.clear();
   data = pkt.data();
   txt = nullptr;
-  EXPECT_EQ(ARES_ENODATA, ares_parse_txt_reply(data.data(), data.size(), &txt));
+  EXPECT_EQ(HNS_ENODATA, hns_parse_txt_reply(data.data(), data.size(), &txt));
   EXPECT_EQ(nullptr, txt);
   pkt.add_answer(new DNSTxtRR("example.com", 100, {expected1}));
 
   // Truncated packets.
   for (size_t len = 1; len < data.size(); len++) {
     txt = nullptr;
-    EXPECT_NE(ARES_SUCCESS, ares_parse_txt_reply(data.data(), len, &txt));
+    EXPECT_NE(HNS_SUCCESS, hns_parse_txt_reply(data.data(), len, &txt));
     EXPECT_EQ(nullptr, txt);
   }
 }
@@ -252,15 +252,15 @@ TEST_F(LibraryTest, ParseTxtReplyAllocFail) {
     .add_answer(new DNSTxtRR("c.example.com", 100, {expected1}))
     .add_answer(new DNSTxtRR("c.example.com", 100, {expected2a, expected2b}));
   std::vector<byte> data = pkt.data();
-  struct ares_txt_reply* txt = nullptr;
+  struct hns_txt_reply* txt = nullptr;
 
   for (int ii = 1; ii <= 13; ii++) {
     ClearFails();
     SetAllocFail(ii);
-    EXPECT_EQ(ARES_ENOMEM, ares_parse_txt_reply(data.data(), data.size(), &txt)) << ii;
+    EXPECT_EQ(HNS_ENOMEM, hns_parse_txt_reply(data.data(), data.size(), &txt)) << ii;
   }
 }
 
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

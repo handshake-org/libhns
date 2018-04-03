@@ -13031,7 +13031,7 @@ Args(const InnerMatcher& matcher) {
 // to accept string literals, whose type is const char[N], but we
 // want to treat them as const char*.
 //
-// NOTE: Since ElementsAre() cares about the order of the elements, it
+// NOTE: Since ElementsAre() hns about the order of the elements, it
 // must not be used with containers whose elements's order is
 // undefined (e.g. hash_map).
 

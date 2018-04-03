@@ -1,6 +1,6 @@
 #############################################################
 #
-## Makefile for building libcares.a with MingW32 (GCC-3.2)
+## Makefile for building libhns.a with MingW32 (GCC-3.2)
 ## Use: make -f Makefile.m32 [demos]
 ##
 ## Quick hack by Guenter; comments to: /dev/nul
@@ -8,7 +8,7 @@
 ########################################################
 ## Nothing more to do below this line!
 
-LIB	= libcares.a
+LIB	= libhns.a
 
 AR	= $(CROSSPREFIX)ar
 CC	= $(CROSSPREFIX)gcc
@@ -17,9 +17,9 @@ RANLIB	= $(CROSSPREFIX)ranlib
 #RM	= rm -f
 CP	= cp -afv
 
-CFLAGS	= $(CARES_CFLAG_EXTRAS) -O2 -Wall -I. -D_WIN32_WINNT=0x0600
-CFLAGS	+= -DCARES_STATICLIB
-LDFLAGS	= $(CARES_LDFLAG_EXTRAS) -s
+CFLAGS	= $(HNS_CFLAG_EXTRAS) -O2 -Wall -I. -D_WIN32_WINNT=0x0600
+CFLAGS	+= -DHNS_STATICLIB
+LDFLAGS	= $(HNS_LDFLAG_EXTRAS) -s
 LIBS	= -lwsock32
 
 # Makefile.inc provides the CSOURCES and HHEADERS defines
@@ -34,21 +34,21 @@ $(LIB): $(OBJLIB)
 
 all: $(LIB) demos
 
-demos: adig.exe ahost.exe acountry.exe
+demos: hdig.exe hhost.exe hcountry.exe
 
 tags:
 	etags *.[ch]
 
-%.exe: %.o ares_getopt.o $(LIB)
+%.exe: %.o hns_getopt.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-$(OBJLIB): ares.h ares_dns.h ares_private.h ares_build.h ares_rules.h
+$(OBJLIB): hns.h hns_dns.h hns_private.h hns_build.h hns_rules.h
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-ares_build.h:
-	$(CP) ares_build.h.dist ares_build.h
+hns_build.h:
+	$(CP) hns_build.h.dist hns_build.h
 
 check:
 
@@ -59,18 +59,18 @@ install:
 	${INSTALL} -m 644 $(LIB) ${DESTDIR}${libdir}
 	${RANLIB} ${DESTDIR}${libdir}/$(LIB)
 	chmod u-w ${DESTDIR}${libdir}/$(LIB)
-	${INSTALL} -m 444 ${srcdir}/ares.h ${DESTDIR}${includedir}
-	${INSTALL} -m 444 ${srcdir}/ares_build.h ${DESTDIR}${includedir}
-	${INSTALL} -m 444 ${srcdir}/ares_rules.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/hns.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/hns_build.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/hns_rules.h ${DESTDIR}${includedir}
 	(for man in $(MANPAGES); do \
 	   ${INSTALL} -m 444 ${srcdir}/$${man} ${DESTDIR}${mandir}/man3; \
 	done)
 
 clean:
-	$(RM) ares_getopt.o $(OBJLIB) $(LIB) adig.exe ahost.exe acountry.exe
+	$(RM) hns_getopt.o $(OBJLIB) $(LIB) hdig.exe hhost.exe hcountry.exe
 
 distclean: clean
 	$(RM) config.cache config.log config.status Makefile
-ifeq "$(wildcard ares_build.h.dist)" "ares_build.h.dist"
-	$(RM) ares_build.h
+ifeq "$(wildcard hns_build.h.dist)" "hns_build.h.dist"
+	$(RM) hns_build.h
 endif

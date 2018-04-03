@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseAaaaReplyOK) {
@@ -16,9 +16,9 @@ TEST_F(LibraryTest, ParseAaaaReplyOK) {
                                0x03, 0x03, 0x03, 0x03, 0x04, 0x04, 0x04, 0x04}));
   std::vector<byte> data = pkt.data();
   struct hostent *host = nullptr;
-  struct ares_addr6ttl info[5];
+  struct hns_addr6ttl info[5];
   int count = 5;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(1, count);
   EXPECT_EQ(100, info[0].ttl);
@@ -28,11 +28,11 @@ TEST_F(LibraryTest, ParseAaaaReplyOK) {
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'example.com' aliases=[] addrs=[0101:0101:0202:0202:0303:0303:0404:0404]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 
   // Repeat without providing places to put the results
   count = 0;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 nullptr, info, &count));
 }
 
@@ -46,9 +46,9 @@ TEST_F(LibraryTest, ParseAaaaReplyCname) {
                                0x03, 0x03, 0x03, 0x03, 0x04, 0x04, 0x04, 0x04}));
   std::vector<byte> data = pkt.data();
   struct hostent *host = nullptr;
-  struct ares_addr6ttl info[5];
+  struct hns_addr6ttl info[5];
   int count = 5;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(1, count);
   // CNAME TTL overrides AAAA TTL.
@@ -59,11 +59,11 @@ TEST_F(LibraryTest, ParseAaaaReplyCname) {
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'c.example.com' aliases=[example.com] addrs=[0101:0101:0202:0202:0303:0303:0404:0404]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 
   // Repeat without providing a hostent
   count = 5;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 nullptr, info, &count));
   EXPECT_EQ(1, count);
   EXPECT_EQ(50, info[0].ttl);
@@ -77,16 +77,16 @@ TEST_F(LibraryTest, ParseAaaaReplyNoData) {
     .add_question(new DNSQuestion("example.com", ns_t_aaaa));
   std::vector<byte> data = pkt.data();
   struct hostent *host = nullptr;
-  struct ares_addr6ttl info[2];
+  struct hns_addr6ttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_ENODATA, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_ENODATA, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(0, count);
   EXPECT_EQ(nullptr, host);
 
   // Again but with a CNAME.
   pkt.add_answer(new DNSCnameRR("example.com", 200, "c.example.com"));
-  EXPECT_EQ(ARES_ENODATA, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_ENODATA, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(0, count);
   EXPECT_EQ(nullptr, host);
@@ -102,13 +102,13 @@ TEST_F(LibraryTest, ParseAaaaReplyErrors) {
   std::vector<byte> data;
 
   struct hostent *host = nullptr;
-  struct ares_addr6ttl info[2];
+  struct hns_addr6ttl info[2];
   int count = 2;
 
   // No question.
   pkt.questions_.clear();
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_aaaa_reply(data.data(), data.size(),
                                                  &host, info, &count));
   EXPECT_EQ(nullptr, host);
   pkt.add_question(new DNSQuestion("example.com", ns_t_aaaa));
@@ -117,7 +117,7 @@ TEST_F(LibraryTest, ParseAaaaReplyErrors) {
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("Axample.com", ns_t_aaaa));
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_ENODATA, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(nullptr, host);
   pkt.questions_.clear();
@@ -126,7 +126,7 @@ TEST_F(LibraryTest, ParseAaaaReplyErrors) {
   // Two questions.
   pkt.add_question(new DNSQuestion("example.com", ns_t_aaaa));
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_aaaa_reply(data.data(), data.size(),
                                                  &host, info, &count));
   EXPECT_EQ(nullptr, host);
   pkt.questions_.clear();
@@ -136,7 +136,7 @@ TEST_F(LibraryTest, ParseAaaaReplyErrors) {
   pkt.answers_.clear();
   pkt.add_answer(new DNSMxRR("example.com", 100, 100, "mx1.example.com"));
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_ENODATA, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(nullptr, host);
   pkt.answers_.clear();
@@ -147,7 +147,7 @@ TEST_F(LibraryTest, ParseAaaaReplyErrors) {
   // No answer.
   pkt.answers_.clear();
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_aaaa_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_ENODATA, hns_parse_aaaa_reply(data.data(), data.size(),
                                                 &host, info, &count));
   EXPECT_EQ(nullptr, host);
   pkt.add_answer(new DNSAaaaRR("example.com", 100,
@@ -157,10 +157,10 @@ TEST_F(LibraryTest, ParseAaaaReplyErrors) {
   // Truncated packets.
   data = pkt.data();
   for (size_t len = 1; len < data.size(); len++) {
-    EXPECT_EQ(ARES_EBADRESP, ares_parse_aaaa_reply(data.data(), len,
+    EXPECT_EQ(HNS_EBADRESP, hns_parse_aaaa_reply(data.data(), len,
                                                    &host, info, &count));
     EXPECT_EQ(nullptr, host);
-    EXPECT_EQ(ARES_EBADRESP, ares_parse_aaaa_reply(data.data(), len,
+    EXPECT_EQ(HNS_EBADRESP, hns_parse_aaaa_reply(data.data(), len,
                                                    nullptr, info, &count));
   }
 }
@@ -175,17 +175,17 @@ TEST_F(LibraryTest, ParseAaaaReplyAllocFail) {
                                0x03, 0x03, 0x03, 0x03, 0x04, 0x04, 0x04, 0x04}));
   std::vector<byte> data = pkt.data();
   struct hostent *host = nullptr;
-  struct ares_addr6ttl info[2];
+  struct hns_addr6ttl info[2];
   int count = 2;
 
   for (int ii = 1; ii <= 8; ii++) {
     ClearFails();
     SetAllocFail(ii);
-    EXPECT_EQ(ARES_ENOMEM, ares_parse_aaaa_reply(data.data(), data.size(),
+    EXPECT_EQ(HNS_ENOMEM, hns_parse_aaaa_reply(data.data(), data.size(),
                                                  &host, info, &count)) << ii;
     EXPECT_EQ(nullptr, host);
   }
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

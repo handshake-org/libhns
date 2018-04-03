@@ -15,7 +15,7 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -32,8 +32,8 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_ipv6.h"
+#include "hns.h"
+#include "hns_ipv6.h"
 
 #ifndef HAVE_INET_NTOP
 
@@ -59,7 +59,7 @@ static const char *inet_ntop6(const unsigned char *src, char *dst, size_t size);
  *     Paul Vixie, 1996.
  */
 const char *
-ares_inet_ntop(int af, const void *src, char *dst, ares_socklen_t size)
+hns_inet_ntop(int af, const void *src, char *dst, hns_socklen_t size)
 {
   switch (af) {
   case AF_INET:
@@ -199,7 +199,7 @@ inet_ntop6(const unsigned char *src, char *dst, size_t size)
 #else /* HAVE_INET_NTOP */
 
 const char *
-ares_inet_ntop(int af, const void *src, char *dst, ares_socklen_t size)
+hns_inet_ntop(int af, const void *src, char *dst, hns_socklen_t size)
 {
   /* just relay this to the underlying function */
   return inet_ntop(af, src, dst, size);

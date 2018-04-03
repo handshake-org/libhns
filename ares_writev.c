@@ -15,22 +15,22 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_LIMITS_H
 #  include <limits.h>
 #endif
 
-#include "ares.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_private.h"
 
 #ifndef HAVE_WRITEV
-ares_ssize_t ares_writev(ares_socket_t s, const struct iovec *iov, int iovcnt)
+hns_ssize_t hns_writev(hns_socket_t s, const struct iovec *iov, int iovcnt)
 {
   char *buffer, *bp;
   int i;
   size_t bytes = 0;
-  ares_ssize_t result;
+  hns_ssize_t result;
 
   /* Validate iovcnt */
   if (iovcnt <= 0)
@@ -54,7 +54,7 @@ ares_ssize_t ares_writev(ares_socket_t s, const struct iovec *iov, int iovcnt)
     return (0);
 
   /* Allocate a temporary buffer to hold the data */
-  buffer = ares_malloc(bytes);
+  buffer = hns_malloc(bytes);
   if (!buffer)
   {
     SET_ERRNO(ENOMEM);
@@ -71,7 +71,7 @@ ares_ssize_t ares_writev(ares_socket_t s, const struct iovec *iov, int iovcnt)
   /* Send buffer contents */
   result = swrite(s, buffer, bytes);
 
-  ares_free(buffer);
+  hns_free(buffer);
 
   return (result);
 }

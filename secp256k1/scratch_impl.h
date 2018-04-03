@@ -4,8 +4,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef _ARES_SECP256K1_SCRATCH_IMPL_H_
-#define _ARES_SECP256K1_SCRATCH_IMPL_H_
+#ifndef _HNS_SECP256K1_SCRATCH_IMPL_H_
+#define _HNS_SECP256K1_SCRATCH_IMPL_H_
 
 #include "scratch.h"
 
@@ -15,8 +15,8 @@
  * TODO: Determine this at configure time. */
 #define ALIGNMENT 16
 
-static ares_secp256k1_scratch* ares_secp256k1_scratch_create(const ares_secp256k1_callback* error_callback, size_t init_size, size_t max_size) {
-    ares_secp256k1_scratch* ret = (ares_secp256k1_scratch*)checked_malloc(error_callback, sizeof(*ret));
+static hns_secp256k1_scratch* hns_secp256k1_scratch_create(const hns_secp256k1_callback* error_callback, size_t init_size, size_t max_size) {
+    hns_secp256k1_scratch* ret = (hns_secp256k1_scratch*)checked_malloc(error_callback, sizeof(*ret));
     if (ret != NULL) {
         ret->data = checked_malloc(error_callback, init_size);
         if (ret->data == NULL) {
@@ -31,21 +31,21 @@ static ares_secp256k1_scratch* ares_secp256k1_scratch_create(const ares_secp256k
     return ret;
 }
 
-static void ares_secp256k1_scratch_destroy(ares_secp256k1_scratch* scratch) {
+static void hns_secp256k1_scratch_destroy(hns_secp256k1_scratch* scratch) {
     if (scratch != NULL) {
         free(scratch->data);
         free(scratch);
     }
 }
 
-static size_t ares_secp256k1_scratch_max_allocation(const ares_secp256k1_scratch* scratch, size_t objects) {
+static size_t hns_secp256k1_scratch_max_allocation(const hns_secp256k1_scratch* scratch, size_t objects) {
     if (scratch->max_size <= objects * ALIGNMENT) {
         return 0;
     }
     return scratch->max_size - objects * ALIGNMENT;
 }
 
-static int ares_secp256k1_scratch_resize(ares_secp256k1_scratch* scratch, size_t n, size_t objects) {
+static int hns_secp256k1_scratch_resize(hns_secp256k1_scratch* scratch, size_t n, size_t objects) {
     n += objects * ALIGNMENT;
     if (n > scratch->init_size && n <= scratch->max_size) {
         void *tmp = checked_realloc(scratch->error_callback, scratch->data, n);
@@ -58,7 +58,7 @@ static int ares_secp256k1_scratch_resize(ares_secp256k1_scratch* scratch, size_t
     return n <= scratch->max_size;
 }
 
-static void *ares_secp256k1_scratch_alloc(ares_secp256k1_scratch* scratch, size_t size) {
+static void *hns_secp256k1_scratch_alloc(hns_secp256k1_scratch* scratch, size_t size) {
     void *ret;
     size = ((size + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
     if (size + scratch->offset > scratch->init_size) {
@@ -70,7 +70,7 @@ static void *ares_secp256k1_scratch_alloc(ares_secp256k1_scratch* scratch, size_
     return ret;
 }
 
-static void ares_secp256k1_scratch_reset(ares_secp256k1_scratch* scratch) {
+static void hns_secp256k1_scratch_reset(hns_secp256k1_scratch* scratch) {
     scratch->offset = 0;
 }
 

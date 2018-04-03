@@ -1,22 +1,22 @@
 #include <signal.h>
 #include <stdlib.h>
 
-#include "ares-test.h"
+#include "hns-test.h"
 
 int main(int argc, char* argv[]) {
   std::vector<char*> gtest_argv = {argv[0]};
   for (int ii = 1; ii < argc; ii++) {
     if (strcmp(argv[ii], "-v") == 0) {
-      ares::test::verbose = true;
+      hns::test::verbose = true;
     } else if ((strcmp(argv[ii], "-p") == 0) && (ii + 1 < argc)) {
       ii++;
-      ares::test::mock_port = atoi(argv[ii]);
+      hns::test::mock_port = atoi(argv[ii]);
     } else if (strcmp(argv[ii], "-4") == 0) {
-      ares::test::families = ares::test::ipv4_family;
-      ares::test::families_modes = ares::test::ipv4_family_both_modes;
+      hns::test::families = hns::test::ipv4_family;
+      hns::test::families_modes = hns::test::ipv4_family_both_modes;
     } else if (strcmp(argv[ii], "-6") == 0) {
-      ares::test::families = ares::test::ipv6_family;
-      ares::test::families_modes = ares::test::ipv6_family_both_modes;
+      hns::test::families = hns::test::ipv6_family;
+      hns::test::families_modes = hns::test::ipv6_family_both_modes;
     } else {
       gtest_argv.push_back(argv[ii]);
     }

@@ -1,26 +1,26 @@
-# Microsoft Developer Studio Project File - Name="ahost" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="hhost" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=ahost - Win32 using cares LIB Debug
+CFG=hhost - Win32 using hns LIB Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "vc6ahost.mak".
+!MESSAGE NMAKE /f "vc6hhost.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "vc6ahost.mak" CFG="ahost - Win32 using cares LIB Debug"
+!MESSAGE NMAKE /f "vc6hhost.mak" CFG="hhost - Win32 using hns LIB Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ahost - Win32 using cares DLL Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "ahost - Win32 using cares DLL Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "ahost - Win32 using cares LIB Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "ahost - Win32 using cares LIB Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "hhost - Win32 using hns DLL Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "hhost - Win32 using hns DLL Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "hhost - Win32 using hns LIB Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "hhost - Win32 using hns LIB Release" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -30,7 +30,7 @@ CFG=ahost - Win32 using cares LIB Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ahost - Win32 using cares DLL Debug"
+!IF  "$(CFG)" == "hhost - Win32 using hns DLL Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -51,10 +51,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 caresd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"dll-debug/ahost.exe" /pdbtype:con /libpath:"..\cares\dll-debug" /fixed:no
-# ADD LINK32 caresd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"dll-debug/ahost.exe" /pdbtype:con /libpath:"..\cares\dll-debug" /fixed:no
+# ADD BASE LINK32 hnsd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"dll-debug/hhost.exe" /pdbtype:con /libpath:"..\hns\dll-debug" /fixed:no
+# ADD LINK32 hnsd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"dll-debug/hhost.exe" /pdbtype:con /libpath:"..\hns\dll-debug" /fixed:no
 
-!ELSEIF  "$(CFG)" == "ahost - Win32 using cares DLL Release"
+!ELSEIF  "$(CFG)" == "hhost - Win32 using hns DLL Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -75,10 +75,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 cares.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"dll-release/ahost.exe" /libpath:"..\cares\dll-release" /fixed:no
-# ADD LINK32 cares.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"dll-release/ahost.exe" /libpath:"..\cares\dll-release" /fixed:no
+# ADD BASE LINK32 hns.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"dll-release/hhost.exe" /libpath:"..\hns\dll-release" /fixed:no
+# ADD LINK32 hns.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"dll-release/hhost.exe" /libpath:"..\hns\dll-release" /fixed:no
 
-!ELSEIF  "$(CFG)" == "ahost - Win32 using cares LIB Debug"
+!ELSEIF  "$(CFG)" == "hhost - Win32 using hns LIB Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -91,18 +91,18 @@ LINK32=link.exe
 # PROP Intermediate_Dir "lib-debug/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "CARES_STATICLIB" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "CARES_STATICLIB" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "HNS_STATICLIB" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "HNS_STATICLIB" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 libcaresd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"lib-debug/ahost.exe" /pdbtype:con /libpath:"..\cares\lib-debug" /fixed:no
-# ADD LINK32 libcaresd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"lib-debug/ahost.exe" /pdbtype:con /libpath:"..\cares\lib-debug" /fixed:no
+# ADD BASE LINK32 libhnsd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"lib-debug/hhost.exe" /pdbtype:con /libpath:"..\hns\lib-debug" /fixed:no
+# ADD LINK32 libhnsd.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"lib-debug/hhost.exe" /pdbtype:con /libpath:"..\hns\lib-debug" /fixed:no
 
-!ELSEIF  "$(CFG)" == "ahost - Win32 using cares LIB Release"
+!ELSEIF  "$(CFG)" == "hhost - Win32 using hns LIB Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -115,43 +115,43 @@ LINK32=link.exe
 # PROP Intermediate_Dir "lib-release/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "CARES_STATICLIB" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "CARES_STATICLIB" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "HNS_STATICLIB" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "HNS_STATICLIB" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 libcares.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"lib-release/ahost.exe" /libpath:"..\cares\lib-release" /fixed:no
-# ADD LINK32 libcares.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"lib-release/ahost.exe" /libpath:"..\cares\lib-release" /fixed:no
+# ADD BASE LINK32 libhns.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"lib-release/hhost.exe" /libpath:"..\hns\lib-release" /fixed:no
+# ADD LINK32 libhns.lib ws2_32.lib advapi32.lib kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"lib-release/hhost.exe" /libpath:"..\hns\lib-release" /fixed:no
 
 !ENDIF 
 
 # Begin Target
 
-# Name "ahost - Win32 using cares DLL Debug"
-# Name "ahost - Win32 using cares DLL Release"
-# Name "ahost - Win32 using cares LIB Debug"
-# Name "ahost - Win32 using cares LIB Release"
+# Name "hhost - Win32 using hns DLL Debug"
+# Name "hhost - Win32 using hns DLL Release"
+# Name "hhost - Win32 using hns LIB Debug"
+# Name "hhost - Win32 using hns LIB Release"
 # Begin Group "Source Files"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\ahost.c
+SOURCE=..\..\hhost.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_getopt.c
+SOURCE=..\..\hns_getopt.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_nowarn.c
+SOURCE=..\..\hns_nowarn.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strcasecmp.c
+SOURCE=..\..\hns_strcasecmp.c
 # End Source File
 # Begin Source File
 
@@ -167,15 +167,15 @@ SOURCE=..\..\inet_ntop.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\ares_getopt.h
+SOURCE=..\..\hns_getopt.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_nowarn.h
+SOURCE=..\..\hns_nowarn.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strcasecmp.h
+SOURCE=..\..\hns_strcasecmp.h
 # End Source File
 # Begin Source File
 

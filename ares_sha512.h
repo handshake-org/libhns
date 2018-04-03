@@ -14,18 +14,18 @@ extern "C" {
 #define sha384_hash_size  48
 
 /* algorithm context */
-typedef struct ares_sha512_ctx
+typedef struct hns_sha512_ctx
 {
 	uint64_t message[16];   /* 1024-bit buffer for leftovers */
 	uint64_t length;        /* number of processed bytes */
 	uint64_t hash[8];       /* 512-bit algorithm internal hashing state */
 	unsigned digest_length; /* length of the algorithm digest in bytes */
-} ares_sha512_ctx;
+} hns_sha512_ctx;
 
-void ares_sha384_init(ares_sha512_ctx *ctx);
-void ares_sha512_init(ares_sha512_ctx *ctx);
-void ares_sha512_update(ares_sha512_ctx *ctx, const unsigned char* data, size_t length);
-void ares_sha512_final(ares_sha512_ctx *ctx, unsigned char* result);
+void hns_sha384_init(hns_sha512_ctx *ctx);
+void hns_sha512_init(hns_sha512_ctx *ctx);
+void hns_sha512_update(hns_sha512_ctx *ctx, const unsigned char* data, size_t length);
+void hns_sha512_final(hns_sha512_ctx *ctx, unsigned char* result);
 
 #ifdef __cplusplus
 } /* extern "C" */

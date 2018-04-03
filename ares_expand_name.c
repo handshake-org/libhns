@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -28,9 +28,9 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_nowarn.h"
-#include "ares_private.h" /* for the memdebug */
+#include "hns.h"
+#include "hns_nowarn.h"
+#include "hns_private.h" /* for the memdebug */
 
 /* Maximum number of indirections allowed for a name */
 #define MAX_INDIRS 50
@@ -62,24 +62,24 @@ static int name_length(const unsigned char *encoded, const unsigned char *abuf,
  * backslashes to escape periods or backslashes in the expanded name.
  */
 
-int ares_expand_name(const unsigned char *encoded, const unsigned char *abuf,
+int hns_expand_name(const unsigned char *encoded, const unsigned char *abuf,
                      int alen, char **s, long *enclen)
 {
   int len, indir = 0;
   char *q;
   const unsigned char *p;
   union {
-    ares_ssize_t sig;
+    hns_ssize_t sig;
      size_t uns;
   } nlen;
 
   nlen.sig = name_length(encoded, abuf, alen);
   if (nlen.sig < 0)
-    return ARES_EBADNAME;
+    return HNS_EBADNAME;
 
-  *s = ares_malloc(nlen.uns + 1);
+  *s = hns_malloc(nlen.uns + 1);
   if (!*s)
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
   q = *s;
 
   if (nlen.uns == 0) {
@@ -95,7 +95,7 @@ int ares_expand_name(const unsigned char *encoded, const unsigned char *abuf,
     else
       *enclen = 1L;  /* the caller should move one byte to get past this */
 
-    return ARES_SUCCESS;
+    return HNS_SUCCESS;
   }
 
   /* No error-checking necessary; it was all done by name_length(). */
@@ -106,7 +106,7 @@ int ares_expand_name(const unsigned char *encoded, const unsigned char *abuf,
         {
           if (!indir)
             {
-              *enclen = aresx_uztosl(p + 2U - encoded);
+              *enclen = hnsx_uztosl(p + 2U - encoded);
               indir = 1;
             }
           p = abuf + ((*p & ~INDIR_MASK) << 8 | *(p + 1));
@@ -126,7 +126,7 @@ int ares_expand_name(const unsigned char *encoded, const unsigned char *abuf,
         }
     }
   if (!indir)
-    *enclen = aresx_uztosl(p + 1U - encoded);
+    *enclen = hnsx_uztosl(p + 1U - encoded);
 
   /* Nuke the trailing period if we wrote one. */
   if (q > *s)
@@ -134,7 +134,7 @@ int ares_expand_name(const unsigned char *encoded, const unsigned char *abuf,
   else
     *q = 0; /* zero terminate; LCOV_EXCL_LINE: empty names exit above */
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
 /* Return the length of the expansion of an encoded domain name, or
@@ -197,13 +197,13 @@ static int name_length(const unsigned char *encoded, const unsigned char *abuf,
   return (n) ? n - 1 : n;
 }
 
-/* Like ares_expand_name but returns EBADRESP in case of invalid input. */
-int ares__expand_name_for_response(const unsigned char *encoded,
+/* Like hns_expand_name but returns EBADRESP in case of invalid input. */
+int hns__expand_name_for_response(const unsigned char *encoded,
                                    const unsigned char *abuf, int alen,
                                    char **s, long *enclen)
 {
-  int status = ares_expand_name(encoded, abuf, alen, s, enclen);
-  if (status == ARES_EBADNAME)
-    status = ARES_EBADRESP;
+  int status = hns_expand_name(encoded, abuf, alen, s, enclen);
+  if (status == HNS_EBADNAME)
+    status = HNS_EBADRESP;
   return status;
 }

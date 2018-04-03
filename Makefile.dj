@@ -1,12 +1,12 @@
 #
-# c-ares Makefile for djgpp/gcc/Watt-32.
+# hns Makefile for djgpp/gcc/Watt-32.
 #   By Gisle Vanem <gvanem@yahoo.no> 2004.
 #
 
 
 TOPDIR = ..
 
-DEPEND_PREREQ = ares_config.h
+DEPEND_PREREQ = hns_config.h
 
 include ../packages/DOS/common.dj
 include Makefile.inc
@@ -19,7 +19,7 @@ ifeq ($(USE_CURLDEBUG),1)
   EX_LIBS  = ../lib/libcurl.a
   OBJ_HACK = $(OBJECTS)
 else
-  OBJ_HACK = libcares.a
+  OBJ_HACK = libhns.a
 endif
 
 ifeq ($(USE_SSL),1)
@@ -38,28 +38,28 @@ EX_LIBS += $(WATT32_ROOT)/lib/libwatt.a
 
 OBJECTS = $(addprefix $(OBJ_DIR)/, $(CSOURCES:.c=.o))
 
-all: $(OBJ_DIR) ares_config.h libcares.a ahost.exe adig.exe acountry.exe
-	@echo Welcome to c-ares.
+all: $(OBJ_DIR) hns_config.h libhns.a hhost.exe hdig.exe hcountry.exe
+	@echo Welcome to hns.
 
-libcares.a: $(OBJECTS)
+libhns.a: $(OBJECTS)
 	ar rs $@ $?
 
-ares_config.h: config-dos.h
+hns_config.h: config-dos.h
 	$(COPY) $^ $@
 
-ahost.exe: ahost.c $(OBJ_DIR)/ares_getopt.o $(OBJ_HACK)
+hhost.exe: hhost.c $(OBJ_DIR)/hns_getopt.o $(OBJ_HACK)
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(EX_LIBS)
 
-adig.exe: adig.c $(OBJ_DIR)/ares_getopt.o $(OBJ_HACK)
+hdig.exe: hdig.c $(OBJ_DIR)/hns_getopt.o $(OBJ_HACK)
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(EX_LIBS)
 
-acountry.exe: acountry.c $(OBJ_DIR)/ares_getopt.o $(OBJ_HACK)
+hcountry.exe: hcountry.c $(OBJ_DIR)/hns_getopt.o $(OBJ_HACK)
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(EX_LIBS)
 
 # clean generated files
 #
 genclean:
-	- $(DELETE) ares_config.h
+	- $(DELETE) hns_config.h
 
 # clean object files and subdir
 #
@@ -75,11 +75,11 @@ clean: objclean
 # clean everything
 #
 realclean vclean: clean
-	- $(DELETE) libcares.a
-	- $(DELETE) acountry.exe
-	- $(DELETE) adig.exe
-	- $(DELETE) ahost.exe
-	- $(DELETE) libcares.a
+	- $(DELETE) libhns.a
+	- $(DELETE) hcountry.exe
+	- $(DELETE) hdig.exe
+	- $(DELETE) hhost.exe
+	- $(DELETE) libhns.a
 
 -include depend.dj
 

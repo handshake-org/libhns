@@ -16,7 +16,7 @@
  */
 
 #include <string.h>
-#include "ares_sha256.h"
+#include "hns_sha256.h"
 
 static inline uint32_t bswap_32(uint32_t x) {
 	x = ((x << 8) & 0xFF00FF00u) | ((x >> 8) & 0x00FF00FFu);
@@ -42,7 +42,7 @@ static void swap_copy_str_to_u32(void* to, int index, const void* from, size_t l
 
 #define IS_ALIGNED_32(p) (0 == (3 & ((const char*)(p) - (const char*)0)))
 
-#ifdef ARES_BIG_ENDIAN
+#ifdef HNS_BIG_ENDIAN
 #define be2me_32(x) (x)
 #define le2me_32(x) bswap_32(x)
 #define be32_copy(to, index, from, length) memcpy((to) + (index), (from), (length))
@@ -100,7 +100,7 @@ static const unsigned k256[64] = {
  *
  * @param ctx context to initialize
  */
-void ares_sha256_init(ares_sha256_ctx *ctx)
+void hns_sha256_init(hns_sha256_ctx *ctx)
 {
 	/* Initial values. These words were obtained by taking the first 32
 	 * bits of the fractional parts of the square roots of the first
@@ -111,7 +111,7 @@ void ares_sha256_init(ares_sha256_ctx *ctx)
 	};
 
 	ctx->length = 0;
-	ctx->digest_length = ares_sha256_hash_size;
+	ctx->digest_length = hns_sha256_hash_size;
 
 	/* initialize algorithm state */
 	memcpy(ctx->hash, SHA256_H0, sizeof(ctx->hash));
@@ -123,7 +123,7 @@ void ares_sha256_init(ares_sha256_ctx *ctx)
  * @param hash algorithm state
  * @param block the message block to process
  */
-static void ares_sha256_process_block(unsigned hash[8], unsigned block[16])
+static void hns_sha256_process_block(unsigned hash[8], unsigned block[16])
 {
 	unsigned A, B, C, D, E, F, G, H;
 	unsigned W[16];
@@ -182,36 +182,36 @@ static void ares_sha256_process_block(unsigned hash[8], unsigned block[16])
  * @param msg message chunk
  * @param size length of the message chunk
  */
-void ares_sha256_update(ares_sha256_ctx *ctx, const unsigned char *msg, size_t size)
+void hns_sha256_update(hns_sha256_ctx *ctx, const unsigned char *msg, size_t size)
 {
 	size_t index = (size_t)ctx->length & 63;
 	ctx->length += size;
 
 	/* fill partial block */
 	if (index) {
-		size_t left = ares_sha256_block_size - index;
+		size_t left = hns_sha256_block_size - index;
 		memcpy((char*)ctx->message + index, msg, (size < left ? size : left));
 		if (size < left) return;
 
 		/* process partial block */
-		ares_sha256_process_block(ctx->hash, (unsigned*)ctx->message);
+		hns_sha256_process_block(ctx->hash, (unsigned*)ctx->message);
 		msg  += left;
 		size -= left;
 	}
-	while (size >= ares_sha256_block_size) {
+	while (size >= hns_sha256_block_size) {
 		unsigned* aligned_message_block;
 		if (IS_ALIGNED_32(msg)) {
 			/* the most common case is processing of an already aligned message
 			without copying it */
 			aligned_message_block = (unsigned*)msg;
 		} else {
-			memcpy(ctx->message, msg, ares_sha256_block_size);
+			memcpy(ctx->message, msg, hns_sha256_block_size);
 			aligned_message_block = (unsigned*)ctx->message;
 		}
 
-		ares_sha256_process_block(ctx->hash, aligned_message_block);
-		msg  += ares_sha256_block_size;
-		size -= ares_sha256_block_size;
+		hns_sha256_process_block(ctx->hash, aligned_message_block);
+		msg  += hns_sha256_block_size;
+		size -= hns_sha256_block_size;
 	}
 	if (size) {
 		memcpy(ctx->message, msg, size); /* save leftovers */
@@ -224,7 +224,7 @@ void ares_sha256_update(ares_sha256_ctx *ctx, const unsigned char *msg, size_t s
  * @param ctx the algorithm context containing current hashing state
  * @param result calculated hash in binary form
  */
-void ares_sha256_final(ares_sha256_ctx *ctx, unsigned char* result)
+void hns_sha256_final(hns_sha256_ctx *ctx, unsigned char* result)
 {
 	size_t index = ((unsigned)ctx->length & 63) >> 2;
 	unsigned shift = ((unsigned)ctx->length & 3) * 8;
@@ -241,7 +241,7 @@ void ares_sha256_final(ares_sha256_ctx *ctx, unsigned char* result)
 		while (index < 16) {
 			ctx->message[index++] = 0;
 		}
-		ares_sha256_process_block(ctx->hash, ctx->message);
+		hns_sha256_process_block(ctx->hash, ctx->message);
 		index = 0;
 	}
 	while (index < 14) {
@@ -249,7 +249,7 @@ void ares_sha256_final(ares_sha256_ctx *ctx, unsigned char* result)
 	}
 	ctx->message[14] = be2me_32( (unsigned)(ctx->length >> 29) );
 	ctx->message[15] = be2me_32( (unsigned)(ctx->length << 3) );
-	ares_sha256_process_block(ctx->hash, ctx->message);
+	hns_sha256_process_block(ctx->hash, ctx->message);
 
 	if (result) be32_copy(result, 0, ctx->hash, ctx->digest_length);
 }

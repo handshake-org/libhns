@@ -13,22 +13,22 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_SET_LOCAL_IP4 3 "30 June 2010"
+.TH HNS_SET_LOCAL_IP4 3 "30 June 2010"
 .SH NAME
-ares_set_local_ip4 \- Set local IPv4 address outgoing requests.
+hns_set_local_ip4 \- Set local IPv4 address outgoing requests.
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B void ares_set_local_ip4(ares_channel \fIchannel\fP, unsigned int \fIlocal_ip\fP)
+.B void hns_set_local_ip4(hns_channel \fIchannel\fP, unsigned int \fIlocal_ip\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_set_local_ip4\fP function sets the IP address for outbound
+The \fBhns_set_local_ip4\fP function sets the IP address for outbound
 requests.  This allows users to specify outbound interfaces when used
 on multi-homed systems.
 .SH SEE ALSO
-.BR ares_set_local_ip6 (3)
+.BR hns_set_local_ip6 (3)
 .SH NOTES
-This function was added in c-ares 1.7.4
+This function was added in hns 1.7.4
 .SH AUTHOR
 Ben Greear

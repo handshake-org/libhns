@@ -16,12 +16,12 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
-#include "ares.h"
-#include "ares_platform.h"
-#include "ares_nowarn.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_platform.h"
+#include "hns_nowarn.h"
+#include "hns_private.h"
 
 #if defined(WIN32) && !defined(MSDOS)
 
@@ -30,7 +30,7 @@
 #define V_PLATFORM_WIN32_NT       2
 #define V_PLATFORM_WIN32_CE       3
 
-win_platform ares__getplatform(void)
+win_platform hns__getplatform(void)
 {
   OSVERSIONINFOEX OsvEx;
 
@@ -2800,8 +2800,8 @@ static struct pvt_servent IANAports[] = {
 {"lanyon-lantern",     {NULL}, 1682, "udp"},
 {"ncpm-hip",           {NULL}, 1683, "tcp"},
 {"ncpm-hip",           {NULL}, 1683, "udp"},
-{"snaresecure",        {NULL}, 1684, "tcp"},
-{"snaresecure",        {NULL}, 1684, "udp"},
+{"snhnsecure",        {NULL}, 1684, "tcp"},
+{"snhnsecure",        {NULL}, 1684, "udp"},
 {"n2nremote",          {NULL}, 1685, "tcp"},
 {"n2nremote",          {NULL}, 1685, "udp"},
 {"cvmon",              {NULL}, 1686, "tcp"},

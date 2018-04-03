@@ -14,14 +14,14 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
 
-#include "ares.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_private.h"
 
 /* return time offset between now and (future) check, in milliseconds */
 static long timeoffset(struct timeval *now, struct timeval *check)
@@ -31,11 +31,11 @@ static long timeoffset(struct timeval *now, struct timeval *check)
 }
 
 /* WARNING: Beware that this is linear in the number of outstanding
- * requests! You are probably far better off just calling ares_process()
- * once per second, rather than calling ares_timeout() to figure out
- * when to next call ares_process().
+ * requests! You are probably far better off just calling hns_process()
+ * once per second, rather than calling hns_timeout() to figure out
+ * when to next call hns_process().
  */
-struct timeval *ares_timeout(ares_channel channel, struct timeval *maxtv,
+struct timeval *hns_timeout(hns_channel channel, struct timeval *maxtv,
                              struct timeval *tvbuf)
 {
   struct query *query;
@@ -46,11 +46,11 @@ struct timeval *ares_timeout(ares_channel channel, struct timeval *maxtv,
   long offset, min_offset;
 
   /* No queries, no timeout (and no fetch of the current time). */
-  if (ares__is_list_empty(&(channel->all_queries)))
+  if (hns__is_list_empty(&(channel->all_queries)))
     return maxtv;
 
   /* Find the minimum timeout for the current set of queries. */
-  now = ares__tvnow();
+  now = hns__tvnow();
   min_offset = -1;
 
   list_head = &(channel->all_queries);
@@ -77,7 +77,7 @@ struct timeval *ares_timeout(ares_channel channel, struct timeval *maxtv,
       nextstop.tv_sec = ioffset/1000;
       nextstop.tv_usec = (ioffset%1000)*1000;
 
-      if (!maxtv || ares__timedout(maxtv, &nextstop))
+      if (!maxtv || hns__timedout(maxtv, &nextstop))
         {
           *tvbuf = nextstop;
           return tvbuf;

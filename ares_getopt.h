@@ -1,5 +1,5 @@
-#ifndef ARES_GETOPT_H
-#define ARES_GETOPT_H
+#ifndef HNS_GETOPT_H
+#define HNS_GETOPT_H
 
 /*
  * Copyright (c) 1987-2001 The Regents of the University of California.
@@ -31,7 +31,7 @@
  */
 
 
-int ares_getopt(int nargc, char * const nargv[], const char *ostr);
+int hns_getopt(int nargc, char * const nargv[], const char *ostr);
 
 #undef optarg
 #undef optind
@@ -39,15 +39,15 @@ int ares_getopt(int nargc, char * const nargv[], const char *ostr);
 #undef optopt
 #undef optreset
 
-#define optarg   ares_optarg
-#define optind   ares_optind
-#define opterr   ares_opterr
-#define optopt   ares_optopt
-#define optreset ares_optreset
+#define optarg   hns_optarg
+#define optind   hns_optind
+#define opterr   hns_opterr
+#define optopt   hns_optopt
+#define optreset hns_optreset
 
 extern char *optarg;
 extern int optind;
 extern int opterr;
 extern int optopt;
 
-#endif /* ARES_GETOPT_H */
+#endif /* HNS_GETOPT_H */

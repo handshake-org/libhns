@@ -13,43 +13,43 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_PROCESS 3 "25 July 1998"
+.TH HNS_PROCESS 3 "25 July 1998"
 .SH NAME
-ares_process \- Process events for name resolution
+hns_process \- Process events for name resolution
 .SH SYNOPSIS
 .nf
-#include <ares.h>
+#include <hns.h>
 
-void ares_process(ares_channel \fIchannel\fP,
+void hns_process(hns_channel \fIchannel\fP,
                   fd_set *\fIread_fds\fP,
                   fd_set *\fIwrite_fds\fP)
 
-void ares_process_fd(ares_channel \fIchannel\fP,
-                     ares_socket_t \fIread_fd\fP,
-                     ares_socket_t \fIwrite_fd\fP)
+void hns_process_fd(hns_channel \fIchannel\fP,
+                     hns_socket_t \fIread_fd\fP,
+                     hns_socket_t \fIwrite_fd\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_process(3)\fP function handles input/output events and timeouts
+The \fBhns_process(3)\fP function handles input/output events and timeouts
 associated with queries pending on the name service channel identified by
 .IR channel .
 The file descriptor sets pointed to by \fIread_fds\fP and \fIwrite_fds\fP
 should have file descriptors set in them according to whether the file
-descriptors specified by \fIares_fds(3)\fP are ready for reading and writing.
+descriptors specified by \fIhns_fds(3)\fP are ready for reading and writing.
 (The easiest way to determine this information is to invoke \fBselect(3)\fP
-with a timeout no greater than the timeout given by \fIares_timeout(3)\fP).
+with a timeout no greater than the timeout given by \fIhns_timeout(3)\fP).
 
-The \fBares_process(3)\fP function will invoke callbacks for pending queries
+The \fBhns_process(3)\fP function will invoke callbacks for pending queries
 if they complete successfully or fail.
 
-\fBares_process_fd(3)\fP works the same way but acts and operates only on the
+\fBhns_process_fd(3)\fP works the same way but acts and operates only on the
 specific file descriptors (sockets) you pass in to the function. Use
-ARES_SOCKET_BAD for "no action". This function is provided to allow users of
-c-ares to void \fIselect(3)\fP in their applications and within c-ares.
+HNS_SOCKET_BAD for "no action". This function is provided to allow users of
+hns to void \fIselect(3)\fP in their applications and within hns.
 
 To only process possible timeout conditions without a socket event occurring,
 one may pass NULL as the values for both \fIread_fds\fP and \fIwrite_fds\fP for
-\fBares_process(3)\fP, or ARES_SOCKET_BAD for both \fIread_fd\fP and
-\fIwrite_fd\fP for \fBares_process_fd(3)\fP.
+\fBhns_process(3)\fP, or HNS_SOCKET_BAD for both \fIread_fd\fP and
+\fIwrite_fd\fP for \fBhns_process_fd(3)\fP.
 .SH EXAMPLE
 The following code fragment waits for all pending queries on a channel
 to complete:
@@ -62,17 +62,17 @@ struct timeval tv, *tvp;
 while (1) {
   FD_ZERO(&readers);
   FD_ZERO(&writers);
-  nfds = ares_fds(channel, &readers, &writers);
+  nfds = hns_fds(channel, &readers, &writers);
   if (nfds == 0)
     break;
-  tvp = ares_timeout(channel, NULL, &tv);
+  tvp = hns_timeout(channel, NULL, &tv);
   count = select(nfds, &readers, &writers, NULL, tvp);
-  ares_process(channel, &readers, &writers);
+  hns_process(channel, &readers, &writers);
 }
 .fi
 .SH SEE ALSO
-.BR ares_fds (3),
-.BR ares_timeout (3)
+.BR hns_fds (3),
+.BR hns_timeout (3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br

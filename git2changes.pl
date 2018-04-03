@@ -14,8 +14,8 @@ sub nicedate {
     return $date;
 }
 
-print 
-'   Changelog for the c-ares project. Generated with git2changes.pl
+print
+'   Changelog for the hns project. Generated with git2changes.pl
 ';
 
 my $line;
@@ -27,6 +27,9 @@ while(<STDIN>) {
         $co = $1;
         my $ref = $2;
         if ($ref =~ /refs\/tags\/c[-]*ares-([0-9._]*)/) {
+            $tag = $1;
+            $tag =~ s/_/./g;
+        } elsif ($ref =~ /refs\/tags\/hns-([0-9._]*)/) {
             $tag = $1;
             $tag =~ s/_/./g;
         } else {

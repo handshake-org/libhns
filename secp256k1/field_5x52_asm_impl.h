@@ -11,10 +11,10 @@
  * - December 2014, Pieter Wuille: converted from YASM to GCC inline assembly
  */
 
-#ifndef ARES_SECP256K1_FIELD_INNER5X52_IMPL_H
-#define ARES_SECP256K1_FIELD_INNER5X52_IMPL_H
+#ifndef HNS_SECP256K1_FIELD_INNER5X52_IMPL_H
+#define HNS_SECP256K1_FIELD_INNER5X52_IMPL_H
 
-ARES_SECP256K1_INLINE static void ares_secp256k1_fe_mul_inner(uint64_t *r, const uint64_t *a, const uint64_t * ARES_SECP256K1_RESTRICT b) {
+HNS_SECP256K1_INLINE static void hns_secp256k1_fe_mul_inner(uint64_t *r, const uint64_t *a, const uint64_t * HNS_SECP256K1_RESTRICT b) {
 /**
  * Registers: rdx:rax = multiplication accumulator
  *            r9:r8   = c
@@ -284,7 +284,7 @@ __asm__ __volatile__(
 );
 }
 
-ARES_SECP256K1_INLINE static void ares_secp256k1_fe_sqr_inner(uint64_t *r, const uint64_t *a) {
+HNS_SECP256K1_INLINE static void hns_secp256k1_fe_sqr_inner(uint64_t *r, const uint64_t *a) {
 /**
  * Registers: rdx:rax = multiplication accumulator
  *            r9:r8   = c
@@ -499,4 +499,4 @@ __asm__ __volatile__(
 );
 }
 
-#endif /* ARES_SECP256K1_FIELD_INNER5X52_IMPL_H */
+#endif /* HNS_SECP256K1_FIELD_INNER5X52_IMPL_H */

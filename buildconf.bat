@@ -4,17 +4,17 @@ REM
 REM This batch file must be used to set up a git tree to build on
 REM systems where there is no autotools support (i.e. Microsoft).
 REM
-REM This file is not included nor needed for c-ares' release
-REM archives, neither for c-ares' daily snapshot archives.
+REM This file is not included nor needed for hns' release
+REM archives, neither for hns' daily snapshot archives.
 
 if exist GIT-INFO goto start_doing
-ECHO ERROR: This file shall only be used with a c-ares git checkout.
+ECHO ERROR: This file shall only be used with a hns git checkout.
 goto end_all
 :start_doing
 
-if not exist ares_build.h.dist goto end_ares_build_h
-copy /Y ares_build.h.dist ares_build.h
-:end_ares_build_h
+if not exist hns_build.h.dist goto end_hns_build_h
+copy /Y hns_build.h.dist hns_build.h
+:end_hns_build_h
 
 :end_all
 

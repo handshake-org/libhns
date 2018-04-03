@@ -13,22 +13,22 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_LIBRARY_INITIALIZED 3 "29 Sep 2016"
+.TH HNS_LIBRARY_INITIALIZED 3 "29 Sep 2016"
 .SH NAME
-ares_library_initialized \- get the initialization state
+hns_library_initialized \- get the initialization state
 .SH SYNOPSIS
 .nf
-#include <ares.h>
+#include <hns.h>
 
-int ares_library_initialized(void)
+int hns_library_initialized(void)
 .fi
 .SH DESCRIPTION
-Returns information if c-ares needs to get initialized.
+Returns information if hns needs to get initialized.
 .SH RETURN VALUE
-\fIARES_ENOTINITIALIZED\fP if not initialized and \fIARES_SUCCESS\fP if no
+\fIHNS_ENOTINITIALIZED\fP if not initialized and \fIHNS_SUCCESS\fP if no
 initialization is needed.
 .SH AVAILABILITY
-This function was first introduced in c-ares version 1.11.0
+This function was first introduced in hns version 1.11.0
 .SH SEE ALSO
-.BR ares_library_init(3),
-.BR ares_library_cleanup(3)
+.BR hns_library_init(3),
+.BR hns_library_cleanup(3)

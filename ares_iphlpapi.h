@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_IPHLPAPI_H
-#define HEADER_CARES_IPHLPAPI_H
+#ifndef HEADER_HNS_IPHLPAPI_H
+#define HEADER_HNS_IPHLPAPI_H
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  * Copyright (C) 2004 - 2011 by Daniel Stenberg et al
@@ -218,4 +218,4 @@ typedef struct _IP_ADAPTER_ADDRESSES {
 
 #endif /* USE_WINSOCK */
 
-#endif /* HEADER_CARES_IPHLPAPI_H */
+#endif /* HEADER_HNS_IPHLPAPI_H */

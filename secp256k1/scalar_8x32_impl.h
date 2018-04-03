@@ -4,37 +4,37 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_SCALAR_REPR_IMPL_H
-#define ARES_SECP256K1_SCALAR_REPR_IMPL_H
+#ifndef HNS_SECP256K1_SCALAR_REPR_IMPL_H
+#define HNS_SECP256K1_SCALAR_REPR_IMPL_H
 
 /* Limbs of the secp256k1 order. */
-#define ARES_SECP256K1_N_0 ((uint32_t)0xD0364141UL)
-#define ARES_SECP256K1_N_1 ((uint32_t)0xBFD25E8CUL)
-#define ARES_SECP256K1_N_2 ((uint32_t)0xAF48A03BUL)
-#define ARES_SECP256K1_N_3 ((uint32_t)0xBAAEDCE6UL)
-#define ARES_SECP256K1_N_4 ((uint32_t)0xFFFFFFFEUL)
-#define ARES_SECP256K1_N_5 ((uint32_t)0xFFFFFFFFUL)
-#define ARES_SECP256K1_N_6 ((uint32_t)0xFFFFFFFFUL)
-#define ARES_SECP256K1_N_7 ((uint32_t)0xFFFFFFFFUL)
+#define HNS_SECP256K1_N_0 ((uint32_t)0xD0364141UL)
+#define HNS_SECP256K1_N_1 ((uint32_t)0xBFD25E8CUL)
+#define HNS_SECP256K1_N_2 ((uint32_t)0xAF48A03BUL)
+#define HNS_SECP256K1_N_3 ((uint32_t)0xBAAEDCE6UL)
+#define HNS_SECP256K1_N_4 ((uint32_t)0xFFFFFFFEUL)
+#define HNS_SECP256K1_N_5 ((uint32_t)0xFFFFFFFFUL)
+#define HNS_SECP256K1_N_6 ((uint32_t)0xFFFFFFFFUL)
+#define HNS_SECP256K1_N_7 ((uint32_t)0xFFFFFFFFUL)
 
 /* Limbs of 2^256 minus the secp256k1 order. */
-#define ARES_SECP256K1_N_C_0 (~ARES_SECP256K1_N_0 + 1)
-#define ARES_SECP256K1_N_C_1 (~ARES_SECP256K1_N_1)
-#define ARES_SECP256K1_N_C_2 (~ARES_SECP256K1_N_2)
-#define ARES_SECP256K1_N_C_3 (~ARES_SECP256K1_N_3)
-#define ARES_SECP256K1_N_C_4 (1)
+#define HNS_SECP256K1_N_C_0 (~HNS_SECP256K1_N_0 + 1)
+#define HNS_SECP256K1_N_C_1 (~HNS_SECP256K1_N_1)
+#define HNS_SECP256K1_N_C_2 (~HNS_SECP256K1_N_2)
+#define HNS_SECP256K1_N_C_3 (~HNS_SECP256K1_N_3)
+#define HNS_SECP256K1_N_C_4 (1)
 
 /* Limbs of half the secp256k1 order. */
-#define ARES_SECP256K1_N_H_0 ((uint32_t)0x681B20A0UL)
-#define ARES_SECP256K1_N_H_1 ((uint32_t)0xDFE92F46UL)
-#define ARES_SECP256K1_N_H_2 ((uint32_t)0x57A4501DUL)
-#define ARES_SECP256K1_N_H_3 ((uint32_t)0x5D576E73UL)
-#define ARES_SECP256K1_N_H_4 ((uint32_t)0xFFFFFFFFUL)
-#define ARES_SECP256K1_N_H_5 ((uint32_t)0xFFFFFFFFUL)
-#define ARES_SECP256K1_N_H_6 ((uint32_t)0xFFFFFFFFUL)
-#define ARES_SECP256K1_N_H_7 ((uint32_t)0x7FFFFFFFUL)
+#define HNS_SECP256K1_N_H_0 ((uint32_t)0x681B20A0UL)
+#define HNS_SECP256K1_N_H_1 ((uint32_t)0xDFE92F46UL)
+#define HNS_SECP256K1_N_H_2 ((uint32_t)0x57A4501DUL)
+#define HNS_SECP256K1_N_H_3 ((uint32_t)0x5D576E73UL)
+#define HNS_SECP256K1_N_H_4 ((uint32_t)0xFFFFFFFFUL)
+#define HNS_SECP256K1_N_H_5 ((uint32_t)0xFFFFFFFFUL)
+#define HNS_SECP256K1_N_H_6 ((uint32_t)0xFFFFFFFFUL)
+#define HNS_SECP256K1_N_H_7 ((uint32_t)0x7FFFFFFFUL)
 
-ARES_SECP256K1_INLINE static void ares_secp256k1_scalar_clear(ares_secp256k1_scalar *r) {
+HNS_SECP256K1_INLINE static void hns_secp256k1_scalar_clear(hns_secp256k1_scalar *r) {
     r->d[0] = 0;
     r->d[1] = 0;
     r->d[2] = 0;
@@ -45,7 +45,7 @@ ARES_SECP256K1_INLINE static void ares_secp256k1_scalar_clear(ares_secp256k1_sca
     r->d[7] = 0;
 }
 
-ARES_SECP256K1_INLINE static void ares_secp256k1_scalar_set_int(ares_secp256k1_scalar *r, unsigned int v) {
+HNS_SECP256K1_INLINE static void hns_secp256k1_scalar_set_int(hns_secp256k1_scalar *r, unsigned int v) {
     r->d[0] = v;
     r->d[1] = 0;
     r->d[2] = 0;
@@ -56,52 +56,52 @@ ARES_SECP256K1_INLINE static void ares_secp256k1_scalar_set_int(ares_secp256k1_s
     r->d[7] = 0;
 }
 
-ARES_SECP256K1_INLINE static unsigned int ares_secp256k1_scalar_get_bits(const ares_secp256k1_scalar *a, unsigned int offset, unsigned int count) {
+HNS_SECP256K1_INLINE static unsigned int hns_secp256k1_scalar_get_bits(const hns_secp256k1_scalar *a, unsigned int offset, unsigned int count) {
     VERIFY_CHECK((offset + count - 1) >> 5 == offset >> 5);
     return (a->d[offset >> 5] >> (offset & 0x1F)) & ((1 << count) - 1);
 }
 
-ARES_SECP256K1_INLINE static unsigned int ares_secp256k1_scalar_get_bits_var(const ares_secp256k1_scalar *a, unsigned int offset, unsigned int count) {
+HNS_SECP256K1_INLINE static unsigned int hns_secp256k1_scalar_get_bits_var(const hns_secp256k1_scalar *a, unsigned int offset, unsigned int count) {
     VERIFY_CHECK(count < 32);
     VERIFY_CHECK(offset + count <= 256);
     if ((offset + count - 1) >> 5 == offset >> 5) {
-        return ares_secp256k1_scalar_get_bits(a, offset, count);
+        return hns_secp256k1_scalar_get_bits(a, offset, count);
     } else {
         VERIFY_CHECK((offset >> 5) + 1 < 8);
         return ((a->d[offset >> 5] >> (offset & 0x1F)) | (a->d[(offset >> 5) + 1] << (32 - (offset & 0x1F)))) & ((((uint32_t)1) << count) - 1);
     }
 }
 
-ARES_SECP256K1_INLINE static int ares_secp256k1_scalar_check_overflow(const ares_secp256k1_scalar *a) {
+HNS_SECP256K1_INLINE static int hns_secp256k1_scalar_check_overflow(const hns_secp256k1_scalar *a) {
     int yes = 0;
     int no = 0;
-    no |= (a->d[7] < ARES_SECP256K1_N_7); /* No need for a > check. */
-    no |= (a->d[6] < ARES_SECP256K1_N_6); /* No need for a > check. */
-    no |= (a->d[5] < ARES_SECP256K1_N_5); /* No need for a > check. */
-    no |= (a->d[4] < ARES_SECP256K1_N_4);
-    yes |= (a->d[4] > ARES_SECP256K1_N_4) & ~no;
-    no |= (a->d[3] < ARES_SECP256K1_N_3) & ~yes;
-    yes |= (a->d[3] > ARES_SECP256K1_N_3) & ~no;
-    no |= (a->d[2] < ARES_SECP256K1_N_2) & ~yes;
-    yes |= (a->d[2] > ARES_SECP256K1_N_2) & ~no;
-    no |= (a->d[1] < ARES_SECP256K1_N_1) & ~yes;
-    yes |= (a->d[1] > ARES_SECP256K1_N_1) & ~no;
-    yes |= (a->d[0] >= ARES_SECP256K1_N_0) & ~no;
+    no |= (a->d[7] < HNS_SECP256K1_N_7); /* No need for a > check. */
+    no |= (a->d[6] < HNS_SECP256K1_N_6); /* No need for a > check. */
+    no |= (a->d[5] < HNS_SECP256K1_N_5); /* No need for a > check. */
+    no |= (a->d[4] < HNS_SECP256K1_N_4);
+    yes |= (a->d[4] > HNS_SECP256K1_N_4) & ~no;
+    no |= (a->d[3] < HNS_SECP256K1_N_3) & ~yes;
+    yes |= (a->d[3] > HNS_SECP256K1_N_3) & ~no;
+    no |= (a->d[2] < HNS_SECP256K1_N_2) & ~yes;
+    yes |= (a->d[2] > HNS_SECP256K1_N_2) & ~no;
+    no |= (a->d[1] < HNS_SECP256K1_N_1) & ~yes;
+    yes |= (a->d[1] > HNS_SECP256K1_N_1) & ~no;
+    yes |= (a->d[0] >= HNS_SECP256K1_N_0) & ~no;
     return yes;
 }
 
-ARES_SECP256K1_INLINE static int ares_secp256k1_scalar_reduce(ares_secp256k1_scalar *r, uint32_t overflow) {
+HNS_SECP256K1_INLINE static int hns_secp256k1_scalar_reduce(hns_secp256k1_scalar *r, uint32_t overflow) {
     uint64_t t;
     VERIFY_CHECK(overflow <= 1);
-    t = (uint64_t)r->d[0] + overflow * ARES_SECP256K1_N_C_0;
+    t = (uint64_t)r->d[0] + overflow * HNS_SECP256K1_N_C_0;
     r->d[0] = t & 0xFFFFFFFFUL; t >>= 32;
-    t += (uint64_t)r->d[1] + overflow * ARES_SECP256K1_N_C_1;
+    t += (uint64_t)r->d[1] + overflow * HNS_SECP256K1_N_C_1;
     r->d[1] = t & 0xFFFFFFFFUL; t >>= 32;
-    t += (uint64_t)r->d[2] + overflow * ARES_SECP256K1_N_C_2;
+    t += (uint64_t)r->d[2] + overflow * HNS_SECP256K1_N_C_2;
     r->d[2] = t & 0xFFFFFFFFUL; t >>= 32;
-    t += (uint64_t)r->d[3] + overflow * ARES_SECP256K1_N_C_3;
+    t += (uint64_t)r->d[3] + overflow * HNS_SECP256K1_N_C_3;
     r->d[3] = t & 0xFFFFFFFFUL; t >>= 32;
-    t += (uint64_t)r->d[4] + overflow * ARES_SECP256K1_N_C_4;
+    t += (uint64_t)r->d[4] + overflow * HNS_SECP256K1_N_C_4;
     r->d[4] = t & 0xFFFFFFFFUL; t >>= 32;
     t += (uint64_t)r->d[5];
     r->d[5] = t & 0xFFFFFFFFUL; t >>= 32;
@@ -112,7 +112,7 @@ ARES_SECP256K1_INLINE static int ares_secp256k1_scalar_reduce(ares_secp256k1_sca
     return overflow;
 }
 
-static int ares_secp256k1_scalar_add(ares_secp256k1_scalar *r, const ares_secp256k1_scalar *a, const ares_secp256k1_scalar *b) {
+static int hns_secp256k1_scalar_add(hns_secp256k1_scalar *r, const hns_secp256k1_scalar *a, const hns_secp256k1_scalar *b) {
     int overflow;
     uint64_t t = (uint64_t)a->d[0] + b->d[0];
     r->d[0] = t & 0xFFFFFFFFULL; t >>= 32;
@@ -130,13 +130,13 @@ static int ares_secp256k1_scalar_add(ares_secp256k1_scalar *r, const ares_secp25
     r->d[6] = t & 0xFFFFFFFFULL; t >>= 32;
     t += (uint64_t)a->d[7] + b->d[7];
     r->d[7] = t & 0xFFFFFFFFULL; t >>= 32;
-    overflow = t + ares_secp256k1_scalar_check_overflow(r);
+    overflow = t + hns_secp256k1_scalar_check_overflow(r);
     VERIFY_CHECK(overflow == 0 || overflow == 1);
-    ares_secp256k1_scalar_reduce(r, overflow);
+    hns_secp256k1_scalar_reduce(r, overflow);
     return overflow;
 }
 
-static void ares_secp256k1_scalar_cadd_bit(ares_secp256k1_scalar *r, unsigned int bit, int flag) {
+static void hns_secp256k1_scalar_cadd_bit(hns_secp256k1_scalar *r, unsigned int bit, int flag) {
     uint64_t t;
     VERIFY_CHECK(bit < 256);
     bit += ((uint32_t) flag - 1) & 0x100;  /* forcing (bit >> 5) > 7 makes this a noop */
@@ -158,11 +158,11 @@ static void ares_secp256k1_scalar_cadd_bit(ares_secp256k1_scalar *r, unsigned in
     r->d[7] = t & 0xFFFFFFFFULL;
 #ifdef VERIFY
     VERIFY_CHECK((t >> 32) == 0);
-    VERIFY_CHECK(ares_secp256k1_scalar_check_overflow(r) == 0);
+    VERIFY_CHECK(hns_secp256k1_scalar_check_overflow(r) == 0);
 #endif
 }
 
-static void ares_secp256k1_scalar_set_b32(ares_secp256k1_scalar *r, const unsigned char *b32, int *overflow) {
+static void hns_secp256k1_scalar_set_b32(hns_secp256k1_scalar *r, const unsigned char *b32, int *overflow) {
     int over;
     r->d[0] = (uint32_t)b32[31] | (uint32_t)b32[30] << 8 | (uint32_t)b32[29] << 16 | (uint32_t)b32[28] << 24;
     r->d[1] = (uint32_t)b32[27] | (uint32_t)b32[26] << 8 | (uint32_t)b32[25] << 16 | (uint32_t)b32[24] << 24;
@@ -172,13 +172,13 @@ static void ares_secp256k1_scalar_set_b32(ares_secp256k1_scalar *r, const unsign
     r->d[5] = (uint32_t)b32[11] | (uint32_t)b32[10] << 8 | (uint32_t)b32[9] << 16 | (uint32_t)b32[8] << 24;
     r->d[6] = (uint32_t)b32[7] | (uint32_t)b32[6] << 8 | (uint32_t)b32[5] << 16 | (uint32_t)b32[4] << 24;
     r->d[7] = (uint32_t)b32[3] | (uint32_t)b32[2] << 8 | (uint32_t)b32[1] << 16 | (uint32_t)b32[0] << 24;
-    over = ares_secp256k1_scalar_reduce(r, ares_secp256k1_scalar_check_overflow(r));
+    over = hns_secp256k1_scalar_reduce(r, hns_secp256k1_scalar_check_overflow(r));
     if (overflow) {
         *overflow = over;
     }
 }
 
-static void ares_secp256k1_scalar_get_b32(unsigned char *bin, const ares_secp256k1_scalar* a) {
+static void hns_secp256k1_scalar_get_b32(unsigned char *bin, const hns_secp256k1_scalar* a) {
     bin[0] = a->d[7] >> 24; bin[1] = a->d[7] >> 16; bin[2] = a->d[7] >> 8; bin[3] = a->d[7];
     bin[4] = a->d[6] >> 24; bin[5] = a->d[6] >> 16; bin[6] = a->d[6] >> 8; bin[7] = a->d[6];
     bin[8] = a->d[5] >> 24; bin[9] = a->d[5] >> 16; bin[10] = a->d[5] >> 8; bin[11] = a->d[5];
@@ -189,72 +189,72 @@ static void ares_secp256k1_scalar_get_b32(unsigned char *bin, const ares_secp256
     bin[28] = a->d[0] >> 24; bin[29] = a->d[0] >> 16; bin[30] = a->d[0] >> 8; bin[31] = a->d[0];
 }
 
-ARES_SECP256K1_INLINE static int ares_secp256k1_scalar_is_zero(const ares_secp256k1_scalar *a) {
+HNS_SECP256K1_INLINE static int hns_secp256k1_scalar_is_zero(const hns_secp256k1_scalar *a) {
     return (a->d[0] | a->d[1] | a->d[2] | a->d[3] | a->d[4] | a->d[5] | a->d[6] | a->d[7]) == 0;
 }
 
-static void ares_secp256k1_scalar_negate(ares_secp256k1_scalar *r, const ares_secp256k1_scalar *a) {
-    uint32_t nonzero = 0xFFFFFFFFUL * (ares_secp256k1_scalar_is_zero(a) == 0);
-    uint64_t t = (uint64_t)(~a->d[0]) + ARES_SECP256K1_N_0 + 1;
+static void hns_secp256k1_scalar_negate(hns_secp256k1_scalar *r, const hns_secp256k1_scalar *a) {
+    uint32_t nonzero = 0xFFFFFFFFUL * (hns_secp256k1_scalar_is_zero(a) == 0);
+    uint64_t t = (uint64_t)(~a->d[0]) + HNS_SECP256K1_N_0 + 1;
     r->d[0] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[1]) + ARES_SECP256K1_N_1;
+    t += (uint64_t)(~a->d[1]) + HNS_SECP256K1_N_1;
     r->d[1] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[2]) + ARES_SECP256K1_N_2;
+    t += (uint64_t)(~a->d[2]) + HNS_SECP256K1_N_2;
     r->d[2] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[3]) + ARES_SECP256K1_N_3;
+    t += (uint64_t)(~a->d[3]) + HNS_SECP256K1_N_3;
     r->d[3] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[4]) + ARES_SECP256K1_N_4;
+    t += (uint64_t)(~a->d[4]) + HNS_SECP256K1_N_4;
     r->d[4] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[5]) + ARES_SECP256K1_N_5;
+    t += (uint64_t)(~a->d[5]) + HNS_SECP256K1_N_5;
     r->d[5] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[6]) + ARES_SECP256K1_N_6;
+    t += (uint64_t)(~a->d[6]) + HNS_SECP256K1_N_6;
     r->d[6] = t & nonzero; t >>= 32;
-    t += (uint64_t)(~a->d[7]) + ARES_SECP256K1_N_7;
+    t += (uint64_t)(~a->d[7]) + HNS_SECP256K1_N_7;
     r->d[7] = t & nonzero;
 }
 
-ARES_SECP256K1_INLINE static int ares_secp256k1_scalar_is_one(const ares_secp256k1_scalar *a) {
+HNS_SECP256K1_INLINE static int hns_secp256k1_scalar_is_one(const hns_secp256k1_scalar *a) {
     return ((a->d[0] ^ 1) | a->d[1] | a->d[2] | a->d[3] | a->d[4] | a->d[5] | a->d[6] | a->d[7]) == 0;
 }
 
-static int ares_secp256k1_scalar_is_high(const ares_secp256k1_scalar *a) {
+static int hns_secp256k1_scalar_is_high(const hns_secp256k1_scalar *a) {
     int yes = 0;
     int no = 0;
-    no |= (a->d[7] < ARES_SECP256K1_N_H_7);
-    yes |= (a->d[7] > ARES_SECP256K1_N_H_7) & ~no;
-    no |= (a->d[6] < ARES_SECP256K1_N_H_6) & ~yes; /* No need for a > check. */
-    no |= (a->d[5] < ARES_SECP256K1_N_H_5) & ~yes; /* No need for a > check. */
-    no |= (a->d[4] < ARES_SECP256K1_N_H_4) & ~yes; /* No need for a > check. */
-    no |= (a->d[3] < ARES_SECP256K1_N_H_3) & ~yes;
-    yes |= (a->d[3] > ARES_SECP256K1_N_H_3) & ~no;
-    no |= (a->d[2] < ARES_SECP256K1_N_H_2) & ~yes;
-    yes |= (a->d[2] > ARES_SECP256K1_N_H_2) & ~no;
-    no |= (a->d[1] < ARES_SECP256K1_N_H_1) & ~yes;
-    yes |= (a->d[1] > ARES_SECP256K1_N_H_1) & ~no;
-    yes |= (a->d[0] > ARES_SECP256K1_N_H_0) & ~no;
+    no |= (a->d[7] < HNS_SECP256K1_N_H_7);
+    yes |= (a->d[7] > HNS_SECP256K1_N_H_7) & ~no;
+    no |= (a->d[6] < HNS_SECP256K1_N_H_6) & ~yes; /* No need for a > check. */
+    no |= (a->d[5] < HNS_SECP256K1_N_H_5) & ~yes; /* No need for a > check. */
+    no |= (a->d[4] < HNS_SECP256K1_N_H_4) & ~yes; /* No need for a > check. */
+    no |= (a->d[3] < HNS_SECP256K1_N_H_3) & ~yes;
+    yes |= (a->d[3] > HNS_SECP256K1_N_H_3) & ~no;
+    no |= (a->d[2] < HNS_SECP256K1_N_H_2) & ~yes;
+    yes |= (a->d[2] > HNS_SECP256K1_N_H_2) & ~no;
+    no |= (a->d[1] < HNS_SECP256K1_N_H_1) & ~yes;
+    yes |= (a->d[1] > HNS_SECP256K1_N_H_1) & ~no;
+    yes |= (a->d[0] > HNS_SECP256K1_N_H_0) & ~no;
     return yes;
 }
 
-static int ares_secp256k1_scalar_cond_negate(ares_secp256k1_scalar *r, int flag) {
+static int hns_secp256k1_scalar_cond_negate(hns_secp256k1_scalar *r, int flag) {
     /* If we are flag = 0, mask = 00...00 and this is a no-op;
-     * if we are flag = 1, mask = 11...11 and this is identical to ares_secp256k1_scalar_negate */
+     * if we are flag = 1, mask = 11...11 and this is identical to hns_secp256k1_scalar_negate */
     uint32_t mask = !flag - 1;
-    uint32_t nonzero = 0xFFFFFFFFUL * (ares_secp256k1_scalar_is_zero(r) == 0);
-    uint64_t t = (uint64_t)(r->d[0] ^ mask) + ((ARES_SECP256K1_N_0 + 1) & mask);
+    uint32_t nonzero = 0xFFFFFFFFUL * (hns_secp256k1_scalar_is_zero(r) == 0);
+    uint64_t t = (uint64_t)(r->d[0] ^ mask) + ((HNS_SECP256K1_N_0 + 1) & mask);
     r->d[0] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[1] ^ mask) + (ARES_SECP256K1_N_1 & mask);
+    t += (uint64_t)(r->d[1] ^ mask) + (HNS_SECP256K1_N_1 & mask);
     r->d[1] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[2] ^ mask) + (ARES_SECP256K1_N_2 & mask);
+    t += (uint64_t)(r->d[2] ^ mask) + (HNS_SECP256K1_N_2 & mask);
     r->d[2] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[3] ^ mask) + (ARES_SECP256K1_N_3 & mask);
+    t += (uint64_t)(r->d[3] ^ mask) + (HNS_SECP256K1_N_3 & mask);
     r->d[3] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[4] ^ mask) + (ARES_SECP256K1_N_4 & mask);
+    t += (uint64_t)(r->d[4] ^ mask) + (HNS_SECP256K1_N_4 & mask);
     r->d[4] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[5] ^ mask) + (ARES_SECP256K1_N_5 & mask);
+    t += (uint64_t)(r->d[5] ^ mask) + (HNS_SECP256K1_N_5 & mask);
     r->d[5] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[6] ^ mask) + (ARES_SECP256K1_N_6 & mask);
+    t += (uint64_t)(r->d[6] ^ mask) + (HNS_SECP256K1_N_6 & mask);
     r->d[6] = t & nonzero; t >>= 32;
-    t += (uint64_t)(r->d[7] ^ mask) + (ARES_SECP256K1_N_7 & mask);
+    t += (uint64_t)(r->d[7] ^ mask) + (HNS_SECP256K1_N_7 & mask);
     r->d[7] = t & nonzero;
     return 2 * (mask == 0) - 1;
 }
@@ -346,7 +346,7 @@ static int ares_secp256k1_scalar_cond_negate(ares_secp256k1_scalar *r, int flag)
     VERIFY_CHECK(c2 == 0); \
 }
 
-static void ares_secp256k1_scalar_reduce_512(ares_secp256k1_scalar *r, const uint32_t *l) {
+static void hns_secp256k1_scalar_reduce_512(hns_secp256k1_scalar *r, const uint32_t *l) {
     uint64_t c;
     uint32_t n0 = l[8], n1 = l[9], n2 = l[10], n3 = l[11], n4 = l[12], n5 = l[13], n6 = l[14], n7 = l[15];
     uint32_t m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12;
@@ -356,63 +356,63 @@ static void ares_secp256k1_scalar_reduce_512(ares_secp256k1_scalar *r, const uin
     uint32_t c0, c1, c2;
 
     /* Reduce 512 bits into 385. */
-    /* m[0..12] = l[0..7] + n[0..7] * ARES_SECP256K1_N_C. */
+    /* m[0..12] = l[0..7] + n[0..7] * HNS_SECP256K1_N_C. */
     c0 = l[0]; c1 = 0; c2 = 0;
-    muladd_fast(n0, ARES_SECP256K1_N_C_0);
+    muladd_fast(n0, HNS_SECP256K1_N_C_0);
     extract_fast(m0);
     sumadd_fast(l[1]);
-    muladd(n1, ARES_SECP256K1_N_C_0);
-    muladd(n0, ARES_SECP256K1_N_C_1);
+    muladd(n1, HNS_SECP256K1_N_C_0);
+    muladd(n0, HNS_SECP256K1_N_C_1);
     extract(m1);
     sumadd(l[2]);
-    muladd(n2, ARES_SECP256K1_N_C_0);
-    muladd(n1, ARES_SECP256K1_N_C_1);
-    muladd(n0, ARES_SECP256K1_N_C_2);
+    muladd(n2, HNS_SECP256K1_N_C_0);
+    muladd(n1, HNS_SECP256K1_N_C_1);
+    muladd(n0, HNS_SECP256K1_N_C_2);
     extract(m2);
     sumadd(l[3]);
-    muladd(n3, ARES_SECP256K1_N_C_0);
-    muladd(n2, ARES_SECP256K1_N_C_1);
-    muladd(n1, ARES_SECP256K1_N_C_2);
-    muladd(n0, ARES_SECP256K1_N_C_3);
+    muladd(n3, HNS_SECP256K1_N_C_0);
+    muladd(n2, HNS_SECP256K1_N_C_1);
+    muladd(n1, HNS_SECP256K1_N_C_2);
+    muladd(n0, HNS_SECP256K1_N_C_3);
     extract(m3);
     sumadd(l[4]);
-    muladd(n4, ARES_SECP256K1_N_C_0);
-    muladd(n3, ARES_SECP256K1_N_C_1);
-    muladd(n2, ARES_SECP256K1_N_C_2);
-    muladd(n1, ARES_SECP256K1_N_C_3);
+    muladd(n4, HNS_SECP256K1_N_C_0);
+    muladd(n3, HNS_SECP256K1_N_C_1);
+    muladd(n2, HNS_SECP256K1_N_C_2);
+    muladd(n1, HNS_SECP256K1_N_C_3);
     sumadd(n0);
     extract(m4);
     sumadd(l[5]);
-    muladd(n5, ARES_SECP256K1_N_C_0);
-    muladd(n4, ARES_SECP256K1_N_C_1);
-    muladd(n3, ARES_SECP256K1_N_C_2);
-    muladd(n2, ARES_SECP256K1_N_C_3);
+    muladd(n5, HNS_SECP256K1_N_C_0);
+    muladd(n4, HNS_SECP256K1_N_C_1);
+    muladd(n3, HNS_SECP256K1_N_C_2);
+    muladd(n2, HNS_SECP256K1_N_C_3);
     sumadd(n1);
     extract(m5);
     sumadd(l[6]);
-    muladd(n6, ARES_SECP256K1_N_C_0);
-    muladd(n5, ARES_SECP256K1_N_C_1);
-    muladd(n4, ARES_SECP256K1_N_C_2);
-    muladd(n3, ARES_SECP256K1_N_C_3);
+    muladd(n6, HNS_SECP256K1_N_C_0);
+    muladd(n5, HNS_SECP256K1_N_C_1);
+    muladd(n4, HNS_SECP256K1_N_C_2);
+    muladd(n3, HNS_SECP256K1_N_C_3);
     sumadd(n2);
     extract(m6);
     sumadd(l[7]);
-    muladd(n7, ARES_SECP256K1_N_C_0);
-    muladd(n6, ARES_SECP256K1_N_C_1);
-    muladd(n5, ARES_SECP256K1_N_C_2);
-    muladd(n4, ARES_SECP256K1_N_C_3);
+    muladd(n7, HNS_SECP256K1_N_C_0);
+    muladd(n6, HNS_SECP256K1_N_C_1);
+    muladd(n5, HNS_SECP256K1_N_C_2);
+    muladd(n4, HNS_SECP256K1_N_C_3);
     sumadd(n3);
     extract(m7);
-    muladd(n7, ARES_SECP256K1_N_C_1);
-    muladd(n6, ARES_SECP256K1_N_C_2);
-    muladd(n5, ARES_SECP256K1_N_C_3);
+    muladd(n7, HNS_SECP256K1_N_C_1);
+    muladd(n6, HNS_SECP256K1_N_C_2);
+    muladd(n5, HNS_SECP256K1_N_C_3);
     sumadd(n4);
     extract(m8);
-    muladd(n7, ARES_SECP256K1_N_C_2);
-    muladd(n6, ARES_SECP256K1_N_C_3);
+    muladd(n7, HNS_SECP256K1_N_C_2);
+    muladd(n6, HNS_SECP256K1_N_C_3);
     sumadd(n5);
     extract(m9);
-    muladd(n7, ARES_SECP256K1_N_C_3);
+    muladd(n7, HNS_SECP256K1_N_C_3);
     sumadd(n6);
     extract(m10);
     sumadd_fast(n7);
@@ -421,59 +421,59 @@ static void ares_secp256k1_scalar_reduce_512(ares_secp256k1_scalar *r, const uin
     m12 = c0;
 
     /* Reduce 385 bits into 258. */
-    /* p[0..8] = m[0..7] + m[8..12] * ARES_SECP256K1_N_C. */
+    /* p[0..8] = m[0..7] + m[8..12] * HNS_SECP256K1_N_C. */
     c0 = m0; c1 = 0; c2 = 0;
-    muladd_fast(m8, ARES_SECP256K1_N_C_0);
+    muladd_fast(m8, HNS_SECP256K1_N_C_0);
     extract_fast(p0);
     sumadd_fast(m1);
-    muladd(m9, ARES_SECP256K1_N_C_0);
-    muladd(m8, ARES_SECP256K1_N_C_1);
+    muladd(m9, HNS_SECP256K1_N_C_0);
+    muladd(m8, HNS_SECP256K1_N_C_1);
     extract(p1);
     sumadd(m2);
-    muladd(m10, ARES_SECP256K1_N_C_0);
-    muladd(m9, ARES_SECP256K1_N_C_1);
-    muladd(m8, ARES_SECP256K1_N_C_2);
+    muladd(m10, HNS_SECP256K1_N_C_0);
+    muladd(m9, HNS_SECP256K1_N_C_1);
+    muladd(m8, HNS_SECP256K1_N_C_2);
     extract(p2);
     sumadd(m3);
-    muladd(m11, ARES_SECP256K1_N_C_0);
-    muladd(m10, ARES_SECP256K1_N_C_1);
-    muladd(m9, ARES_SECP256K1_N_C_2);
-    muladd(m8, ARES_SECP256K1_N_C_3);
+    muladd(m11, HNS_SECP256K1_N_C_0);
+    muladd(m10, HNS_SECP256K1_N_C_1);
+    muladd(m9, HNS_SECP256K1_N_C_2);
+    muladd(m8, HNS_SECP256K1_N_C_3);
     extract(p3);
     sumadd(m4);
-    muladd(m12, ARES_SECP256K1_N_C_0);
-    muladd(m11, ARES_SECP256K1_N_C_1);
-    muladd(m10, ARES_SECP256K1_N_C_2);
-    muladd(m9, ARES_SECP256K1_N_C_3);
+    muladd(m12, HNS_SECP256K1_N_C_0);
+    muladd(m11, HNS_SECP256K1_N_C_1);
+    muladd(m10, HNS_SECP256K1_N_C_2);
+    muladd(m9, HNS_SECP256K1_N_C_3);
     sumadd(m8);
     extract(p4);
     sumadd(m5);
-    muladd(m12, ARES_SECP256K1_N_C_1);
-    muladd(m11, ARES_SECP256K1_N_C_2);
-    muladd(m10, ARES_SECP256K1_N_C_3);
+    muladd(m12, HNS_SECP256K1_N_C_1);
+    muladd(m11, HNS_SECP256K1_N_C_2);
+    muladd(m10, HNS_SECP256K1_N_C_3);
     sumadd(m9);
     extract(p5);
     sumadd(m6);
-    muladd(m12, ARES_SECP256K1_N_C_2);
-    muladd(m11, ARES_SECP256K1_N_C_3);
+    muladd(m12, HNS_SECP256K1_N_C_2);
+    muladd(m11, HNS_SECP256K1_N_C_3);
     sumadd(m10);
     extract(p6);
     sumadd_fast(m7);
-    muladd_fast(m12, ARES_SECP256K1_N_C_3);
+    muladd_fast(m12, HNS_SECP256K1_N_C_3);
     sumadd_fast(m11);
     extract_fast(p7);
     p8 = c0 + m12;
     VERIFY_CHECK(p8 <= 2);
 
     /* Reduce 258 bits into 256. */
-    /* r[0..7] = p[0..7] + p[8] * ARES_SECP256K1_N_C. */
-    c = p0 + (uint64_t)ARES_SECP256K1_N_C_0 * p8;
+    /* r[0..7] = p[0..7] + p[8] * HNS_SECP256K1_N_C. */
+    c = p0 + (uint64_t)HNS_SECP256K1_N_C_0 * p8;
     r->d[0] = c & 0xFFFFFFFFUL; c >>= 32;
-    c += p1 + (uint64_t)ARES_SECP256K1_N_C_1 * p8;
+    c += p1 + (uint64_t)HNS_SECP256K1_N_C_1 * p8;
     r->d[1] = c & 0xFFFFFFFFUL; c >>= 32;
-    c += p2 + (uint64_t)ARES_SECP256K1_N_C_2 * p8;
+    c += p2 + (uint64_t)HNS_SECP256K1_N_C_2 * p8;
     r->d[2] = c & 0xFFFFFFFFUL; c >>= 32;
-    c += p3 + (uint64_t)ARES_SECP256K1_N_C_3 * p8;
+    c += p3 + (uint64_t)HNS_SECP256K1_N_C_3 * p8;
     r->d[3] = c & 0xFFFFFFFFUL; c >>= 32;
     c += p4 + (uint64_t)p8;
     r->d[4] = c & 0xFFFFFFFFUL; c >>= 32;
@@ -485,10 +485,10 @@ static void ares_secp256k1_scalar_reduce_512(ares_secp256k1_scalar *r, const uin
     r->d[7] = c & 0xFFFFFFFFUL; c >>= 32;
 
     /* Final reduction of r. */
-    ares_secp256k1_scalar_reduce(r, c + ares_secp256k1_scalar_check_overflow(r));
+    hns_secp256k1_scalar_reduce(r, c + hns_secp256k1_scalar_check_overflow(r));
 }
 
-static void ares_secp256k1_scalar_mul_512(uint32_t *l, const ares_secp256k1_scalar *a, const ares_secp256k1_scalar *b) {
+static void hns_secp256k1_scalar_mul_512(uint32_t *l, const hns_secp256k1_scalar *a, const hns_secp256k1_scalar *b) {
     /* 96 bit accumulator. */
     uint32_t c0 = 0, c1 = 0, c2 = 0;
 
@@ -576,7 +576,7 @@ static void ares_secp256k1_scalar_mul_512(uint32_t *l, const ares_secp256k1_scal
     l[15] = c0;
 }
 
-static void ares_secp256k1_scalar_sqr_512(uint32_t *l, const ares_secp256k1_scalar *a) {
+static void hns_secp256k1_scalar_sqr_512(uint32_t *l, const hns_secp256k1_scalar *a) {
     /* 96 bit accumulator. */
     uint32_t c0 = 0, c1 = 0, c2 = 0;
 
@@ -644,13 +644,13 @@ static void ares_secp256k1_scalar_sqr_512(uint32_t *l, const ares_secp256k1_scal
 #undef extract
 #undef extract_fast
 
-static void ares_secp256k1_scalar_mul(ares_secp256k1_scalar *r, const ares_secp256k1_scalar *a, const ares_secp256k1_scalar *b) {
+static void hns_secp256k1_scalar_mul(hns_secp256k1_scalar *r, const hns_secp256k1_scalar *a, const hns_secp256k1_scalar *b) {
     uint32_t l[16];
-    ares_secp256k1_scalar_mul_512(l, a, b);
-    ares_secp256k1_scalar_reduce_512(r, l);
+    hns_secp256k1_scalar_mul_512(l, a, b);
+    hns_secp256k1_scalar_reduce_512(r, l);
 }
 
-static int ares_secp256k1_scalar_shr_int(ares_secp256k1_scalar *r, int n) {
+static int hns_secp256k1_scalar_shr_int(hns_secp256k1_scalar *r, int n) {
     int ret;
     VERIFY_CHECK(n > 0);
     VERIFY_CHECK(n < 16);
@@ -666,14 +666,14 @@ static int ares_secp256k1_scalar_shr_int(ares_secp256k1_scalar *r, int n) {
     return ret;
 }
 
-static void ares_secp256k1_scalar_sqr(ares_secp256k1_scalar *r, const ares_secp256k1_scalar *a) {
+static void hns_secp256k1_scalar_sqr(hns_secp256k1_scalar *r, const hns_secp256k1_scalar *a) {
     uint32_t l[16];
-    ares_secp256k1_scalar_sqr_512(l, a);
-    ares_secp256k1_scalar_reduce_512(r, l);
+    hns_secp256k1_scalar_sqr_512(l, a);
+    hns_secp256k1_scalar_reduce_512(r, l);
 }
 
 #ifdef USE_ENDOMORPHISM
-static void ares_secp256k1_scalar_split_128(ares_secp256k1_scalar *r1, ares_secp256k1_scalar *r2, const ares_secp256k1_scalar *a) {
+static void hns_secp256k1_scalar_split_128(hns_secp256k1_scalar *r1, hns_secp256k1_scalar *r2, const hns_secp256k1_scalar *a) {
     r1->d[0] = a->d[0];
     r1->d[1] = a->d[1];
     r1->d[2] = a->d[2];
@@ -693,17 +693,17 @@ static void ares_secp256k1_scalar_split_128(ares_secp256k1_scalar *r1, ares_secp
 }
 #endif
 
-ARES_SECP256K1_INLINE static int ares_secp256k1_scalar_eq(const ares_secp256k1_scalar *a, const ares_secp256k1_scalar *b) {
+HNS_SECP256K1_INLINE static int hns_secp256k1_scalar_eq(const hns_secp256k1_scalar *a, const hns_secp256k1_scalar *b) {
     return ((a->d[0] ^ b->d[0]) | (a->d[1] ^ b->d[1]) | (a->d[2] ^ b->d[2]) | (a->d[3] ^ b->d[3]) | (a->d[4] ^ b->d[4]) | (a->d[5] ^ b->d[5]) | (a->d[6] ^ b->d[6]) | (a->d[7] ^ b->d[7])) == 0;
 }
 
-ARES_SECP256K1_INLINE static void ares_secp256k1_scalar_mul_shift_var(ares_secp256k1_scalar *r, const ares_secp256k1_scalar *a, const ares_secp256k1_scalar *b, unsigned int shift) {
+HNS_SECP256K1_INLINE static void hns_secp256k1_scalar_mul_shift_var(hns_secp256k1_scalar *r, const hns_secp256k1_scalar *a, const hns_secp256k1_scalar *b, unsigned int shift) {
     uint32_t l[16];
     unsigned int shiftlimbs;
     unsigned int shiftlow;
     unsigned int shifthigh;
     VERIFY_CHECK(shift >= 256);
-    ares_secp256k1_scalar_mul_512(l, a, b);
+    hns_secp256k1_scalar_mul_512(l, a, b);
     shiftlimbs = shift >> 5;
     shiftlow = shift & 0x1F;
     shifthigh = 32 - shiftlow;
@@ -715,7 +715,7 @@ ARES_SECP256K1_INLINE static void ares_secp256k1_scalar_mul_shift_var(ares_secp2
     r->d[5] = shift < 352 ? (l[5 + shiftlimbs] >> shiftlow | (shift < 320 && shiftlow ? (l[6 + shiftlimbs] << shifthigh) : 0)) : 0;
     r->d[6] = shift < 320 ? (l[6 + shiftlimbs] >> shiftlow | (shift < 288 && shiftlow ? (l[7 + shiftlimbs] << shifthigh) : 0)) : 0;
     r->d[7] = shift < 288 ? (l[7 + shiftlimbs] >> shiftlow)  : 0;
-    ares_secp256k1_scalar_cadd_bit(r, 0, (l[(shift - 1) >> 5] >> ((shift - 1) & 0x1f)) & 1);
+    hns_secp256k1_scalar_cadd_bit(r, 0, (l[(shift - 1) >> 5] >> ((shift - 1) & 0x1f)) & 1);
 }
 
-#endif /* ARES_SECP256K1_SCALAR_REPR_IMPL_H */
+#endif /* HNS_SECP256K1_SCALAR_REPR_IMPL_H */

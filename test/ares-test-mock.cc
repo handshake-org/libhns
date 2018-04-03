@@ -1,4 +1,4 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
@@ -7,7 +7,7 @@
 using testing::InvokeWithoutArgs;
 using testing::DoAll;
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_P(MockChannelTest, Basic) {
@@ -42,7 +42,7 @@ TEST_P(MockChannelTest, Basic) {
     .WillByDefault(SetReplyData(&server_, reply));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -66,11 +66,11 @@ TEST_P(MockUDPChannelTest, ParallelLookups) {
     .WillByDefault(SetReply(&server_, &rsp2));
 
   HostResult result1;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result1);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result1);
   HostResult result2;
-  ares_gethostbyname(channel_, "www.example.com.", AF_INET, HostCallback, &result2);
+  hns_gethostbyname(channel_, "www.example.com.", AF_INET, HostCallback, &result2);
   HostResult result3;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result3);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result3);
   Process();
   EXPECT_TRUE(result1.done_);
   EXPECT_TRUE(result2.done_);
@@ -99,7 +99,7 @@ TEST_P(MockUDPChannelTest, TruncationRetry) {
     .WillOnce(SetReply(&server_, &rsptruncated))
     .WillOnce(SetReply(&server_, &rspok));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -108,7 +108,7 @@ TEST_P(MockUDPChannelTest, TruncationRetry) {
 }
 
 static int sock_cb_count = 0;
-static int SocketConnectCallback(ares_socket_t fd, int type, void *data) {
+static int SocketConnectCallback(hns_socket_t fd, int type, void *data) {
   int rc = *(int*)data;
   if (verbose) std::cerr << "SocketConnectCallback(" << fd << ") invoked" << std::endl;
   sock_cb_count++;
@@ -124,12 +124,12 @@ TEST_P(MockChannelTest, SockCallback) {
     .WillOnce(SetReply(&server_, &rsp));
 
   // Get notified of new sockets
-  int rc = ARES_SUCCESS;
-  ares_set_socket_callback(channel_, SocketConnectCallback, &rc);
+  int rc = HNS_SUCCESS;
+  hns_set_socket_callback(channel_, SocketConnectCallback, &rc);
 
   HostResult result;
   sock_cb_count = 0;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_EQ(1, sock_cb_count);
   EXPECT_TRUE(result.done_);
@@ -141,19 +141,19 @@ TEST_P(MockChannelTest, SockCallback) {
 TEST_P(MockChannelTest, SockFailCallback) {
   // Notification of new sockets gives an error.
   int rc = -1;
-  ares_set_socket_callback(channel_, SocketConnectCallback, &rc);
+  hns_set_socket_callback(channel_, SocketConnectCallback, &rc);
 
   HostResult result;
   sock_cb_count = 0;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_LT(1, sock_cb_count);
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ECONNREFUSED, result.status_);
+  EXPECT_EQ(HNS_ECONNREFUSED, result.status_);
 }
 
 static int sock_config_cb_count = 0;
-static int SocketConfigureCallback(ares_socket_t fd, int type, void *data) {
+static int SocketConfigureCallback(hns_socket_t fd, int type, void *data) {
   int rc = *(int*)data;
   if (verbose) std::cerr << "SocketConfigureCallback(" << fd << ") invoked" << std::endl;
   sock_config_cb_count++;
@@ -169,12 +169,12 @@ TEST_P(MockChannelTest, SockConfigureCallback) {
     .WillOnce(SetReply(&server_, &rsp));
 
   // Get notified of new sockets
-  int rc = ARES_SUCCESS;
-  ares_set_socket_configure_callback(channel_, SocketConfigureCallback, &rc);
+  int rc = HNS_SUCCESS;
+  hns_set_socket_configure_callback(channel_, SocketConfigureCallback, &rc);
 
   HostResult result;
   sock_config_cb_count = 0;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_EQ(1, sock_config_cb_count);
   EXPECT_TRUE(result.done_);
@@ -186,15 +186,15 @@ TEST_P(MockChannelTest, SockConfigureCallback) {
 TEST_P(MockChannelTest, SockConfigureFailCallback) {
   // Notification of new sockets gives an error.
   int rc = -1;
-  ares_set_socket_configure_callback(channel_, SocketConfigureCallback, &rc);
+  hns_set_socket_configure_callback(channel_, SocketConfigureCallback, &rc);
 
   HostResult result;
   sock_config_cb_count = 0;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_LT(1, sock_config_cb_count);
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ECONNREFUSED, result.status_);
+  EXPECT_EQ(HNS_ECONNREFUSED, result.status_);
 }
 
 // TCP only to prevent retries
@@ -204,10 +204,10 @@ TEST_P(MockTCPChannelTest, MalformedResponse) {
     .WillOnce(SetReplyData(&server_, one));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ETIMEOUT, result.status_);
+  EXPECT_EQ(HNS_ETIMEOUT, result.status_);
 }
 
 TEST_P(MockTCPChannelTest, FormErrResponse) {
@@ -218,10 +218,10 @@ TEST_P(MockTCPChannelTest, FormErrResponse) {
   EXPECT_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillOnce(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_EFORMERR, result.status_);
+  EXPECT_EQ(HNS_EFORMERR, result.status_);
 }
 
 TEST_P(MockTCPChannelTest, ServFailResponse) {
@@ -232,11 +232,11 @@ TEST_P(MockTCPChannelTest, ServFailResponse) {
   EXPECT_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillOnce(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  // ARES_FLAG_NOCHECKRESP not set, so SERVFAIL consumed
-  EXPECT_EQ(ARES_ECONNREFUSED, result.status_);
+  // HNS_FLAG_NOCHECKRESP not set, so SERVFAIL consumed
+  EXPECT_EQ(HNS_ECONNREFUSED, result.status_);
 }
 
 TEST_P(MockTCPChannelTest, NotImplResponse) {
@@ -247,11 +247,11 @@ TEST_P(MockTCPChannelTest, NotImplResponse) {
   EXPECT_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillOnce(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  // ARES_FLAG_NOCHECKRESP not set, so NOTIMPL consumed
-  EXPECT_EQ(ARES_ECONNREFUSED, result.status_);
+  // HNS_FLAG_NOCHECKRESP not set, so NOTIMPL consumed
+  EXPECT_EQ(HNS_ECONNREFUSED, result.status_);
 }
 
 TEST_P(MockTCPChannelTest, RefusedResponse) {
@@ -262,11 +262,11 @@ TEST_P(MockTCPChannelTest, RefusedResponse) {
   EXPECT_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillOnce(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  // ARES_FLAG_NOCHECKRESP not set, so REFUSED consumed
-  EXPECT_EQ(ARES_ECONNREFUSED, result.status_);
+  // HNS_FLAG_NOCHECKRESP not set, so REFUSED consumed
+  EXPECT_EQ(HNS_ECONNREFUSED, result.status_);
 }
 
 TEST_P(MockTCPChannelTest, YXDomainResponse) {
@@ -277,10 +277,10 @@ TEST_P(MockTCPChannelTest, YXDomainResponse) {
   EXPECT_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillOnce(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ENODATA, result.status_);
+  EXPECT_EQ(HNS_ENODATA, result.status_);
 }
 
 class MockExtraOptsTest
@@ -290,24 +290,24 @@ class MockExtraOptsTest
   MockExtraOptsTest()
     : MockChannelOptsTest(1, GetParam().first, GetParam().second,
                           FillOptions(&opts_),
-                          ARES_OPT_SOCK_SNDBUF|ARES_OPT_SOCK_RCVBUF) {}
-  static struct ares_options* FillOptions(struct ares_options * opts) {
-    memset(opts, 0, sizeof(struct ares_options));
+                          HNS_OPT_SOCK_SNDBUF|HNS_OPT_SOCK_RCVBUF) {}
+  static struct hns_options* FillOptions(struct hns_options * opts) {
+    memset(opts, 0, sizeof(struct hns_options));
     // Set a few options that affect socket communications
     opts->socket_send_buffer_size = 514;
     opts->socket_receive_buffer_size = 514;
     return opts;
   }
  private:
-  struct ares_options opts_;
+  struct hns_options opts_;
 };
 
 TEST_P(MockExtraOptsTest, SimpleQuery) {
-  ares_set_local_ip4(channel_, 0x7F000001);
+  hns_set_local_ip4(channel_, 0x7F000001);
   byte addr6[16] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01};
-  ares_set_local_ip6(channel_, addr6);
-  ares_set_local_dev(channel_, "dummy");
+  hns_set_local_ip6(channel_, addr6);
+  hns_set_local_dev(channel_, "dummy");
 
   DNSPacket rsp;
   rsp.set_response().set_aa()
@@ -317,7 +317,7 @@ TEST_P(MockExtraOptsTest, SimpleQuery) {
     .WillByDefault(SetReply(&server_, &rsp));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -331,19 +331,19 @@ class MockFlagsChannelOptsTest
  public:
   MockFlagsChannelOptsTest(int flags)
     : MockChannelOptsTest(1, GetParam().first, GetParam().second,
-                          FillOptions(&opts_, flags), ARES_OPT_FLAGS) {}
-  static struct ares_options* FillOptions(struct ares_options * opts, int flags) {
-    memset(opts, 0, sizeof(struct ares_options));
+                          FillOptions(&opts_, flags), HNS_OPT_FLAGS) {}
+  static struct hns_options* FillOptions(struct hns_options * opts, int flags) {
+    memset(opts, 0, sizeof(struct hns_options));
     opts->flags = flags;
     return opts;
   }
  private:
-  struct ares_options opts_;
+  struct hns_options opts_;
 };
 
 class MockNoCheckRespChannelTest : public MockFlagsChannelOptsTest {
  public:
-  MockNoCheckRespChannelTest() : MockFlagsChannelOptsTest(ARES_FLAG_NOCHECKRESP) {}
+  MockNoCheckRespChannelTest() : MockFlagsChannelOptsTest(HNS_FLAG_NOCHECKRESP) {}
 };
 
 TEST_P(MockNoCheckRespChannelTest, ServFailResponse) {
@@ -354,10 +354,10 @@ TEST_P(MockNoCheckRespChannelTest, ServFailResponse) {
   ON_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillByDefault(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ESERVFAIL, result.status_);
+  EXPECT_EQ(HNS_ESERVFAIL, result.status_);
 }
 
 TEST_P(MockNoCheckRespChannelTest, NotImplResponse) {
@@ -368,10 +368,10 @@ TEST_P(MockNoCheckRespChannelTest, NotImplResponse) {
   ON_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillByDefault(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ENOTIMP, result.status_);
+  EXPECT_EQ(HNS_ENOTIMP, result.status_);
 }
 
 TEST_P(MockNoCheckRespChannelTest, RefusedResponse) {
@@ -382,15 +382,15 @@ TEST_P(MockNoCheckRespChannelTest, RefusedResponse) {
   ON_CALL(server_, OnRequest("www.google.com", ns_t_a))
     .WillByDefault(SetReply(&server_, &rsp));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_EREFUSED, result.status_);
+  EXPECT_EQ(HNS_EREFUSED, result.status_);
 }
 
 class MockEDNSChannelTest : public MockFlagsChannelOptsTest {
  public:
-  MockEDNSChannelTest() : MockFlagsChannelOptsTest(ARES_FLAG_EDNS) {}
+  MockEDNSChannelTest() : MockFlagsChannelOptsTest(HNS_FLAG_EDNS) {}
 };
 
 TEST_P(MockEDNSChannelTest, RetryWithoutEDNS) {
@@ -405,7 +405,7 @@ TEST_P(MockEDNSChannelTest, RetryWithoutEDNS) {
     .WillOnce(SetReply(&server_, &rspfail))
     .WillOnce(SetReply(&server_, &rspok));
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -432,7 +432,7 @@ TEST_P(MockChannelTest, SearchDomains) {
     .WillByDefault(SetReply(&server_, &yesthird));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -464,7 +464,7 @@ TEST_P(MockUDPChannelTest, SearchDomainsWithResentReply) {
                     SetReplyQID(&server_, -1)));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -496,7 +496,7 @@ TEST_P(MockChannelTest, SearchDomainsBare) {
     .WillByDefault(SetReply(&server_, &yesbare));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -524,7 +524,7 @@ TEST_P(MockChannelTest, SearchNoDataThenSuccess) {
     .WillByDefault(SetReply(&server_, &yesthird));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -556,10 +556,10 @@ TEST_P(MockChannelTest, SearchNoDataThenNoDataBare) {
     .WillByDefault(SetReply(&server_, &nobare));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ENODATA, result.status_);
+  EXPECT_EQ(HNS_ENODATA, result.status_);
 }
 
 TEST_P(MockChannelTest, SearchNoDataThenFail) {
@@ -586,19 +586,19 @@ TEST_P(MockChannelTest, SearchNoDataThenFail) {
     .WillByDefault(SetReply(&server_, &nobare));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ENODATA, result.status_);
+  EXPECT_EQ(HNS_ENODATA, result.status_);
 }
 
 TEST_P(MockChannelTest, SearchAllocFailure) {
   SearchResult result;
   SetAllocFail(1);
-  ares_search(channel_, "fully.qualified.", ns_c_in, ns_t_a, SearchCallback, &result);
+  hns_search(channel_, "fully.qualified.", ns_c_in, ns_t_a, SearchCallback, &result);
   /* Already done */
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ENOMEM, result.status_);
+  EXPECT_EQ(HNS_ENOMEM, result.status_);
 }
 
 TEST_P(MockChannelTest, SearchHighNdots) {
@@ -615,10 +615,10 @@ TEST_P(MockChannelTest, SearchHighNdots) {
     .WillByDefault(SetReply(&server_, &yesfirst));
 
   SearchResult result;
-  ares_search(channel_, "a.b.c.w.w.w", ns_c_in, ns_t_a, SearchCallback, &result);
+  hns_search(channel_, "a.b.c.w.w.w", ns_c_in, ns_t_a, SearchCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_SUCCESS, result.status_);
+  EXPECT_EQ(HNS_SUCCESS, result.status_);
   std::stringstream ss;
   ss << PacketToString(result.data_);
   EXPECT_EQ("RSP QRY AA NOERROR Q:{'a.b.c.w.w.w.first.com' IN A} "
@@ -637,7 +637,7 @@ TEST_P(MockChannelTest, UnspecifiedFamilyV6) {
     .WillByDefault(SetReply(&server_, &rsp6));
 
   HostResult result;
-  ares_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
+  hns_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -660,7 +660,7 @@ TEST_P(MockChannelTest, UnspecifiedFamilyV4) {
     .WillByDefault(SetReply(&server_, &rsp4));
 
   HostResult result;
-  ares_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
+  hns_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -682,7 +682,7 @@ TEST_P(MockChannelTest, UnspecifiedFamilyNoData) {
     .WillByDefault(SetReply(&server_, &rsp4));
 
   HostResult result;
-  ares_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
+  hns_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -705,7 +705,7 @@ TEST_P(MockChannelTest, UnspecifiedFamilyCname6A4) {
     .WillByDefault(SetReply(&server_, &rsp4));
 
   HostResult result;
-  ares_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
+  hns_gethostbyname(channel_, "example.com.", AF_UNSPEC, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -715,9 +715,9 @@ TEST_P(MockChannelTest, UnspecifiedFamilyCname6A4) {
 
 TEST_P(MockChannelTest, ExplicitIP) {
   HostResult result;
-  ares_gethostbyname(channel_, "1.2.3.4", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "1.2.3.4", AF_INET, HostCallback, &result);
   EXPECT_TRUE(result.done_);  // Immediate return
-  EXPECT_EQ(ARES_SUCCESS, result.status_);
+  EXPECT_EQ(HNS_SUCCESS, result.status_);
   std::stringstream ss;
   ss << result.host_;
   EXPECT_EQ("{'1.2.3.4' aliases=[] addrs=[1.2.3.4]}", ss.str());
@@ -726,9 +726,9 @@ TEST_P(MockChannelTest, ExplicitIP) {
 TEST_P(MockChannelTest, ExplicitIPAllocFail) {
   HostResult result;
   SetAllocSizeFail(strlen("1.2.3.4") + 1);
-  ares_gethostbyname(channel_, "1.2.3.4", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "1.2.3.4", AF_INET, HostCallback, &result);
   EXPECT_TRUE(result.done_);  // Immediate return
-  EXPECT_EQ(ARES_ENOMEM, result.status_);
+  EXPECT_EQ(HNS_ENOMEM, result.status_);
 }
 
 TEST_P(MockChannelTest, SortListV4) {
@@ -742,9 +742,9 @@ TEST_P(MockChannelTest, SortListV4) {
     .WillByDefault(SetReply(&server_, &rsp));
 
   {
-    EXPECT_EQ(ARES_SUCCESS, ares_set_sortlist(channel_, "12.13.0.0/255.255.0.0 1234::5678"));
+    EXPECT_EQ(HNS_SUCCESS, hns_set_sortlist(channel_, "12.13.0.0/255.255.0.0 1234::5678"));
     HostResult result;
-    ares_gethostbyname(channel_, "example.com.", AF_INET, HostCallback, &result);
+    hns_gethostbyname(channel_, "example.com.", AF_INET, HostCallback, &result);
     Process();
     EXPECT_TRUE(result.done_);
     std::stringstream ss;
@@ -752,21 +752,21 @@ TEST_P(MockChannelTest, SortListV4) {
     EXPECT_EQ("{'example.com' aliases=[] addrs=[12.13.14.15, 22.23.24.25, 2.3.4.5]}", ss.str());
   }
   {
-    EXPECT_EQ(ARES_SUCCESS, ares_set_sortlist(channel_, "2.3.0.0/16 130.140.150.160/26"));
+    EXPECT_EQ(HNS_SUCCESS, hns_set_sortlist(channel_, "2.3.0.0/16 130.140.150.160/26"));
     HostResult result;
-    ares_gethostbyname(channel_, "example.com.", AF_INET, HostCallback, &result);
+    hns_gethostbyname(channel_, "example.com.", AF_INET, HostCallback, &result);
     Process();
     EXPECT_TRUE(result.done_);
     std::stringstream ss;
     ss << result.host_;
     EXPECT_EQ("{'example.com' aliases=[] addrs=[2.3.4.5, 22.23.24.25, 12.13.14.15]}", ss.str());
   }
-  struct ares_options options;
+  struct hns_options options;
   memset(&options, 0, sizeof(options));
   int optmask = 0;
-  EXPECT_EQ(ARES_SUCCESS, ares_save_options(channel_, &options, &optmask));
-  EXPECT_TRUE((optmask & ARES_OPT_SORTLIST) == ARES_OPT_SORTLIST);
-  ares_destroy_options(&options);
+  EXPECT_EQ(HNS_SUCCESS, hns_save_options(channel_, &options, &optmask));
+  EXPECT_TRUE((optmask & HNS_OPT_SORTLIST) == HNS_OPT_SORTLIST);
+  hns_destroy_options(&options);
 }
 
 TEST_P(MockChannelTest, SortListV6) {
@@ -783,9 +783,9 @@ TEST_P(MockChannelTest, SortListV6) {
     .WillByDefault(SetReply(&server_, &rsp));
 
   {
-    ares_set_sortlist(channel_, "1111::/16 2.3.0.0/255.255.0.0");
+    hns_set_sortlist(channel_, "1111::/16 2.3.0.0/255.255.0.0");
     HostResult result;
-    ares_gethostbyname(channel_, "example.com.", AF_INET6, HostCallback, &result);
+    hns_gethostbyname(channel_, "example.com.", AF_INET6, HostCallback, &result);
     Process();
     EXPECT_TRUE(result.done_);
     std::stringstream ss;
@@ -794,9 +794,9 @@ TEST_P(MockChannelTest, SortListV6) {
               "2121:0000:0000:0000:0000:0000:0000:0303]}", ss.str());
   }
   {
-    ares_set_sortlist(channel_, "2121::/8");
+    hns_set_sortlist(channel_, "2121::/8");
     HostResult result;
-    ares_gethostbyname(channel_, "example.com.", AF_INET6, HostCallback, &result);
+    hns_gethostbyname(channel_, "example.com.", AF_INET6, HostCallback, &result);
     Process();
     EXPECT_TRUE(result.done_);
     std::stringstream ss;
@@ -834,10 +834,10 @@ TEST_P(MockUDPChannelTest, SearchDomainsAllocFail) {
     HostResult* result = &(results[ii - 1]);
     ClearFails();
     SetAllocFail(ii);
-    ares_gethostbyname(channel_, "www", AF_INET, HostCallback, result);
+    hns_gethostbyname(channel_, "www", AF_INET, HostCallback, result);
     Process();
     EXPECT_TRUE(result->done_);
-    if (result->status_ == ARES_SUCCESS) {
+    if (result->status_ == HNS_SUCCESS) {
       std::stringstream ss;
       ss << result->host_;
       EXPECT_EQ("{'www.third.gov' aliases=[] addrs=[2.3.4.5]}", ss.str()) << " failed alloc #" << ii;
@@ -847,7 +847,7 @@ TEST_P(MockUDPChannelTest, SearchDomainsAllocFail) {
 
   // Explicitly destroy the channel now, so that the HostResult objects
   // are still valid (in case any pending work refers to them).
-  ares_destroy(channel_);
+  hns_destroy(channel_);
   channel_ = nullptr;
 }
 
@@ -865,7 +865,7 @@ TEST_P(MockUDPChannelTest, Resend) {
     .WillOnce(SetReply(&server_, &reply));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   EXPECT_EQ(2, result.timeouts_);
@@ -876,10 +876,10 @@ TEST_P(MockUDPChannelTest, Resend) {
 
 TEST_P(MockChannelTest, CancelImmediate) {
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
-  ares_cancel(channel_);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_cancel(channel_);
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ECANCELLED, result.status_);
+  EXPECT_EQ(HNS_ECANCELLED, result.status_);
   EXPECT_EQ(0, result.timeouts_);
 }
 
@@ -888,10 +888,10 @@ TEST_P(MockChannelTest, CancelImmediateGetHostByAddr) {
   struct in_addr addr;
   addr.s_addr = htonl(0x08080808);
   
-  ares_gethostbyaddr(channel_, &addr, sizeof(addr), AF_INET, HostCallback, &result);
-  ares_cancel(channel_);
+  hns_gethostbyaddr(channel_, &addr, sizeof(addr), AF_INET, HostCallback, &result);
+  hns_cancel(channel_);
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ECANCELLED, result.status_);
+  EXPECT_EQ(HNS_ECANCELLED, result.status_);
   EXPECT_EQ(0, result.timeouts_);
 }
 
@@ -905,47 +905,47 @@ TEST_P(MockUDPChannelTest, CancelLater) {
     .WillOnce(CancelChannel(&server_, channel_));
 
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_ECANCELLED, result.status_);
+  EXPECT_EQ(HNS_ECANCELLED, result.status_);
   EXPECT_EQ(0, result.timeouts_);
 }
 
 TEST_P(MockChannelTest, GetHostByNameDestroyAbsolute) {
   HostResult result;
-  ares_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www.google.com.", AF_INET, HostCallback, &result);
 
-  ares_destroy(channel_);
+  hns_destroy(channel_);
   channel_ = nullptr;
 
   EXPECT_TRUE(result.done_);  // Synchronous
-  EXPECT_EQ(ARES_EDESTRUCTION, result.status_);
+  EXPECT_EQ(HNS_EDESTRUCTION, result.status_);
   EXPECT_EQ(0, result.timeouts_);
 }
 
 TEST_P(MockChannelTest, GetHostByNameDestroyRelative) {
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
 
-  ares_destroy(channel_);
+  hns_destroy(channel_);
   channel_ = nullptr;
 
   EXPECT_TRUE(result.done_);  // Synchronous
-  EXPECT_EQ(ARES_EDESTRUCTION, result.status_);
+  EXPECT_EQ(HNS_EDESTRUCTION, result.status_);
   EXPECT_EQ(0, result.timeouts_);
 }
 
 TEST_P(MockChannelTest, GetHostByAddrDestroy) {
   unsigned char gdns_addr4[4] = {0x08, 0x08, 0x08, 0x08};
   HostResult result;
-  ares_gethostbyaddr(channel_, gdns_addr4, sizeof(gdns_addr4), AF_INET, HostCallback, &result);
+  hns_gethostbyaddr(channel_, gdns_addr4, sizeof(gdns_addr4), AF_INET, HostCallback, &result);
 
-  ares_destroy(channel_);
+  hns_destroy(channel_);
   channel_ = nullptr;
 
   EXPECT_TRUE(result.done_);  // Synchronous
-  EXPECT_EQ(ARES_EDESTRUCTION, result.status_);
+  EXPECT_EQ(HNS_EDESTRUCTION, result.status_);
   EXPECT_EQ(0, result.timeouts_);
 }
 
@@ -962,7 +962,7 @@ TEST_P(MockChannelTest, HostAlias) {
   EnvValue with_env("HOSTALIASES", aliases.filename());
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -981,7 +981,7 @@ TEST_P(MockChannelTest, HostAliasMissing) {
   TempFile aliases("\n\n# www commentedout\nww www.google.com\n");
   EnvValue with_env("HOSTALIASES", aliases.filename());
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -999,7 +999,7 @@ TEST_P(MockChannelTest, HostAliasMissingFile) {
 
   EnvValue with_env("HOSTALIASES", "bogus.mcfile");
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   Process();
   EXPECT_TRUE(result.done_);
   std::stringstream ss;
@@ -1013,9 +1013,9 @@ TEST_P(MockChannelTest, HostAliasUnreadable) {
   EnvValue with_env("HOSTALIASES", aliases.filename());
 
   HostResult result;
-  ares_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
+  hns_gethostbyname(channel_, "www", AF_INET, HostCallback, &result);
   EXPECT_TRUE(result.done_);
-  EXPECT_EQ(ARES_EFILE, result.status_);
+  EXPECT_EQ(HNS_EFILE, result.status_);
   chmod(aliases.filename(), 0777);
 }
 #endif
@@ -1025,10 +1025,10 @@ class MockMultiServerChannelTest
     public ::testing::WithParamInterface< std::pair<int, bool> > {
  public:
   MockMultiServerChannelTest(bool rotate)
-    : MockChannelOptsTest(3, GetParam().first, GetParam().second, nullptr, rotate ? ARES_OPT_ROTATE : ARES_OPT_NOROTATE) {}
+    : MockChannelOptsTest(3, GetParam().first, GetParam().second, nullptr, rotate ? HNS_OPT_ROTATE : HNS_OPT_NOROTATE) {}
   void CheckExample() {
     HostResult result;
-    ares_gethostbyname(channel_, "www.example.com.", AF_INET, HostCallback, &result);
+    hns_gethostbyname(channel_, "www.example.com.", AF_INET, HostCallback, &result);
     Process();
     EXPECT_TRUE(result.done_);
     std::stringstream ss;
@@ -1049,11 +1049,11 @@ class NoRotateMultiMockTest : public MockMultiServerChannelTest {
 
 
 TEST_P(RotateMultiMockTest, ThirdServer) {
-  struct ares_options opts = {0};
+  struct hns_options opts = {0};
   int optmask = 0;
-  EXPECT_EQ(ARES_SUCCESS, ares_save_options(channel_, &opts, &optmask));
-  EXPECT_EQ(0, (optmask & ARES_OPT_NOROTATE));
-  ares_destroy_options(&opts);
+  EXPECT_EQ(HNS_SUCCESS, hns_save_options(channel_, &opts, &optmask));
+  EXPECT_EQ(0, (optmask & HNS_OPT_NOROTATE));
+  hns_destroy_options(&opts);
 
   DNSPacket servfailrsp;
   servfailrsp.set_response().set_aa().set_rcode(ns_r_servfail)
@@ -1094,11 +1094,11 @@ TEST_P(RotateMultiMockTest, ThirdServer) {
 }
 
 TEST_P(NoRotateMultiMockTest, ThirdServer) {
-  struct ares_options opts = {0};
+  struct hns_options opts = {0};
   int optmask = 0;
-  EXPECT_EQ(ARES_SUCCESS, ares_save_options(channel_, &opts, &optmask));
-  EXPECT_EQ(ARES_OPT_NOROTATE, (optmask & ARES_OPT_NOROTATE));
-  ares_destroy_options(&opts);
+  EXPECT_EQ(HNS_SUCCESS, hns_save_options(channel_, &opts, &optmask));
+  EXPECT_EQ(HNS_OPT_NOROTATE, (optmask & HNS_OPT_NOROTATE));
+  hns_destroy_options(&opts);
 
   DNSPacket servfailrsp;
   servfailrsp.set_response().set_aa().set_rcode(ns_r_servfail)
@@ -1138,21 +1138,21 @@ TEST_P(NoRotateMultiMockTest, ThirdServer) {
   CheckExample();
 }
 
-INSTANTIATE_TEST_CASE_P(AddressFamilies, MockChannelTest, ::testing::ValuesIn(ares::test::families_modes));
+INSTANTIATE_TEST_CASE_P(AddressFamilies, MockChannelTest, ::testing::ValuesIn(hns::test::families_modes));
 
-INSTANTIATE_TEST_CASE_P(AddressFamilies, MockUDPChannelTest, ::testing::ValuesIn(ares::test::families));
+INSTANTIATE_TEST_CASE_P(AddressFamilies, MockUDPChannelTest, ::testing::ValuesIn(hns::test::families));
 
-INSTANTIATE_TEST_CASE_P(AddressFamilies, MockTCPChannelTest, ::testing::ValuesIn(ares::test::families));
+INSTANTIATE_TEST_CASE_P(AddressFamilies, MockTCPChannelTest, ::testing::ValuesIn(hns::test::families));
 
-INSTANTIATE_TEST_CASE_P(AddressFamilies, MockExtraOptsTest, ::testing::ValuesIn(ares::test::families_modes));
+INSTANTIATE_TEST_CASE_P(AddressFamilies, MockExtraOptsTest, ::testing::ValuesIn(hns::test::families_modes));
 
-INSTANTIATE_TEST_CASE_P(AddressFamilies, MockNoCheckRespChannelTest, ::testing::ValuesIn(ares::test::families_modes));
+INSTANTIATE_TEST_CASE_P(AddressFamilies, MockNoCheckRespChannelTest, ::testing::ValuesIn(hns::test::families_modes));
 
-INSTANTIATE_TEST_CASE_P(AddressFamilies, MockEDNSChannelTest, ::testing::ValuesIn(ares::test::families_modes));
+INSTANTIATE_TEST_CASE_P(AddressFamilies, MockEDNSChannelTest, ::testing::ValuesIn(hns::test::families_modes));
 
-INSTANTIATE_TEST_CASE_P(TransportModes, RotateMultiMockTest, ::testing::ValuesIn(ares::test::families_modes));
+INSTANTIATE_TEST_CASE_P(TransportModes, RotateMultiMockTest, ::testing::ValuesIn(hns::test::families_modes));
 
-INSTANTIATE_TEST_CASE_P(TransportModes, NoRotateMultiMockTest, ::testing::ValuesIn(ares::test::families_modes));
+INSTANTIATE_TEST_CASE_P(TransportModes, NoRotateMultiMockTest, ::testing::ValuesIn(hns::test::families_modes));
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

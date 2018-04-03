@@ -87,11 +87,11 @@ int main (void)
 ])
 
 
-dnl CARES_CHECK_LIB_XNET
+dnl HNS_CHECK_LIB_XNET
 dnl -------------------------------------------------
 dnl Verify if X/Open network library is required.
 
-AC_DEFUN([CARES_CHECK_LIB_XNET], [
+AC_DEFUN([HNS_CHECK_LIB_XNET], [
   AC_MSG_CHECKING([if X/Open network library is required])
   tst_lib_xnet_required="no"
   AC_COMPILE_IFELSE([
@@ -115,20 +115,20 @@ int main (void)
 ])
 
 
-dnl CARES_CHECK_AIX_ALL_SOURCE
+dnl HNS_CHECK_AIX_ALL_SOURCE
 dnl -------------------------------------------------
 dnl Provides a replacement of traditional AC_AIX with
 dnl an uniform behaviour across all autoconf versions,
 dnl and with our own placement rules.
 
-AC_DEFUN([CARES_CHECK_AIX_ALL_SOURCE], [
+AC_DEFUN([HNS_CHECK_AIX_ALL_SOURCE], [
   AH_VERBATIM([_ALL_SOURCE],
     [/* Define to 1 if OS is AIX. */
 #ifndef _ALL_SOURCE
 #  undef _ALL_SOURCE
 #endif])
   AC_BEFORE([$0], [AC_SYS_LARGEFILE])dnl
-  AC_BEFORE([$0], [CARES_CONFIGURE_REENTRANT])dnl
+  AC_BEFORE([$0], [HNS_CONFIGURE_REENTRANT])dnl
   AC_MSG_CHECKING([if OS is AIX (to define _ALL_SOURCE)])
   AC_EGREP_CPP([yes_this_is_aix],[
 #ifdef _AIX
@@ -1678,13 +1678,13 @@ AC_DEFUN([CURL_CHECK_LIBS_CLOCK_GETTIME_MONOTONIC], [
 ])
 
 
-dnl CARES_CHECK_LIBS_CONNECT
+dnl HNS_CHECK_LIBS_CONNECT
 dnl -------------------------------------------------
 dnl Verify if network connect function is already available
 dnl using current libraries or if another one is required.
 
-AC_DEFUN([CARES_CHECK_LIBS_CONNECT], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
+AC_DEFUN([HNS_CHECK_LIBS_CONNECT], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
   AC_MSG_CHECKING([for connect in libraries])
   tst_connect_save_LIBS="$LIBS"
   tst_connect_need_LIBS="unknown"
@@ -1693,7 +1693,7 @@ AC_DEFUN([CARES_CHECK_LIBS_CONNECT], [
       LIBS="$tst_lib $tst_connect_save_LIBS"
       AC_LINK_IFELSE([
         AC_LANG_PROGRAM([[
-          $cares_includes_winsock2
+          $hns_includes_winsock2
           #ifndef HAVE_WINDOWS_H
             int connect(int, void*, int);
           #endif
@@ -1724,7 +1724,7 @@ AC_DEFUN([CARES_CHECK_LIBS_CONNECT], [
 ])
 
 
-dnl CARES_DEFINE_UNQUOTED (VARIABLE, [VALUE])
+dnl HNS_DEFINE_UNQUOTED (VARIABLE, [VALUE])
 dnl -------------------------------------------------
 dnl Like AC_DEFINE_UNQUOTED this macro will define a C preprocessor
 dnl symbol that can be further used in custom template configuration
@@ -1737,40 +1737,40 @@ dnl stub and definition into the first configuration header file. Do
 dnl not use this macro as a replacement for AC_DEFINE_UNQUOTED, each
 dnl one serves different functional needs.
 
-AC_DEFUN([CARES_DEFINE_UNQUOTED], [
+AC_DEFUN([HNS_DEFINE_UNQUOTED], [
 cat >>confdefs.h <<_EOF
 [@%:@define] $1 ifelse($#, 2, [$2], 1)
 _EOF
 ])
 
-dnl CARES_CONFIGURE_ARES_SOCKLEN_T
+dnl HNS_CONFIGURE_HNS_SOCKLEN_T
 dnl -------------------------------------------------
-dnl Find out suitable ares_socklen_t data type definition and size, making
-dnl appropriate definitions for template file ares_build.h.in
+dnl Find out suitable hns_socklen_t data type definition and size, making
+dnl appropriate definitions for template file hns_build.h.in
 dnl to properly configure and use the library.
 dnl
-dnl The need for the ares_socklen_t definition arises mainly to properly
+dnl The need for the hns_socklen_t definition arises mainly to properly
 dnl interface HP-UX systems which on one hand have a typedef'ed socklen_t
 dnl data type which is 32 or 64-Bit wide depending on the data model being
 dnl used, and that on the other hand is only actually used when interfacing
 dnl the X/Open sockets provided in the xnet library.
 
-AC_DEFUN([CARES_CONFIGURE_ARES_SOCKLEN_T], [
-  AC_REQUIRE([CARES_INCLUDES_WS2TCPIP])dnl
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
-  AC_REQUIRE([CARES_PREPROCESS_CALLCONV])dnl
+AC_DEFUN([HNS_CONFIGURE_HNS_SOCKLEN_T], [
+  AC_REQUIRE([HNS_INCLUDES_WS2TCPIP])dnl
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
+  AC_REQUIRE([HNS_PREPROCESS_CALLCONV])dnl
   #
-  AC_MSG_CHECKING([for ares_socklen_t data type])
-  cares_typeof_ares_socklen_t="unknown"
+  AC_MSG_CHECKING([for hns_socklen_t data type])
+  hns_typeof_hns_socklen_t="unknown"
   for arg1 in int SOCKET; do
     for arg2 in 'struct sockaddr' void; do
       for t in socklen_t int size_t 'unsigned int' long 'unsigned long' void; do
-        if test "$cares_typeof_ares_socklen_t" = "unknown"; then
+        if test "$hns_typeof_hns_socklen_t" = "unknown"; then
           AC_COMPILE_IFELSE([
             AC_LANG_PROGRAM([[
-              $cares_includes_ws2tcpip
-              $cares_includes_sys_socket
-              $cares_preprocess_callconv
+              $hns_includes_ws2tcpip
+              $hns_includes_sys_socket
+              $hns_preprocess_callconv
               extern int FUNCALLCONV getpeername($arg1, $arg2 *, $t *);
             ]],[[
               $t *lenptr = 0;
@@ -1778,35 +1778,35 @@ AC_DEFUN([CARES_CONFIGURE_ARES_SOCKLEN_T], [
                 return 1;
             ]])
           ],[
-            cares_typeof_ares_socklen_t="$t"
+            hns_typeof_hns_socklen_t="$t"
           ])
         fi
       done
     done
   done
   for t in socklen_t int; do
-    if test "$cares_typeof_ares_socklen_t" = "void"; then
+    if test "$hns_typeof_hns_socklen_t" = "void"; then
       AC_COMPILE_IFELSE([
         AC_LANG_PROGRAM([[
-          $cares_includes_sys_socket
-          typedef $t ares_socklen_t;
+          $hns_includes_sys_socket
+          typedef $t hns_socklen_t;
         ]],[[
-          ares_socklen_t dummy;
+          hns_socklen_t dummy;
         ]])
       ],[
-        cares_typeof_ares_socklen_t="$t"
+        hns_typeof_hns_socklen_t="$t"
       ])
     fi
   done
-  AC_MSG_RESULT([$cares_typeof_ares_socklen_t])
-  if test "$cares_typeof_ares_socklen_t" = "void" ||
-    test "$cares_typeof_ares_socklen_t" = "unknown"; then
-    AC_MSG_ERROR([cannot find data type for ares_socklen_t.])
+  AC_MSG_RESULT([$hns_typeof_hns_socklen_t])
+  if test "$hns_typeof_hns_socklen_t" = "void" ||
+    test "$hns_typeof_hns_socklen_t" = "unknown"; then
+    AC_MSG_ERROR([cannot find data type for hns_socklen_t.])
   fi
   #
-  AC_MSG_CHECKING([size of ares_socklen_t])
-  cares_sizeof_ares_socklen_t="unknown"
-  cares_pull_headers_socklen_t="unknown"
+  AC_MSG_CHECKING([size of hns_socklen_t])
+  hns_sizeof_hns_socklen_t="unknown"
+  hns_pull_headers_socklen_t="unknown"
   if test "$ac_cv_header_ws2tcpip_h" = "yes"; then
     tst_pull_header_checks='none ws2tcpip'
     tst_size_checks='4'
@@ -1816,16 +1816,16 @@ AC_DEFUN([CARES_CONFIGURE_ARES_SOCKLEN_T], [
   fi
   for tst_size in $tst_size_checks; do
     for tst_pull_headers in $tst_pull_header_checks; do
-      if test "$cares_sizeof_ares_socklen_t" = "unknown"; then
+      if test "$hns_sizeof_hns_socklen_t" = "unknown"; then
         case $tst_pull_headers in
           ws2tcpip)
-            tmp_includes="$cares_includes_ws2tcpip"
+            tmp_includes="$hns_includes_ws2tcpip"
             ;;
           systypes)
-            tmp_includes="$cares_includes_sys_types"
+            tmp_includes="$hns_includes_sys_types"
             ;;
           syssocket)
-            tmp_includes="$cares_includes_sys_socket"
+            tmp_includes="$hns_includes_sys_socket"
             ;;
           *)
             tmp_includes=""
@@ -1834,45 +1834,45 @@ AC_DEFUN([CARES_CONFIGURE_ARES_SOCKLEN_T], [
         AC_COMPILE_IFELSE([
           AC_LANG_PROGRAM([[
             $tmp_includes
-            typedef $cares_typeof_ares_socklen_t ares_socklen_t;
-            typedef char dummy_arr[sizeof(ares_socklen_t) == $tst_size ? 1 : -1];
+            typedef $hns_typeof_hns_socklen_t hns_socklen_t;
+            typedef char dummy_arr[sizeof(hns_socklen_t) == $tst_size ? 1 : -1];
           ]],[[
-            ares_socklen_t dummy;
+            hns_socklen_t dummy;
           ]])
         ],[
-          cares_sizeof_ares_socklen_t="$tst_size"
-          cares_pull_headers_socklen_t="$tst_pull_headers"
+          hns_sizeof_hns_socklen_t="$tst_size"
+          hns_pull_headers_socklen_t="$tst_pull_headers"
         ])
       fi
     done
   done
-  AC_MSG_RESULT([$cares_sizeof_ares_socklen_t])
-  if test "$cares_sizeof_ares_socklen_t" = "unknown"; then
-    AC_MSG_ERROR([cannot find out size of ares_socklen_t.])
+  AC_MSG_RESULT([$hns_sizeof_hns_socklen_t])
+  if test "$hns_sizeof_hns_socklen_t" = "unknown"; then
+    AC_MSG_ERROR([cannot find out size of hns_socklen_t.])
   fi
   #
-  case $cares_pull_headers_socklen_t in
+  case $hns_pull_headers_socklen_t in
     ws2tcpip)
-      CARES_DEFINE_UNQUOTED([CARES_PULL_WS2TCPIP_H])
+      HNS_DEFINE_UNQUOTED([HNS_PULL_WS2TCPIP_H])
       ;;
     systypes)
-      CARES_DEFINE_UNQUOTED([CARES_PULL_SYS_TYPES_H])
+      HNS_DEFINE_UNQUOTED([HNS_PULL_SYS_TYPES_H])
       ;;
     syssocket)
-      CARES_DEFINE_UNQUOTED([CARES_PULL_SYS_TYPES_H])
-      CARES_DEFINE_UNQUOTED([CARES_PULL_SYS_SOCKET_H])
+      HNS_DEFINE_UNQUOTED([HNS_PULL_SYS_TYPES_H])
+      HNS_DEFINE_UNQUOTED([HNS_PULL_SYS_SOCKET_H])
       ;;
   esac
-  CARES_DEFINE_UNQUOTED([CARES_TYPEOF_ARES_SOCKLEN_T], [$cares_typeof_ares_socklen_t])
-  CARES_DEFINE_UNQUOTED([CARES_SIZEOF_ARES_SOCKLEN_T], [$cares_sizeof_ares_socklen_t])
+  HNS_DEFINE_UNQUOTED([HNS_TYPEOF_HNS_SOCKLEN_T], [$hns_typeof_hns_socklen_t])
+  HNS_DEFINE_UNQUOTED([HNS_SIZEOF_HNS_SOCKLEN_T], [$hns_sizeof_hns_socklen_t])
 ])
 
 
 dnl This macro determines if the specified struct exists in the specified file
 dnl Syntax:
-dnl CARES_CHECK_STRUCT(headers, struct name, if found, [if not found])
+dnl HNS_CHECK_STRUCT(headers, struct name, if found, [if not found])
 
-AC_DEFUN([CARES_CHECK_STRUCT], [
+AC_DEFUN([HNS_CHECK_STRUCT], [
   AC_MSG_CHECKING([for struct $2])
   AC_TRY_COMPILE([$1],
     [
@@ -1889,9 +1889,9 @@ AC_DEFUN([CARES_CHECK_STRUCT], [
 
 dnl This macro determines if the specified constant exists in the specified file
 dnl Syntax:
-dnl CARES_CHECK_CONSTANT(headers, constant name, if found, [if not found])
+dnl HNS_CHECK_CONSTANT(headers, constant name, if found, [if not found])
 
-AC_DEFUN([CARES_CHECK_CONSTANT], [
+AC_DEFUN([HNS_CHECK_CONSTANT], [
   AC_MSG_CHECKING([for $2])
   AC_EGREP_CPP(VARIABLEWASDEFINED,
    [

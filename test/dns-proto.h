@@ -3,14 +3,14 @@
 #define DNS_PROTO_H
 // Utilities for processing DNS packet contents
 
-// Include ares internal file for DNS protocol constants
+// Include hns internal file for DNS protocol constants
 #include "nameser.h"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace ares {
+namespace hns {
 
 typedef unsigned char byte;
 
@@ -334,6 +334,6 @@ struct DNSPacket {
   std::vector<std::unique_ptr<DNSRR>> adds_;
 };
 
-}  // namespace ares
+}  // namespace hns
 
 #endif

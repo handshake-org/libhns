@@ -16,7 +16,7 @@
  */
 
 #include <string.h>
-#include "ares_sha512.h"
+#include "hns_sha512.h"
 
 static inline uint32_t bswap_32(uint32_t x) {
 	x = ((x << 8) & 0xFF00FF00u) | ((x >> 8) & 0x00FF00FFu);
@@ -69,7 +69,7 @@ void rhash_swap_copy_str_to_u64(void* to, int index, const void* from, size_t le
 #define IS_ALIGNED_32(p) (0 == (3 & ((const char*)(p) - (const char*)0)))
 #define IS_ALIGNED_64(p) (0 == (7 & ((const char*)(p) - (const char*)0)))
 
-#ifdef ARES_BIG_ENDIAN
+#ifdef HNS_BIG_ENDIAN
 #define be2me_32(x) (x)
 #define be2me_64(x) (x)
 #define le2me_32(x) bswap_32(x)
@@ -99,7 +99,7 @@ void rhash_swap_copy_str_to_u64(void* to, int index, const void* from, size_t le
 /* SHA-384 and SHA-512 constants for 80 rounds. These qwords represent
  * the first 64 bits of the fractional parts of the cube
  * roots of the first 80 prime numbers. */
-static const uint64_t ares_k512[80] = {
+static const uint64_t hns_k512[80] = {
 	I64(0x428a2f98d728ae22), I64(0x7137449123ef65cd), I64(0xb5c0fbcfec4d3b2f),
 	I64(0xe9b5dba58189dbbc), I64(0x3956c25bf348b538), I64(0x59f111f1b605d019),
 	I64(0x923f82a4af194f9b), I64(0xab1c5ed5da6d8118), I64(0xd807aa98a3030242),
@@ -149,7 +149,7 @@ static const uint64_t ares_k512[80] = {
 	uint64_t T1 = h + Sigma1(e) + Ch(e,f,g) + k + (data); \
 	d += T1, h = T1 + Sigma0(a) + Maj(a,b,c); }
 #define ROUND_1_16(a,b,c,d,e,f,g,h,n) \
-	ROUND(a,b,c,d,e,f,g,h, ares_k512[n], W[n] = be2me_64(block[n]))
+	ROUND(a,b,c,d,e,f,g,h, hns_k512[n], W[n] = be2me_64(block[n]))
 #define ROUND_17_80(a,b,c,d,e,f,g,h,n) \
 	ROUND(a,b,c,d,e,f,g,h, k[n], RECALCULATE_W(W, n))
 
@@ -158,7 +158,7 @@ static const uint64_t ares_k512[80] = {
  *
  * @param ctx context to initialize
  */
-void ares_sha512_init(ares_sha512_ctx *ctx)
+void hns_sha512_init(hns_sha512_ctx *ctx)
 {
 	/* Initial values. These words were obtained by taking the first 32
 	 * bits of the fractional parts of the square roots of the first
@@ -181,7 +181,7 @@ void ares_sha512_init(ares_sha512_ctx *ctx)
  *
  * @param ctx context to initialize
  */
-void ares_sha384_init(struct ares_sha512_ctx *ctx)
+void hns_sha384_init(struct hns_sha512_ctx *ctx)
 {
 	/* Initial values from FIPS 180-3. These words were obtained by taking
 	 * the first sixty-four bits of the fractional parts of the square
@@ -204,7 +204,7 @@ void ares_sha384_init(struct ares_sha512_ctx *ctx)
  * @param hash algorithm state
  * @param block the message block to process
  */
-static void ares_sha512_process_block(uint64_t hash[8], uint64_t block[16])
+static void hns_sha512_process_block(uint64_t hash[8], uint64_t block[16])
 {
 	uint64_t A, B, C, D, E, F, G, H;
 	uint64_t W[16];
@@ -232,7 +232,7 @@ static void ares_sha512_process_block(uint64_t hash[8], uint64_t block[16])
 	ROUND_1_16(C, D, E, F, G, H, A, B, 14);
 	ROUND_1_16(B, C, D, E, F, G, H, A, 15);
 
-	for (i = 16, k = &ares_k512[16]; i < 80; i += 16, k += 16) {
+	for (i = 16, k = &hns_k512[16]; i < 80; i += 16, k += 16) {
 		ROUND_17_80(A, B, C, D, E, F, G, H,  0);
 		ROUND_17_80(H, A, B, C, D, E, F, G,  1);
 		ROUND_17_80(G, H, A, B, C, D, E, F,  2);
@@ -263,7 +263,7 @@ static void ares_sha512_process_block(uint64_t hash[8], uint64_t block[16])
  * @param msg message chunk
  * @param size length of the message chunk
  */
-void ares_sha512_update(ares_sha512_ctx *ctx, const unsigned char *msg, size_t size)
+void hns_sha512_update(hns_sha512_ctx *ctx, const unsigned char *msg, size_t size)
 {
 	size_t index = (size_t)ctx->length & 127;
 	ctx->length += size;
@@ -275,7 +275,7 @@ void ares_sha512_update(ares_sha512_ctx *ctx, const unsigned char *msg, size_t s
 		if (size < left) return;
 
 		/* process partial block */
-		ares_sha512_process_block(ctx->hash, ctx->message);
+		hns_sha512_process_block(ctx->hash, ctx->message);
 		msg  += left;
 		size -= left;
 	}
@@ -290,7 +290,7 @@ void ares_sha512_update(ares_sha512_ctx *ctx, const unsigned char *msg, size_t s
 			aligned_message_block = ctx->message;
 		}
 
-		ares_sha512_process_block(ctx->hash, aligned_message_block);
+		hns_sha512_process_block(ctx->hash, aligned_message_block);
 		msg  += sha512_block_size;
 		size -= sha512_block_size;
 	}
@@ -305,7 +305,7 @@ void ares_sha512_update(ares_sha512_ctx *ctx, const unsigned char *msg, size_t s
  * @param ctx the algorithm context containing current hashing state
  * @param result calculated hash in binary form
  */
-void ares_sha512_final(ares_sha512_ctx *ctx, unsigned char* result)
+void hns_sha512_final(hns_sha512_ctx *ctx, unsigned char* result)
 {
 	size_t index = ((unsigned)ctx->length & 127) >> 3;
 	unsigned shift = ((unsigned)ctx->length & 7) * 8;
@@ -319,14 +319,14 @@ void ares_sha512_final(ares_sha512_ctx *ctx, unsigned char* result)
 	/* if no room left in the message to store 128-bit message length */
 	if (index >= 15) {
 		if (index == 15) ctx->message[index] = 0;
-		ares_sha512_process_block(ctx->hash, ctx->message);
+		hns_sha512_process_block(ctx->hash, ctx->message);
 		index = 0;
 	}
 	while (index < 15) {
 		ctx->message[index++] = 0;
 	}
 	ctx->message[15] = be2me_64(ctx->length << 3);
-	ares_sha512_process_block(ctx->hash, ctx->message);
+	hns_sha512_process_block(ctx->hash, ctx->message);
 
 	if (result) be64_copy(result, 0, ctx->hash, ctx->digest_length);
 }

@@ -1,4 +1,4 @@
-** This file is adapted from libcurl and not yet fully rewritten for c-ares! **
+** This file is adapted from libcurl and not yet fully rewritten for hns! **
 
 ```
                           ___       __ _ _ __ ___  ___
@@ -12,9 +12,9 @@
 Installing Binary Packages
 ==========================
 
-Lots of people download binary distributions of c-ares. This document
-does not describe how to install c-ares using such a binary package.
-This document describes how to compile, build and install c-ares from
+Lots of people download binary distributions of hns. This document
+does not describe how to install hns using such a binary package.
+This document describes how to compile, build and install hns from
 source code.
 
 Building from Git
@@ -39,7 +39,7 @@ unpacked the source archive):
 
     ./configure
     make
-    make ahost adig acountry (optional)
+    make hhost hdig hcountry (optional)
     make install
 
 You probably need to be root when doing the last command.
@@ -51,10 +51,10 @@ Get a full listing of all available configure options by invoking it like:
 
     ./configure --help
 
-If you want to install c-ares in a different file hierarchy than /usr/local,
+If you want to install hns in a different file hierarchy than /usr/local,
 you need to specify that already when running configure:
 
-    ./configure --prefix=/path/to/c-ares/tree
+    ./configure --prefix=/path/to/hns/tree
 
 If you happen to have write permission in that directory, you can do `make
 install` without being root. An example of this would be to make a local
@@ -78,7 +78,7 @@ by running configure like:
 
     ./configure --disable-shared
 
-If you're a c-ares developer and use gcc, you might want to enable more
+If you're a hns developer and use gcc, you might want to enable more
 debug options with the `--enable-debug` option.
 
 ### Special Cases
@@ -97,9 +97,9 @@ The Open Watcom C compiler on Linux requires configuring with the variables:
 (This section was graciously brought to us by Jim Duey, with additions by
 Dan Fandrich)
 
-Download and unpack the c-ares package.
+Download and unpack the hns package.
 
-`cd` to the new directory. (e.g. `cd c-ares-1.7.6`)
+`cd` to the new directory. (e.g. `cd hns-1.7.6`)
 
 Set environment variables to point to the cross-compile toolchain and call
 configure with any options you need.  Be sure and specify the `--host` and
@@ -129,7 +129,7 @@ export NM=ppc_405-nm
 You may also need to provide a parameter like `--with-random=/dev/urandom`
 to configure as it cannot detect the presence of a random number
 generating device for a target system.  The `--prefix` parameter
-specifies where c-ares will be installed.  If `configure` completes
+specifies where hns will be installed.  If `configure` completes
 successfully, do `make` and `make install` as usual.
 
 In some cases, you may be able to simplify the above commands to as
@@ -141,7 +141,7 @@ little as:
 ### Cygwin (Windows)
 
 Almost identical to the unix installation. Run the configure script in the
-c-ares root with `sh configure`. Make sure you have the sh executable in
+hns root with `sh configure`. Make sure you have the sh executable in
 `/bin/` or you'll see the configure fail toward the end.
 
 Run `make`
@@ -153,12 +153,12 @@ Run `make`
 
 As QNX is targeted for resource constrained environments, the QNX headers
 set conservative limits. This includes the `FD_SETSIZE` macro, set by default
-to 32. Socket descriptors returned within the c-ares library may exceed this,
+to 32. Socket descriptors returned within the hns library may exceed this,
 resulting in memory faults/SIGSEGV crashes when passed into `select(..)`
 calls using `fd_set` macros.
 
 A good all-round solution to this is to override the default when building
-c-ares, by overriding `CFLAGS` during configure, example:
+hns, by overriding `CFLAGS` during configure, example:
 
     # configure CFLAGS='-DFD_SETSIZE=64 -g -O2'
 
@@ -172,7 +172,7 @@ The library can be cross-compiled using gccsdk as follows:
     make
 
 where `riscos-gcc` and `riscos-ar` are links to the gccsdk tools.
-You can then link your program with `c-ares/lib/.libs/libcares.a`.
+You can then link your program with `hns/lib/.libs/libhns.a`.
 
 
 ### Android
@@ -213,7 +213,7 @@ Method using a configure cross-compile (tested with Android NDK r7b):
 CMake builds
 ============
 
-Current releases of c-ares introduce a CMake v3+ build system that has been
+Current releases of hns introduce a CMake v3+ build system that has been
 tested on most platforms including Windows, Linux, FreeBSD, MacOS, AIX and
 Solaris.
 
@@ -223,7 +223,7 @@ In the most basic form, building with CMake might look like:
 cd /path/to/cmake/source
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/cares ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/hns ..
 make
 sudo make install
 ```
@@ -234,10 +234,10 @@ Options
 Options to CMake are passed on the command line using "-D${OPTION}=${VALUE}".
 The values defined are all boolean and take values like On, Off, True, False.
 
-* CARES_STATIC - Build the static library (off by default)
-* CARES_SHARED - Build the shared library (on by default)
-* CARES_INSTALL - Hook in installation, useful to disable if chain building
-* CARES_STATIC_PIC - Build the static library as position-independent (off by
+* HNS_STATIC - Build the static library (off by default)
+* HNS_SHARED - Build the shared library (on by default)
+* HNS_INSTALL - Hook in installation, useful to disable if chain building
+* HNS_STATIC_PIC - Build the static library as position-independent (off by
    default)
 
 
@@ -251,7 +251,7 @@ heavily parallize builds.  Its use is very similar to the normal build:
 cd /path/to/cmake/source
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/cares -G "Ninja" ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/hns -G "Ninja" ..
 ninja
 sudo ninja install
 ```
@@ -263,7 +263,7 @@ Windows MSVC Command Line
 cd \path\to\cmake\source
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=C:\cares -G "NMake Makefiles" ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=C:\hns -G "NMake Makefiles" ..
 nmake
 nmake install
 ```
@@ -274,7 +274,7 @@ Windows MinGW-w64 Command Line via MSYS
 cd \path\to\cmake\source
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=C:\cares -G "MSYS Makefiles" ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=C:\hns -G "MSYS Makefiles" ..
 make
 make install
 ```
@@ -339,10 +339,10 @@ Further details in [README.msvc](README.msvc)
 Details in [README.msvc](README.msvc)
 
 
-### Important static c-ares usage note
+### Important static hns usage note
 
-When building an application that uses the static c-ares library, you must
-add `-DCARES_STATICLIB` to your `CFLAGS`.  Otherwise the linker will look for
+When building an application that uses the static hns library, you must
+add `-DHNS_STATICLIB` to your `CFLAGS`.  Otherwise the linker will look for
 dynamic import symbols.
 
 
@@ -372,7 +372,7 @@ If you're getting huge binaries, probably your makefiles have the `-g` in
 NetWare
 -------
 
-To compile `libcares.a` / `libcares.lib` you need:
+To compile `libhns.a` / `libhns.lib` you need:
 
  - either any gcc / nlmconv, or CodeWarrior 7 PDK 4 or later.
  - gnu make and awk running on the platform you compile on;
@@ -393,7 +393,7 @@ PORTS
 =====
 
 This is a probably incomplete list of known hardware and operating systems
-that c-ares has been compiled for. If you know a system c-ares compiles and
+that hns has been compiled for. If you know a system hns compiles and
 runs on, that isn't listed, please let us know!
 
      - Alpha Tru64 v5.0 5.1
@@ -409,7 +409,7 @@ runs on, that isn't listed, please let us know!
 Useful URLs
 ===========
 
- - c-ares: https://c-ares.haxx.se/
+ - hns: https://c-ares.haxx.se/
  - MingW: http://www.mingw.org/
  - MinGW-w64: http://mingw-w64.sourceforge.net/
  - OpenWatcom: http://www.openwatcom.org/

@@ -15,11 +15,11 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares_strcasecmp.h"
+#include "hns_setup.h"
+#include "hns_strcasecmp.h"
 
 #ifndef HAVE_STRCASECMP
-int ares_strcasecmp(const char *a, const char *b)
+int hns_strcasecmp(const char *a, const char *b)
 {
 #if defined(HAVE_STRCMPI)
   return strcmpi(a, b);
@@ -42,7 +42,7 @@ int ares_strcasecmp(const char *a, const char *b)
 #endif
 
 #ifndef HAVE_STRNCASECMP
-int ares_strncasecmp(const char *a, const char *b, size_t n)
+int hns_strncasecmp(const char *a, const char *b, size_t n)
 {
 #if defined(HAVE_STRNCMPI)
   return strncmpi(a, b, n);

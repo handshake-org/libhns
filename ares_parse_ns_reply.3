@@ -13,19 +13,19 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_PARSE_NS_REPLY 3 "10 February 2007"
+.TH HNS_PARSE_NS_REPLY 3 "10 February 2007"
 .SH NAME
-ares_parse_ns_reply \- Parse a reply to a DNS query of type NS into a hostent
+hns_parse_ns_reply \- Parse a reply to a DNS query of type NS into a hostent
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_parse_ns_reply(const unsigned char *\fIabuf\fP, int \fIalen\fP,
+.B int hns_parse_ns_reply(const unsigned char *\fIabuf\fP, int \fIalen\fP,
 .B 	struct hostent **\fIhost\fP);
 .fi
 .SH DESCRIPTION
 The
-.B ares_parse_ns_reply
+.B hns_parse_ns_reply
 function parses the response to a query of type NS into a
 .BR "struct hostent" .
 The parameters
@@ -42,25 +42,25 @@ field of the
 structure. 
 It is the caller's responsibility to free the resulting host structure
 using
-.BR ares_free_hostent (3)
+.BR hns_free_hostent (3)
 when it is no longer needed.
 .SH RETURN VALUES
-.B ares_parse_ns_reply
+.B hns_parse_ns_reply
 can return any of the following values:
 .TP 15
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 The response was successfully parsed.
 .TP 15
-.B ARES_EBADRESP
+.B HNS_EBADRESP
 The response was malformatted.
 .TP 15
-.B ARES_ENODATA
+.B HNS_ENODATA
 The response did not contain an answer to the query.
 .TP 15
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .SH SEE ALSO
-.BR ares_query (3),
-.BR ares_free_hostent (3)
+.BR hns_query (3),
+.BR hns_free_hostent (3)
 .SH AUTHOR
 Written by Vlad Dinulescu <vlad.dinulescu@avira.com>, on behalf of AVIRA Gmbh http://www.avira.com

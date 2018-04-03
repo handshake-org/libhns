@@ -2,18 +2,18 @@ Major changes since:
 * see the CHANGES file
 
 Major changes in release 1.1.1:
-* ares should now compile as C++ code (no longer uses reserved word
+* hns should now compile as C++ code (no longer uses reserved word
   "class").
-* Added SRV support to adig test program.
+* Added SRV support to hdig test program.
 * Fixed a few error handling bugs in query processing.
 
 Major changes in release 1.1.0:
-* Added ares_free_string() function so that memory can be freed in the
+* Added hns_free_string() function so that memory can be freed in the
   same layer as it is allocated, a desirable feature in some
   environments.
-* A few of the ares_dns.h macros are fixed to use the proper bitwise
+* A few of the hns_dns.h macros are fixed to use the proper bitwise
   operator.
-* Fixed a couple of fenceposts fixed in ares_expand_name()'s
+* Fixed a couple of fenceposts fixed in hns_expand_name()'s
   bounds-checking.
 * In process_timeouts(), extract query->next before calling
   next_server() and possibly freeing the query structure.

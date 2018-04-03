@@ -13,7 +13,7 @@
  * this software for any purpose.  It is provided "as is"
  * without express or implied warranty.
  */
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_GETSERVBYPORT_R
 #  if !defined(GETSERVBYPORT_R_ARGS) || \
@@ -44,13 +44,13 @@
 #include <net/if.h>
 #endif
 
-#include "ares.h"
-#include "ares_ipv6.h"
-#include "ares_nowarn.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_ipv6.h"
+#include "hns_nowarn.h"
+#include "hns_private.h"
 
 struct nameinfo_query {
-  ares_nameinfo_callback callback;
+  hns_nameinfo_callback callback;
   void *arg;
   union {
     struct sockaddr_in addr4;
@@ -77,11 +77,11 @@ static char *lookup_service(unsigned short port, int flags,
 static void append_scopeid(struct sockaddr_in6 *addr6, unsigned int scopeid,
                            char *buf, size_t buflen);
 #endif
-STATIC_TESTABLE char *ares_striendstr(const char *s1, const char *s2);
+STATIC_TESTABLE char *hns_striendstr(const char *s1, const char *s2);
 
-void ares_getnameinfo(ares_channel channel, const struct sockaddr *sa,
-                      ares_socklen_t salen,
-                      int flags, ares_nameinfo_callback callback, void *arg)
+void hns_getnameinfo(hns_channel channel, const struct sockaddr *sa,
+                      hns_socklen_t salen,
+                      int flags, hns_nameinfo_callback callback, void *arg)
 {
   struct sockaddr_in *addr = NULL;
   struct sockaddr_in6 *addr6 = NULL;
@@ -103,30 +103,30 @@ void ares_getnameinfo(ares_channel channel, const struct sockaddr *sa,
     }
   else
     {
-      callback(arg, ARES_ENOTIMP, 0, NULL, NULL);
+      callback(arg, HNS_ENOTIMP, 0, NULL, NULL);
       return;
     }
 
   /* If neither, assume they want a host */
-  if (!(flags & ARES_NI_LOOKUPSERVICE) && !(flags & ARES_NI_LOOKUPHOST))
-    flags |= ARES_NI_LOOKUPHOST;
+  if (!(flags & HNS_NI_LOOKUPSERVICE) && !(flags & HNS_NI_LOOKUPHOST))
+    flags |= HNS_NI_LOOKUPHOST;
 
   /* All they want is a service, no need for DNS */
-  if ((flags & ARES_NI_LOOKUPSERVICE) && !(flags & ARES_NI_LOOKUPHOST))
+  if ((flags & HNS_NI_LOOKUPSERVICE) && !(flags & HNS_NI_LOOKUPHOST))
     {
       char buf[33], *service;
 
       service = lookup_service((unsigned short)(port & 0xffff),
                                flags, buf, sizeof(buf));
-      callback(arg, ARES_SUCCESS, 0, NULL, service);
+      callback(arg, HNS_SUCCESS, 0, NULL, service);
       return;
     }
 
   /* They want a host lookup */
-  if ((flags & ARES_NI_LOOKUPHOST))
+  if ((flags & HNS_NI_LOOKUPHOST))
     {
      /* A numeric host can be handled without DNS */
-     if ((flags & ARES_NI_NUMERICHOST))
+     if ((flags & HNS_NI_NUMERICHOST))
       {
         char ipbuf[IPBUFSIZ];
         char srvbuf[33];
@@ -136,14 +136,14 @@ void ares_getnameinfo(ares_channel channel, const struct sockaddr *sa,
         /* Specifying not to lookup a host, but then saying a host
          * is required has to be illegal.
          */
-        if (flags & ARES_NI_NAMEREQD)
+        if (flags & HNS_NI_NAMEREQD)
           {
-            callback(arg, ARES_EBADFLAGS, 0, NULL, NULL);
+            callback(arg, HNS_EBADFLAGS, 0, NULL, NULL);
             return;
           }
         if (salen == sizeof(struct sockaddr_in6))
           {
-            ares_inet_ntop(AF_INET6, &addr6->sin6_addr, ipbuf, IPBUFSIZ);
+            hns_inet_ntop(AF_INET6, &addr6->sin6_addr, ipbuf, IPBUFSIZ);
             /* If the system supports scope IDs, use it */
 #ifdef HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID
             append_scopeid(addr6, flags, ipbuf, sizeof(ipbuf));
@@ -151,22 +151,22 @@ void ares_getnameinfo(ares_channel channel, const struct sockaddr *sa,
           }
         else
           {
-            ares_inet_ntop(AF_INET, &addr->sin_addr, ipbuf, IPBUFSIZ);
+            hns_inet_ntop(AF_INET, &addr->sin_addr, ipbuf, IPBUFSIZ);
           }
         /* They also want a service */
-        if (flags & ARES_NI_LOOKUPSERVICE)
+        if (flags & HNS_NI_LOOKUPSERVICE)
           service = lookup_service((unsigned short)(port & 0xffff),
                                    flags, srvbuf, sizeof(srvbuf));
-        callback(arg, ARES_SUCCESS, 0, ipbuf, service);
+        callback(arg, HNS_SUCCESS, 0, ipbuf, service);
         return;
       }
     /* This is where a DNS lookup becomes necessary */
     else
       {
-        niquery = ares_malloc(sizeof(struct nameinfo_query));
+        niquery = hns_malloc(sizeof(struct nameinfo_query));
         if (!niquery)
           {
-            callback(arg, ARES_ENOMEM, 0, NULL, NULL);
+            callback(arg, HNS_ENOMEM, 0, NULL, NULL);
             return;
           }
         niquery->callback = callback;
@@ -177,7 +177,7 @@ void ares_getnameinfo(ares_channel channel, const struct sockaddr *sa,
           {
             niquery->family = AF_INET;
             memcpy(&niquery->addr.addr4, addr, sizeof(niquery->addr.addr4));
-            ares_gethostbyaddr(channel, &addr->sin_addr,
+            hns_gethostbyaddr(channel, &addr->sin_addr,
                                sizeof(struct in_addr), AF_INET,
                                nameinfo_callback, niquery);
           }
@@ -185,8 +185,8 @@ void ares_getnameinfo(ares_channel channel, const struct sockaddr *sa,
           {
             niquery->family = AF_INET6;
             memcpy(&niquery->addr.addr6, addr6, sizeof(niquery->addr.addr6));
-            ares_gethostbyaddr(channel, &addr6->sin6_addr,
-                               sizeof(struct ares_in6_addr), AF_INET6,
+            hns_gethostbyaddr(channel, &addr6->sin6_addr,
+                               sizeof(struct hns_in6_addr), AF_INET6,
                                nameinfo_callback, niquery);
           }
       }
@@ -201,10 +201,10 @@ static void nameinfo_callback(void *arg, int status, int timeouts,
   char *service = NULL;
 
   niquery->timeouts += timeouts;
-  if (status == ARES_SUCCESS)
+  if (status == HNS_SUCCESS)
     {
       /* They want a service too */
-      if (niquery->flags & ARES_NI_LOOKUPSERVICE)
+      if (niquery->flags & HNS_NI_LOOKUPSERVICE)
         {
           if (niquery->family == AF_INET)
             service = lookup_service(niquery->addr.addr4.sin_port,
@@ -218,35 +218,35 @@ static void nameinfo_callback(void *arg, int status, int timeouts,
          for this domain name and removing it.
        */
 #ifdef HAVE_GETHOSTNAME
-      if (niquery->flags & ARES_NI_NOFQDN)
+      if (niquery->flags & HNS_NI_NOFQDN)
         {
            char buf[255];
            char *domain;
            gethostname(buf, 255);
            if ((domain = strchr(buf, '.')) != NULL)
              {
-               char *end = ares_striendstr(host->h_name, domain);
+               char *end = hns_striendstr(host->h_name, domain);
                if (end)
                  *end = 0;
              }
         }
 #endif
-      niquery->callback(niquery->arg, ARES_SUCCESS, niquery->timeouts,
+      niquery->callback(niquery->arg, HNS_SUCCESS, niquery->timeouts,
                         (char *)(host->h_name),
                         service);
-      ares_free(niquery);
+      hns_free(niquery);
       return;
     }
   /* We couldn't find the host, but it's OK, we can use the IP */
-  else if (status == ARES_ENOTFOUND && !(niquery->flags & ARES_NI_NAMEREQD))
+  else if (status == HNS_ENOTFOUND && !(niquery->flags & HNS_NI_NAMEREQD))
     {
       char ipbuf[IPBUFSIZ];
       if (niquery->family == AF_INET)
-        ares_inet_ntop(AF_INET, &niquery->addr.addr4.sin_addr, ipbuf,
+        hns_inet_ntop(AF_INET, &niquery->addr.addr4.sin_addr, ipbuf,
                        IPBUFSIZ);
       else
         {
-          ares_inet_ntop(AF_INET6, &niquery->addr.addr6.sin6_addr, ipbuf,
+          hns_inet_ntop(AF_INET6, &niquery->addr.addr6.sin6_addr, ipbuf,
                          IPBUFSIZ);
 #ifdef HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID
           append_scopeid(&niquery->addr.addr6, niquery->flags, ipbuf,
@@ -254,7 +254,7 @@ static void nameinfo_callback(void *arg, int status, int timeouts,
 #endif
         }
       /* They want a service too */
-      if (niquery->flags & ARES_NI_LOOKUPSERVICE)
+      if (niquery->flags & HNS_NI_LOOKUPSERVICE)
         {
           if (niquery->family == AF_INET)
             service = lookup_service(niquery->addr.addr4.sin_port,
@@ -263,13 +263,13 @@ static void nameinfo_callback(void *arg, int status, int timeouts,
             service = lookup_service(niquery->addr.addr6.sin6_port,
                                      niquery->flags, srvbuf, sizeof(srvbuf));
         }
-      niquery->callback(niquery->arg, ARES_SUCCESS, niquery->timeouts, ipbuf,
+      niquery->callback(niquery->arg, HNS_SUCCESS, niquery->timeouts, ipbuf,
                         service);
-      ares_free(niquery);
+      hns_free(niquery);
       return;
     }
   niquery->callback(niquery->arg, status, niquery->timeouts, NULL, NULL);
-  ares_free(niquery);
+  hns_free(niquery);
 }
 
 static char *lookup_service(unsigned short port, int flags,
@@ -286,15 +286,15 @@ static char *lookup_service(unsigned short port, int flags,
 
   if (port)
     {
-      if (flags & ARES_NI_NUMERICSERV)
+      if (flags & HNS_NI_NUMERICSERV)
         sep = NULL;
       else
         {
-          if (flags & ARES_NI_UDP)
+          if (flags & HNS_NI_UDP)
             proto = "udp";
-          else if (flags & ARES_NI_SCTP)
+          else if (flags & HNS_NI_SCTP)
             proto = "sctp";
-          else if (flags & ARES_NI_DCCP)
+          else if (flags & HNS_NI_DCCP)
             proto = "dccp";
           else
             proto = "tcp";
@@ -365,7 +365,7 @@ static void append_scopeid(struct sockaddr_in6 *addr6, unsigned int flags,
 #ifdef HAVE_IF_INDEXTONAME
   is_ll = IN6_IS_ADDR_LINKLOCAL(&addr6->sin6_addr);
   is_mcll = IN6_IS_ADDR_MC_LINKLOCAL(&addr6->sin6_addr);
-  if ((flags & ARES_NI_NUMERICSCOPE) ||
+  if ((flags & HNS_NI_NUMERICSCOPE) ||
       (!is_ll && !is_mcll))
     {
       if (is_scope_long)
@@ -412,7 +412,7 @@ static void append_scopeid(struct sockaddr_in6 *addr6, unsigned int flags,
 #endif
 
 /* Determines if s1 ends with the string in s2 (case-insensitive) */
-STATIC_TESTABLE char *ares_striendstr(const char *s1, const char *s2)
+STATIC_TESTABLE char *hns_striendstr(const char *s1, const char *s2)
 {
   const char *c1, *c2, *c1_begin;
   int lo1, lo2;

@@ -13,27 +13,27 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_DESTROY 3 "7 December 2004"
+.TH HNS_DESTROY 3 "7 December 2004"
 .SH NAME
-ares_destroy \- Destroy a resolver channel
+hns_destroy \- Destroy a resolver channel
 .SH SYNOPSIS
 .nf
-#include <ares.h>
+#include <hns.h>
 
-void ares_destroy(ares_channel \fIchannel\fP)
+void hns_destroy(hns_channel \fIchannel\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_destroy(3)\fP function destroys the name service channel
+The \fBhns_destroy(3)\fP function destroys the name service channel
 identified by \fIchannel\fP, freeing all memory and closing all sockets used
 by the channel.
 
-\fBares_destroy(3)\fP invokes the callbacks for each pending query on the
-channel, passing a status of \fIARES_EDESTRUCTION\fP. These calls give the
+\fBhns_destroy(3)\fP invokes the callbacks for each pending query on the
+channel, passing a status of \fIHNS_EDESTRUCTION\fP. These calls give the
 callbacks a chance to clean up any state which might have been stored in their
 arguments. A callback must not add new requests to a channel being destroyed.
 .SH SEE ALSO
-.BR ares_init (3),
-.BR ares_cancel (3)
+.BR hns_init (3),
+.BR hns_cancel (3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br

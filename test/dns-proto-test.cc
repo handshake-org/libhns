@@ -1,9 +1,9 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST(DNSProto, EncodeQuestions) {
@@ -128,4 +128,4 @@ TEST(DNSProto, EncodeAddressAnswers) {
 
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

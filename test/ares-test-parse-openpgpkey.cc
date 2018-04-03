@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseOpenpgpkeyReplyOK) {
@@ -22,10 +22,10 @@ TEST_F(LibraryTest, ParseOpenpgpkeyReplyOK) {
 
   std::vector<byte> data = pkt.data();
 
-  struct ares_openpgpkey_reply *openpgpkey = nullptr;
+  struct hns_openpgpkey_reply *openpgpkey = nullptr;
 
-  EXPECT_EQ(ARES_SUCCESS,
-    ares_parse_openpgpkey_reply(data.data(), data.size(), &openpgpkey));
+  EXPECT_EQ(HNS_SUCCESS,
+    hns_parse_openpgpkey_reply(data.data(), data.size(), &openpgpkey));
   ASSERT_NE(nullptr, openpgpkey);
 
   ASSERT_NE(openpgpkey->pubkey, nullptr);
@@ -42,8 +42,8 @@ TEST_F(LibraryTest, ParseOpenpgpkeyReplyOK) {
 
   ASSERT_EQ(memcmp(openpgpkey->pubkey, key.data(), 20), 0);
 
-  ares_free_data(openpgpkey);
+  hns_free_data(openpgpkey);
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

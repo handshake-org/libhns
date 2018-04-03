@@ -4,7 +4,7 @@
  *
  * Problem; you want to know where IP a.b.c.d is located.
  *
- * Use ares_gethostbyname ("d.c.b.a.zz.countries.nerd.dk")
+ * Use hns_gethostbyname ("d.c.b.a.zz.countries.nerd.dk")
  * and get the CNAME (host->h_name). Result will be:
  *   CNAME = zz<CC>.countries.nerd.dk with address 127.0.x.y (ver 1) or
  *   CNAME = <a.b.c.d>.zz.countries.nerd.dk with address 127.0.x.y (ver 2)
@@ -32,7 +32,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
@@ -46,30 +46,30 @@
   #include <netdb.h>
 #endif
 
-#include "ares.h"
-#include "ares_getopt.h"
-#include "ares_nowarn.h"
+#include "hns.h"
+#include "hns_getopt.h"
+#include "hns_nowarn.h"
 
 #ifndef HAVE_STRDUP
-#  include "ares_strdup.h"
-#  define strdup(ptr) ares_strdup(ptr)
+#  include "hns_strdup.h"
+#  define strdup(ptr) hns_strdup(ptr)
 #endif
 
 #ifndef HAVE_STRCASECMP
-#  include "ares_strcasecmp.h"
-#  define strcasecmp(p1,p2) ares_strcasecmp(p1,p2)
+#  include "hns_strcasecmp.h"
+#  define strcasecmp(p1,p2) hns_strcasecmp(p1,p2)
 #endif
 
 #ifndef HAVE_STRNCASECMP
-#  include "ares_strcasecmp.h"
-#  define strncasecmp(p1,p2,n) ares_strncasecmp(p1,p2,n)
+#  include "hns_strcasecmp.h"
+#  define strncasecmp(p1,p2,n) hns_strncasecmp(p1,p2,n)
 #endif
 
 #ifndef INADDR_NONE
 #define INADDR_NONE 0xffffffff
 #endif
 
-static const char *usage      = "acountry [-vh?] {host|addr} ...\n";
+static const char *usage      = "hcountry [-vh?] {host|addr} ...\n";
 static const char  nerd_fmt[] = "%u.%u.%u.%u.zz.countries.nerd.dk";
 static const char *nerd_ver1  = nerd_fmt + 14;  /* .countries.nerd.dk */
 static const char *nerd_ver2  = nerd_fmt + 11;  /* .zz.countries.nerd.dk */
@@ -80,7 +80,7 @@ static int         verbose    = 0;
                        printf fmt ;   \
                    } WHILE_FALSE
 
-static void wait_ares(ares_channel channel);
+static void wait_hns(hns_channel channel);
 static void callback(void *arg, int status, int timeouts, struct hostent *host);
 static void callback2(void *arg, int status, int timeouts, struct hostent *host);
 static void find_country_from_cname(const char *cname, struct in_addr addr);
@@ -96,7 +96,7 @@ static void Abort(const char *fmt, ...)
 
 int main(int argc, char **argv)
 {
-  ares_channel channel;
+  hns_channel channel;
   int    ch, status;
 
 #if defined(WIN32) && !defined(WATT32)
@@ -105,14 +105,14 @@ int main(int argc, char **argv)
   WSAStartup(wVersionRequested, &wsaData);
 #endif
 
-  status = ares_library_init(ARES_LIB_INIT_ALL);
-  if (status != ARES_SUCCESS)
+  status = hns_library_init(HNS_LIB_INIT_ALL);
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "ares_library_init: %s\n", ares_strerror(status));
+      fprintf(stderr, "hns_library_init: %s\n", hns_strerror(status));
       return 1;
     }
 
-  while ((ch = ares_getopt(argc, argv, "dvh?")) != -1)
+  while ((ch = hns_getopt(argc, argv, "dvh?")) != -1)
     switch (ch)
       {
       case 'd':
@@ -134,10 +134,10 @@ int main(int argc, char **argv)
   if (argc < 1)
      Abort(usage);
 
-  status = ares_init(&channel);
-  if (status != ARES_SUCCESS)
+  status = hns_init(&channel);
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "ares_init: %s\n", ares_strerror(status));
+      fprintf(stderr, "hns_init: %s\n", hns_strerror(status));
       return 1;
     }
 
@@ -150,10 +150,10 @@ int main(int argc, char **argv)
       /* If this fails, assume '*argv' is a host-name that
        * must be resolved first
        */
-      if (ares_inet_pton(AF_INET, *argv, &addr) != 1)
+      if (hns_inet_pton(AF_INET, *argv, &addr) != 1)
         {
-          ares_gethostbyname(channel, *argv, AF_INET, callback2, &addr);
-          wait_ares(channel);
+          hns_gethostbyname(channel, *argv, AF_INET, callback2, &addr);
+          wait_hns(channel);
           if (addr.s_addr == INADDR_NONE)
             {
               printf("Failed to lookup %s\n", *argv);
@@ -168,13 +168,13 @@ int main(int argc, char **argv)
               (unsigned int)(addr.s_addr & 255));
       TRACE(("Looking up %s...", buf));
       fflush(stdout);
-      ares_gethostbyname(channel, buf, AF_INET, callback, buf);
+      hns_gethostbyname(channel, buf, AF_INET, callback, buf);
     }
 
-  wait_ares(channel);
-  ares_destroy(channel);
+  wait_hns(channel);
+  hns_destroy(channel);
 
-  ares_library_cleanup();
+  hns_library_cleanup();
 
 #if defined(WIN32) && !defined(WATT32)
   WSACleanup();
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 /*
  * Wait for the queries to complete.
  */
-static void wait_ares(ares_channel channel)
+static void wait_hns(hns_channel channel)
 {
   for (;;)
     {
@@ -196,14 +196,14 @@ static void wait_ares(ares_channel channel)
 
       FD_ZERO(&read_fds);
       FD_ZERO(&write_fds);
-      nfds = ares_fds(channel, &read_fds, &write_fds);
+      nfds = hns_fds(channel, &read_fds, &write_fds);
       if (nfds == 0)
         break;
-      tvp = ares_timeout(channel, NULL, &tv);
+      tvp = hns_timeout(channel, NULL, &tv);
       nfds = select(nfds, &read_fds, &write_fds, NULL, tvp);
       if (nfds < 0)
         continue;
-      ares_process(channel, &read_fds, &write_fds);
+      hns_process(channel, &read_fds, &write_fds);
     }
 }
 
@@ -219,14 +219,14 @@ static void callback(void *arg, int status, int timeouts, struct hostent *host)
 
   (void)timeouts;
 
-  if (!host || status != ARES_SUCCESS)
+  if (!host || status != HNS_SUCCESS)
     {
-      printf("Failed to lookup %s: %s\n", name, ares_strerror(status));
+      printf("Failed to lookup %s: %s\n", name, hns_strerror(status));
       return;
     }
 
   TRACE(("\nFound address %s, name %s\n",
-         ares_inet_ntop(AF_INET,(const char*)host->h_addr,buf,sizeof(buf)),
+         hns_inet_ntop(AF_INET,(const char*)host->h_addr,buf,sizeof(buf)),
          host->h_name));
 
   cname = host->h_name;  /* CNAME gets put here */
@@ -244,7 +244,7 @@ static void callback2(void *arg, int status, int timeouts, struct hostent *host)
   struct in_addr *addr = (struct in_addr*) arg;
 
   (void)timeouts;
-  if (!host || status != ARES_SUCCESS)
+  if (!host || status != HNS_SUCCESS)
     memset(addr, INADDR_NONE, sizeof(*addr));
   else
     memcpy(addr, host->h_addr, sizeof(*addr));

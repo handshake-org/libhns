@@ -15,33 +15,33 @@
  */
 
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #include <stddef.h>
 
-#include "ares.h"
-#include "ares_data.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_data.h"
+#include "hns_private.h"
 
 
 /*
-** ares_free_data() - c-ares external API function.
+** hns_free_data() - hns external API function.
 **
 ** This function must be used by the application to free data memory that
-** has been internally allocated by some c-ares function and for which a
+** has been internally allocated by some hns function and for which a
 ** pointer has already been returned to the calling application. The list
-** of c-ares functions returning pointers that must be free'ed using this
+** of hns functions returning pointers that must be free'ed using this
 ** function is:
 **
-**   ares_get_servers()
-**   ares_parse_srv_reply()
-**   ares_parse_txt_reply()
+**   hns_get_servers()
+**   hns_parse_srv_reply()
+**   hns_parse_txt_reply()
 */
 
-void ares_free_data(void *dataptr)
+void hns_free_data(void *dataptr)
 {
   while (dataptr != NULL) {
-    struct ares_data *ptr;
+    struct hns_data *ptr;
     void *next_data = NULL;
 
 #ifdef __INTEL_COMPILER
@@ -50,134 +50,134 @@ void ares_free_data(void *dataptr)
    /* 1684: conversion from pointer to same-sized integral type */
 #endif
 
-    ptr = (void *)((char *)dataptr - offsetof(struct ares_data, data));
+    ptr = (void *)((char *)dataptr - offsetof(struct hns_data, data));
 
 #ifdef __INTEL_COMPILER
 #  pragma warning(pop)
 #endif
 
-    if (ptr->mark != ARES_DATATYPE_MARK)
+    if (ptr->mark != HNS_DATATYPE_MARK)
       return;
 
     switch (ptr->type)
       {
-        case ARES_DATATYPE_MX_REPLY:
+        case HNS_DATATYPE_MX_REPLY:
 
           if (ptr->data.mx_reply.next)
             next_data = ptr->data.mx_reply.next;
           if (ptr->data.mx_reply.host)
-            ares_free(ptr->data.mx_reply.host);
+            hns_free(ptr->data.mx_reply.host);
           break;
 
-        case ARES_DATATYPE_SRV_REPLY:
+        case HNS_DATATYPE_SRV_REPLY:
 
           if (ptr->data.srv_reply.next)
             next_data = ptr->data.srv_reply.next;
           if (ptr->data.srv_reply.host)
-            ares_free(ptr->data.srv_reply.host);
+            hns_free(ptr->data.srv_reply.host);
           break;
 
-        case ARES_DATATYPE_TXT_REPLY:
-        case ARES_DATATYPE_TXT_EXT:
+        case HNS_DATATYPE_TXT_REPLY:
+        case HNS_DATATYPE_TXT_EXT:
 
           if (ptr->data.txt_reply.next)
             next_data = ptr->data.txt_reply.next;
           if (ptr->data.txt_reply.txt)
-            ares_free(ptr->data.txt_reply.txt);
+            hns_free(ptr->data.txt_reply.txt);
           break;
 
-        case ARES_DATATYPE_ADDR_NODE:
+        case HNS_DATATYPE_ADDR_NODE:
 
           if (ptr->data.addr_node.next)
             next_data = ptr->data.addr_node.next;
           break;
 
-        case ARES_DATATYPE_ADDR_PORT_NODE:
+        case HNS_DATATYPE_ADDR_PORT_NODE:
 
           if (ptr->data.addr_port_node.next)
             next_data = ptr->data.addr_port_node.next;
           break;
 
-        case ARES_DATATYPE_NAPTR_REPLY:
+        case HNS_DATATYPE_NAPTR_REPLY:
 
           if (ptr->data.naptr_reply.next)
             next_data = ptr->data.naptr_reply.next;
           if (ptr->data.naptr_reply.flags)
-            ares_free(ptr->data.naptr_reply.flags);
+            hns_free(ptr->data.naptr_reply.flags);
           if (ptr->data.naptr_reply.service)
-            ares_free(ptr->data.naptr_reply.service);
+            hns_free(ptr->data.naptr_reply.service);
           if (ptr->data.naptr_reply.regexp)
-            ares_free(ptr->data.naptr_reply.regexp);
+            hns_free(ptr->data.naptr_reply.regexp);
           if (ptr->data.naptr_reply.replacement)
-            ares_free(ptr->data.naptr_reply.replacement);
+            hns_free(ptr->data.naptr_reply.replacement);
           break;
 
-        case ARES_DATATYPE_SOA_REPLY:
+        case HNS_DATATYPE_SOA_REPLY:
           if (ptr->data.soa_reply.nsname)
-            ares_free(ptr->data.soa_reply.nsname);
+            hns_free(ptr->data.soa_reply.nsname);
           if (ptr->data.soa_reply.hostmaster)
-            ares_free(ptr->data.soa_reply.hostmaster);
+            hns_free(ptr->data.soa_reply.hostmaster);
           break;
 
-        case ARES_DATATYPE_SSHFP_REPLY:
+        case HNS_DATATYPE_SSHFP_REPLY:
           if (ptr->data.sshfp_reply.next)
             next_data = ptr->data.sshfp_reply.next;
           if (ptr->data.sshfp_reply.fingerprint)
-            ares_free(ptr->data.sshfp_reply.fingerprint);
+            hns_free(ptr->data.sshfp_reply.fingerprint);
           break;
 
-        case ARES_DATATYPE_DANE_REPLY:
+        case HNS_DATATYPE_DANE_REPLY:
           if (ptr->data.dane_reply.next)
             next_data = ptr->data.dane_reply.next;
           if (ptr->data.dane_reply.certificate)
-            ares_free(ptr->data.dane_reply.certificate);
+            hns_free(ptr->data.dane_reply.certificate);
           break;
 
-        case ARES_DATATYPE_OPENPGPKEY_REPLY:
+        case HNS_DATATYPE_OPENPGPKEY_REPLY:
           if (ptr->data.openpgpkey_reply.next)
             next_data = ptr->data.openpgpkey_reply.next;
           if (ptr->data.openpgpkey_reply.pubkey)
-            ares_free(ptr->data.openpgpkey_reply.pubkey);
+            hns_free(ptr->data.openpgpkey_reply.pubkey);
           break;
 
         default:
           return;
       }
 
-    ares_free(ptr);
+    hns_free(ptr);
     dataptr = next_data;
   }
 }
 
 
 /*
-** ares_malloc_data() - c-ares internal helper function.
+** hns_malloc_data() - hns internal helper function.
 **
-** This function allocates memory for a c-ares private ares_data struct
-** for the specified ares_datatype, initializes c-ares private fields
+** This function allocates memory for a hns private hns_data struct
+** for the specified hns_datatype, initializes hns private fields
 ** and zero initializes those which later might be used from the public
-** API. It returns an interior pointer which can be passed by c-ares
+** API. It returns an interior pointer which can be passed by hns
 ** functions to the calling application, and that must be free'ed using
-** c-ares external API function ares_free_data().
+** hns external API function hns_free_data().
 */
 
-void *ares_malloc_data(ares_datatype type)
+void *hns_malloc_data(hns_datatype type)
 {
-  struct ares_data *ptr;
+  struct hns_data *ptr;
 
-  ptr = ares_malloc(sizeof(struct ares_data));
+  ptr = hns_malloc(sizeof(struct hns_data));
   if (!ptr)
     return NULL;
 
   switch (type)
     {
-      case ARES_DATATYPE_MX_REPLY:
+      case HNS_DATATYPE_MX_REPLY:
         ptr->data.mx_reply.next = NULL;
         ptr->data.mx_reply.host = NULL;
         ptr->data.mx_reply.priority = 0;
         break;
 
-      case ARES_DATATYPE_SRV_REPLY:
+      case HNS_DATATYPE_SRV_REPLY:
         ptr->data.srv_reply.next = NULL;
         ptr->data.srv_reply.host = NULL;
         ptr->data.srv_reply.priority = 0;
@@ -185,24 +185,24 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.srv_reply.port = 0;
         break;
 
-      case ARES_DATATYPE_TXT_EXT:
+      case HNS_DATATYPE_TXT_EXT:
         ptr->data.txt_ext.record_start = 0;
         /* FALLTHROUGH */
 
-      case ARES_DATATYPE_TXT_REPLY:
+      case HNS_DATATYPE_TXT_REPLY:
         ptr->data.txt_reply.next = NULL;
         ptr->data.txt_reply.txt = NULL;
         ptr->data.txt_reply.length = 0;
         break;
 
-      case ARES_DATATYPE_ADDR_NODE:
+      case HNS_DATATYPE_ADDR_NODE:
         ptr->data.addr_node.next = NULL;
         ptr->data.addr_node.family = 0;
         memset(&ptr->data.addr_node.addrV6, 0,
                sizeof(ptr->data.addr_node.addrV6));
         break;
 
-      case ARES_DATATYPE_ADDR_PORT_NODE:
+      case HNS_DATATYPE_ADDR_PORT_NODE:
         ptr->data.addr_port_node.next = NULL;
         ptr->data.addr_port_node.family = 0;
         ptr->data.addr_port_node.udp_port = 0;
@@ -211,7 +211,7 @@ void *ares_malloc_data(ares_datatype type)
                sizeof(ptr->data.addr_port_node.addrV6));
         break;
 
-      case ARES_DATATYPE_NAPTR_REPLY:
+      case HNS_DATATYPE_NAPTR_REPLY:
         ptr->data.naptr_reply.next = NULL;
         ptr->data.naptr_reply.flags = NULL;
         ptr->data.naptr_reply.service = NULL;
@@ -221,7 +221,7 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.naptr_reply.preference = 0;
         break;
 
-      case ARES_DATATYPE_SOA_REPLY:
+      case HNS_DATATYPE_SOA_REPLY:
         ptr->data.soa_reply.nsname = NULL;
         ptr->data.soa_reply.hostmaster = NULL;
         ptr->data.soa_reply.serial = 0;
@@ -231,7 +231,7 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.soa_reply.minttl = 0;
         break;
 
-      case ARES_DATATYPE_SSHFP_REPLY:
+      case HNS_DATATYPE_SSHFP_REPLY:
         ptr->data.sshfp_reply.next = NULL;
         ptr->data.sshfp_reply.algorithm = 0;
         ptr->data.sshfp_reply.digest_type = 0;
@@ -239,7 +239,7 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.sshfp_reply.fingerprint_len = 0;
         break;
 
-      case ARES_DATATYPE_DANE_REPLY:
+      case HNS_DATATYPE_DANE_REPLY:
         ptr->data.dane_reply.next = NULL;
         ptr->data.dane_reply.usage = 0;
         ptr->data.dane_reply.selector = 0;
@@ -248,18 +248,18 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.dane_reply.certificate_len = 0;
         break;
 
-      case ARES_DATATYPE_OPENPGPKEY_REPLY:
+      case HNS_DATATYPE_OPENPGPKEY_REPLY:
         ptr->data.openpgpkey_reply.next = NULL;
         ptr->data.openpgpkey_reply.pubkey = NULL;
         ptr->data.openpgpkey_reply.pubkey_len = 0;
         break;
 
       default:
-        ares_free(ptr);
+        hns_free(ptr);
         return NULL;
     }
 
-  ptr->mark = ARES_DATATYPE_MARK;
+  ptr->mark = HNS_DATATYPE_MARK;
   ptr->type = type;
 
   return &ptr->data;

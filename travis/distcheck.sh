@@ -3,14 +3,14 @@ set -e
 
 if [ "$BUILD_TYPE" = "normal" -a "$TRAVIS_OS_NAME" = "linux" ]; then
     ./maketgz 99.98.97
-    tar xvf c-ares-99.98.97.tar.gz
-    cd c-ares-99.98.97
+    tar xvf hns-99.98.97.tar.gz
+    cd hns-99.98.97
     ./configure --disable-symbol-hiding --enable-expose-statics --enable-maintainer-mode --enable-debug
     make
 
     cd test
     make
-    $TEST_WRAP ./arestest -4 -v $TEST_FILTER
+    $TEST_WRAP ./hnstest -4 -v $TEST_FILTER
     cd ..
 
     cd ..

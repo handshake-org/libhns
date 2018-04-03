@@ -15,15 +15,15 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares_strdup.h"
-#include "ares.h"
-#include "ares_private.h"
+#include "hns_setup.h"
+#include "hns_strdup.h"
+#include "hns.h"
+#include "hns_private.h"
 
-char *ares_strdup(const char *s1)
+char *hns_strdup(const char *s1)
 {
 #ifdef HAVE_STRDUP
-  if (ares_malloc == malloc)
+  if (hns_malloc == malloc)
     return strdup(s1);
   else
 #endif
@@ -36,7 +36,7 @@ char *ares_strdup(const char *s1)
       if(sz < (size_t)-1) {
         sz++;
         if(sz < ((size_t)-1) / sizeof(char)) {
-          s2 = ares_malloc(sz * sizeof(char));
+          s2 = hns_malloc(sz * sizeof(char));
           if(s2) {
             memcpy(s2, s1, sz * sizeof(char));
             return s2;

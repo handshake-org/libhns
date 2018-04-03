@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #if !defined(WIN32) || defined(WATT32)
 #include <netinet/in.h>
@@ -26,25 +26,25 @@
 #include <strings.h>
 #endif
 
-#include "ares.h"
-#include "ares_dns.h"
-#include "ares_getopt.h"
-#include "ares_ipv6.h"
-#include "ares_nowarn.h"
+#include "hns.h"
+#include "hns_dns.h"
+#include "hns_getopt.h"
+#include "hns_ipv6.h"
+#include "hns_nowarn.h"
 
 #ifndef HAVE_STRDUP
-#  include "ares_strdup.h"
-#  define strdup(ptr) ares_strdup(ptr)
+#  include "hns_strdup.h"
+#  define strdup(ptr) hns_strdup(ptr)
 #endif
 
 #ifndef HAVE_STRCASECMP
-#  include "ares_strcasecmp.h"
-#  define strcasecmp(p1,p2) ares_strcasecmp(p1,p2)
+#  include "hns_strcasecmp.h"
+#  define strcasecmp(p1,p2) hns_strcasecmp(p1,p2)
 #endif
 
 #ifndef HAVE_STRNCASECMP
-#  include "ares_strcasecmp.h"
-#  define strncasecmp(p1,p2,n) ares_strncasecmp(p1,p2,n)
+#  include "hns_strcasecmp.h"
+#  define strncasecmp(p1,p2,n) hns_strncasecmp(p1,p2,n)
 #endif
 
 static void callback(void *arg, int status, int timeouts, struct hostent *host);
@@ -52,14 +52,14 @@ static void usage(void);
 
 int main(int argc, char **argv)
 {
-  struct ares_options options;
+  struct hns_options options;
   int optmask = 0;
-  ares_channel channel;
+  hns_channel channel;
   int status, nfds, c, addr_family = AF_INET;
   fd_set read_fds, write_fds;
   struct timeval *tvp, tv;
   struct in_addr addr4;
-  struct ares_in6_addr addr6;
+  struct hns_in6_addr addr6;
 
 #ifdef USE_WINSOCK
   WORD wVersionRequested = MAKEWORD(USE_WINSOCK,USE_WINSOCK);
@@ -69,14 +69,14 @@ int main(int argc, char **argv)
 
   memset(&options, 0, sizeof(options));
 
-  status = ares_library_init(ARES_LIB_INIT_ALL);
-  if (status != ARES_SUCCESS)
+  status = hns_library_init(HNS_LIB_INIT_ALL);
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "ares_library_init: %s\n", ares_strerror(status));
+      fprintf(stderr, "hns_library_init: %s\n", hns_strerror(status));
       return 1;
     }
 
-  while ((c = ares_getopt(argc,argv,"dt:hs:")) != -1)
+  while ((c = hns_getopt(argc,argv,"dt:hs:")) != -1)
     {
       switch (c)
         {
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 #endif
           break;
         case 's':
-          optmask |= ARES_OPT_DOMAINS;
+          optmask |= HNS_OPT_DOMAINS;
           options.ndomains++;
           options.domains = (char **)realloc(options.domains,
                                              options.ndomains * sizeof(char *));
@@ -114,29 +114,29 @@ int main(int argc, char **argv)
   if (argc < 1)
     usage();
 
-  status = ares_init_options(&channel, &options, optmask);
-  if (status != ARES_SUCCESS)
+  status = hns_init_options(&channel, &options, optmask);
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "ares_init: %s\n", ares_strerror(status));
+      fprintf(stderr, "hns_init: %s\n", hns_strerror(status));
       return 1;
     }
 
   /* Initiate the queries, one per command-line argument. */
   for ( ; *argv; argv++)
     {
-      if (ares_inet_pton(AF_INET, *argv, &addr4) == 1)
+      if (hns_inet_pton(AF_INET, *argv, &addr4) == 1)
         {
-          ares_gethostbyaddr(channel, &addr4, sizeof(addr4), AF_INET, callback,
+          hns_gethostbyaddr(channel, &addr4, sizeof(addr4), AF_INET, callback,
                              *argv);
         }
-      else if (ares_inet_pton(AF_INET6, *argv, &addr6) == 1)
+      else if (hns_inet_pton(AF_INET6, *argv, &addr6) == 1)
         {
-          ares_gethostbyaddr(channel, &addr6, sizeof(addr6), AF_INET6, callback,
+          hns_gethostbyaddr(channel, &addr6, sizeof(addr6), AF_INET6, callback,
                              *argv);
         }
       else
         {
-          ares_gethostbyname(channel, *argv, addr_family, callback, *argv);
+          hns_gethostbyname(channel, *argv, addr_family, callback, *argv);
         }
     }
 
@@ -146,19 +146,19 @@ int main(int argc, char **argv)
       int res;
       FD_ZERO(&read_fds);
       FD_ZERO(&write_fds);
-      nfds = ares_fds(channel, &read_fds, &write_fds);
+      nfds = hns_fds(channel, &read_fds, &write_fds);
       if (nfds == 0)
         break;
-      tvp = ares_timeout(channel, NULL, &tv);
+      tvp = hns_timeout(channel, NULL, &tv);
       res = select(nfds, &read_fds, &write_fds, NULL, tvp);
       if (-1 == res)
         break;
-      ares_process(channel, &read_fds, &write_fds);
+      hns_process(channel, &read_fds, &write_fds);
     }
 
-  ares_destroy(channel);
+  hns_destroy(channel);
 
-  ares_library_cleanup();
+  hns_library_cleanup();
 
 #ifdef USE_WINSOCK
   WSACleanup();
@@ -173,9 +173,9 @@ static void callback(void *arg, int status, int timeouts, struct hostent *host)
 
   (void)timeouts;
 
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "%s: %s\n", (char *) arg, ares_strerror(status));
+      fprintf(stderr, "%s: %s\n", (char *) arg, hns_strerror(status));
       return;
     }
 
@@ -183,7 +183,7 @@ static void callback(void *arg, int status, int timeouts, struct hostent *host)
     {
       char addr_buf[46] = "??";
 
-      ares_inet_ntop(host->h_addrtype, *p, addr_buf, sizeof(addr_buf));
+      hns_inet_ntop(host->h_addrtype, *p, addr_buf, sizeof(addr_buf));
       printf("%-32s\t%s", host->h_name, addr_buf);
 #if 0
       if (host->h_aliases[0])
@@ -201,6 +201,6 @@ static void callback(void *arg, int status, int timeouts, struct hostent *host)
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: ahost [-t {a|aaaa|u}] {host|addr} ...\n");
+  fprintf(stderr, "usage: hhost [-t {a|aaaa|u}] {host|addr} ...\n");
   exit(1);
 }

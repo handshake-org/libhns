@@ -4,8 +4,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_FIELD_H
-#define ARES_SECP256K1_FIELD_H
+#ifndef HNS_SECP256K1_FIELD_H
+#define HNS_SECP256K1_FIELD_H
 
 /** Field element module.
  *
@@ -19,7 +19,7 @@
  */
 
 #if defined HAVE_CONFIG_H
-#include "ares_config.h"
+#include "hns_config.h"
 #endif
 
 #if defined(USE_FIELD_10X26)
@@ -33,100 +33,100 @@
 #include "util.h"
 
 /** Normalize a field element. */
-static void ares_secp256k1_fe_normalize(ares_secp256k1_fe *r);
+static void hns_secp256k1_fe_normalize(hns_secp256k1_fe *r);
 
 /** Weakly normalize a field element: reduce it magnitude to 1, but don't fully normalize. */
-static void ares_secp256k1_fe_normalize_weak(ares_secp256k1_fe *r);
+static void hns_secp256k1_fe_normalize_weak(hns_secp256k1_fe *r);
 
 /** Normalize a field element, without constant-time guarantee. */
-static void ares_secp256k1_fe_normalize_var(ares_secp256k1_fe *r);
+static void hns_secp256k1_fe_normalize_var(hns_secp256k1_fe *r);
 
 /** Verify whether a field element represents zero i.e. would normalize to a zero value. The field
  *  implementation may optionally normalize the input, but this should not be relied upon. */
-static int ares_secp256k1_fe_normalizes_to_zero(ares_secp256k1_fe *r);
+static int hns_secp256k1_fe_normalizes_to_zero(hns_secp256k1_fe *r);
 
 /** Verify whether a field element represents zero i.e. would normalize to a zero value. The field
  *  implementation may optionally normalize the input, but this should not be relied upon. */
-static int ares_secp256k1_fe_normalizes_to_zero_var(ares_secp256k1_fe *r);
+static int hns_secp256k1_fe_normalizes_to_zero_var(hns_secp256k1_fe *r);
 
 /** Set a field element equal to a small integer. Resulting field element is normalized. */
-static void ares_secp256k1_fe_set_int(ares_secp256k1_fe *r, int a);
+static void hns_secp256k1_fe_set_int(hns_secp256k1_fe *r, int a);
 
 /** Sets a field element equal to zero, initializing all fields. */
-static void ares_secp256k1_fe_clear(ares_secp256k1_fe *a);
+static void hns_secp256k1_fe_clear(hns_secp256k1_fe *a);
 
 /** Verify whether a field element is zero. Requires the input to be normalized. */
-static int ares_secp256k1_fe_is_zero(const ares_secp256k1_fe *a);
+static int hns_secp256k1_fe_is_zero(const hns_secp256k1_fe *a);
 
 /** Check the "oddness" of a field element. Requires the input to be normalized. */
-static int ares_secp256k1_fe_is_odd(const ares_secp256k1_fe *a);
+static int hns_secp256k1_fe_is_odd(const hns_secp256k1_fe *a);
 
 /** Compare two field elements. Requires magnitude-1 inputs. */
-static int ares_secp256k1_fe_equal(const ares_secp256k1_fe *a, const ares_secp256k1_fe *b);
+static int hns_secp256k1_fe_equal(const hns_secp256k1_fe *a, const hns_secp256k1_fe *b);
 
-/** Same as ares_secp256k1_fe_equal, but may be variable time. */
-static int ares_secp256k1_fe_equal_var(const ares_secp256k1_fe *a, const ares_secp256k1_fe *b);
+/** Same as hns_secp256k1_fe_equal, but may be variable time. */
+static int hns_secp256k1_fe_equal_var(const hns_secp256k1_fe *a, const hns_secp256k1_fe *b);
 
 /** Compare two field elements. Requires both inputs to be normalized */
-static int ares_secp256k1_fe_cmp_var(const ares_secp256k1_fe *a, const ares_secp256k1_fe *b);
+static int hns_secp256k1_fe_cmp_var(const hns_secp256k1_fe *a, const hns_secp256k1_fe *b);
 
 /** Set a field element equal to 32-byte big endian value. If successful, the resulting field element is normalized. */
-static int ares_secp256k1_fe_set_b32(ares_secp256k1_fe *r, const unsigned char *a);
+static int hns_secp256k1_fe_set_b32(hns_secp256k1_fe *r, const unsigned char *a);
 
 /** Convert a field element to a 32-byte big endian value. Requires the input to be normalized */
-static void ares_secp256k1_fe_get_b32(unsigned char *r, const ares_secp256k1_fe *a);
+static void hns_secp256k1_fe_get_b32(unsigned char *r, const hns_secp256k1_fe *a);
 
 /** Set a field element equal to the additive inverse of another. Takes a maximum magnitude of the input
  *  as an argument. The magnitude of the output is one higher. */
-static void ares_secp256k1_fe_negate(ares_secp256k1_fe *r, const ares_secp256k1_fe *a, int m);
+static void hns_secp256k1_fe_negate(hns_secp256k1_fe *r, const hns_secp256k1_fe *a, int m);
 
 /** Multiplies the passed field element with a small integer constant. Multiplies the magnitude by that
  *  small integer. */
-static void ares_secp256k1_fe_mul_int(ares_secp256k1_fe *r, int a);
+static void hns_secp256k1_fe_mul_int(hns_secp256k1_fe *r, int a);
 
 /** Adds a field element to another. The result has the sum of the inputs' magnitudes as magnitude. */
-static void ares_secp256k1_fe_add(ares_secp256k1_fe *r, const ares_secp256k1_fe *a);
+static void hns_secp256k1_fe_add(hns_secp256k1_fe *r, const hns_secp256k1_fe *a);
 
 /** Sets a field element to be the product of two others. Requires the inputs' magnitudes to be at most 8.
  *  The output magnitude is 1 (but not guaranteed to be normalized). */
-static void ares_secp256k1_fe_mul(ares_secp256k1_fe *r, const ares_secp256k1_fe *a, const ares_secp256k1_fe * ARES_SECP256K1_RESTRICT b);
+static void hns_secp256k1_fe_mul(hns_secp256k1_fe *r, const hns_secp256k1_fe *a, const hns_secp256k1_fe * HNS_SECP256K1_RESTRICT b);
 
 /** Sets a field element to be the square of another. Requires the input's magnitude to be at most 8.
  *  The output magnitude is 1 (but not guaranteed to be normalized). */
-static void ares_secp256k1_fe_sqr(ares_secp256k1_fe *r, const ares_secp256k1_fe *a);
+static void hns_secp256k1_fe_sqr(hns_secp256k1_fe *r, const hns_secp256k1_fe *a);
 
 /** If a has a square root, it is computed in r and 1 is returned. If a does not
  *  have a square root, the root of its negation is computed and 0 is returned.
  *  The input's magnitude can be at most 8. The output magnitude is 1 (but not
  *  guaranteed to be normalized). The result in r will always be a square
  *  itself. */
-static int ares_secp256k1_fe_sqrt(ares_secp256k1_fe *r, const ares_secp256k1_fe *a);
+static int hns_secp256k1_fe_sqrt(hns_secp256k1_fe *r, const hns_secp256k1_fe *a);
 
 /** Checks whether a field element is a quadratic residue. */
-static int ares_secp256k1_fe_is_quad_var(const ares_secp256k1_fe *a);
+static int hns_secp256k1_fe_is_quad_var(const hns_secp256k1_fe *a);
 
 /** Sets a field element to be the (modular) inverse of another. Requires the input's magnitude to be
  *  at most 8. The output magnitude is 1 (but not guaranteed to be normalized). */
-static void ares_secp256k1_fe_inv(ares_secp256k1_fe *r, const ares_secp256k1_fe *a);
+static void hns_secp256k1_fe_inv(hns_secp256k1_fe *r, const hns_secp256k1_fe *a);
 
-/** Potentially faster version of ares_secp256k1_fe_inv, without constant-time guarantee. */
-static void ares_secp256k1_fe_inv_var(ares_secp256k1_fe *r, const ares_secp256k1_fe *a);
+/** Potentially faster version of hns_secp256k1_fe_inv, without constant-time guarantee. */
+static void hns_secp256k1_fe_inv_var(hns_secp256k1_fe *r, const hns_secp256k1_fe *a);
 
 /** Calculate the (modular) inverses of a batch of field elements. Requires the inputs' magnitudes to be
  *  at most 8. The output magnitudes are 1 (but not guaranteed to be normalized). The inputs and
  *  outputs must not overlap in memory. */
-static void ares_secp256k1_fe_inv_all_var(ares_secp256k1_fe *r, const ares_secp256k1_fe *a, size_t len);
+static void hns_secp256k1_fe_inv_all_var(hns_secp256k1_fe *r, const hns_secp256k1_fe *a, size_t len);
 
 /** Convert a field element to the storage type. */
-static void ares_secp256k1_fe_to_storage(ares_secp256k1_fe_storage *r, const ares_secp256k1_fe *a);
+static void hns_secp256k1_fe_to_storage(hns_secp256k1_fe_storage *r, const hns_secp256k1_fe *a);
 
 /** Convert a field element back from the storage type. */
-static void ares_secp256k1_fe_from_storage(ares_secp256k1_fe *r, const ares_secp256k1_fe_storage *a);
+static void hns_secp256k1_fe_from_storage(hns_secp256k1_fe *r, const hns_secp256k1_fe_storage *a);
 
 /** If flag is true, set *r equal to *a; otherwise leave it. Constant-time. */
-static void ares_secp256k1_fe_storage_cmov(ares_secp256k1_fe_storage *r, const ares_secp256k1_fe_storage *a, int flag);
+static void hns_secp256k1_fe_storage_cmov(hns_secp256k1_fe_storage *r, const hns_secp256k1_fe_storage *a, int flag);
 
 /** If flag is true, set *r equal to *a; otherwise leave it. Constant-time. */
-static void ares_secp256k1_fe_cmov(ares_secp256k1_fe *r, const ares_secp256k1_fe *a, int flag);
+static void hns_secp256k1_fe_cmov(hns_secp256k1_fe *r, const hns_secp256k1_fe *a, int flag);
 
-#endif /* ARES_SECP256K1_FIELD_H */
+#endif /* HNS_SECP256K1_FIELD_H */

@@ -13,23 +13,23 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_GETHOSTBYADDR 3 "24 July 1998"
+.TH HNS_GETHOSTBYADDR 3 "24 July 1998"
 .SH NAME
-ares_gethostbyaddr \- Initiate a host query by address
+hns_gethostbyaddr \- Initiate a host query by address
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B typedef void (*ares_host_callback)(void *\fIarg\fP, int \fIstatus\fP,
+.B typedef void (*hns_host_callback)(void *\fIarg\fP, int \fIstatus\fP,
 .B	int \fItimeouts\fP, struct hostent *\fIhostent\fP)
 .PP
-.B void ares_gethostbyaddr(ares_channel \fIchannel\fP, const void *\fIaddr\fP,
-.B 	int \fIaddrlen\fP, int \fIfamily\fP, ares_host_callback \fIcallback\fP,
+.B void hns_gethostbyaddr(hns_channel \fIchannel\fP, const void *\fIaddr\fP,
+.B 	int \fIaddrlen\fP, int \fIfamily\fP, hns_host_callback \fIcallback\fP,
 .B 	void *\fIarg\fP)
 .fi
 .SH DESCRIPTION
 The
-.B ares_gethostbyaddr
+.B hns_gethostbyaddr
 function initiates a host query by address on the name service channel
 identified by
 .IR channel .
@@ -39,15 +39,15 @@ and
 .I addrlen
 give the address as a series of bytes, and
 .I family
-gives the type of address.  When the query is complete or has failed, the ares
+gives the type of address.  When the query is complete or has failed, the hns
 library will invoke \fIcallback\fP.  Completion or failure of the query may
 happen immediately, or may happen during a later call to
-\fIares_process(3)\fP, \fIares_destroy(3)\fP or \fIares_cancel(3)\fP.
+\fIhns_process(3)\fP, \fIhns_destroy(3)\fP or \fIhns_cancel(3)\fP.
 .PP
 The callback argument
 .I arg
 is copied from the
-.B ares_gethostbyaddr
+.B hns_gethostbyaddr
 argument
 .IR arg .
 The callback argument
@@ -55,25 +55,25 @@ The callback argument
 indicates whether the query succeeded and, if not, how it failed.  It
 may have any of the following values:
 .TP 19
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 The host lookup completed successfully.
 .TP 19
-.B ARES_ENOTIMP
-The ares library does not know how to look up addresses of type
+.B HNS_ENOTIMP
+The hns library does not know how to look up addresses of type
 .IR family .
 .TP 19
-.B ARES_ENOTFOUND
+.B HNS_ENOTFOUND
 The address
 .I addr
 was not found.
 .TP 19
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .TP 19
-.B ARES_ECANCELLED
+.B HNS_ECANCELLED
 The query was cancelled.
 .TP 19
-.B ARES_EDESTRUCTION
+.B HNS_EDESTRUCTION
 The name service channel
 .I channel
 is being destroyed; the query will not be completed.
@@ -90,14 +90,14 @@ points to a
 containing the name of the host returned by the query.  The callback
 need not and should not attempt to free the memory pointed to by
 .IR hostent ;
-the ares library will free it when the callback returns.  If the query
+the hns library will free it when the callback returns.  If the query
 did not complete successfully,
 .I hostent
 will be
 .BR NULL .
 .SH SEE ALSO
-.BR ares_process (3),
-.BR ares_gethostbyname (3)
+.BR hns_process (3),
+.BR hns_gethostbyname (3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br

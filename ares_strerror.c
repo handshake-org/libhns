@@ -14,11 +14,11 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 #include <assert.h>
-#include "ares.h"
+#include "hns.h"
 
-const char *ares_strerror(int code)
+const char *hns_strerror(int code)
 {
   /* Return a string literal from a table. */
   const char *errtext[] = {
@@ -43,7 +43,7 @@ const char *ares_strerror(int code)
     "Illegal flags specified",
     "Given hostname is not numeric",
     "Illegal hints flags specified",
-    "c-ares library initialization not yet performed",
+    "hns library initialization not yet performed",
     "Error loading iphlpapi.dll",
     "Could not find GetNetworkParams function",
     "DNS query cancelled",

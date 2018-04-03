@@ -1,5 +1,5 @@
-#ifndef __ARES_BITNCMP_H
-#define __ARES_BITNCMP_H
+#ifndef __HNS_BITNCMP_H
+#define __HNS_BITNCMP_H
 
 
 /* Copyright (C) 2005, 2013 by Dominick Meglio
@@ -18,9 +18,9 @@
  */
 
 #ifndef HAVE_BITNCMP
-int ares__bitncmp(const void *l, const void *r, int n);
+int hns__bitncmp(const void *l, const void *r, int n);
 #else
-#define ares__bitncmp(x,y,z) bitncmp(x,y,z)
+#define hns__bitncmp(x,y,z) bitncmp(x,y,z)
 #endif
 
-#endif /* __ARES_BITNCMP_H */
+#endif /* __HNS_BITNCMP_H */

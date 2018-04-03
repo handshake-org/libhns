@@ -9,10 +9,10 @@ INCLUDE (CheckStructHasMember)
 INCLUDE (CheckLibraryExists)
 INCLUDE (GNUInstallDirs)
 
-PROJECT (c-ares C)
+PROJECT (hns C)
 
 # Set this version before release
-SET (CARES_VERSION "1.14.0")
+SET (HNS_VERSION "1.14.0")
 
 # This is for libtool compatibility, and specified in a form that is easily
 # translatable from libtool (even if the actual form doesn't make sense).
@@ -25,19 +25,19 @@ SET (CARES_VERSION "1.14.0")
 # For example, a version of 4:0:2 would generate output such as:
 #    libname.so   -> libname.so.2
 #    libname.so.2 -> libname.so.2.2.0
-SET (CARES_LIB_VERSIONINFO "4:0:2")
+SET (HNS_LIB_VERSIONINFO "4:0:2")
 
 
-OPTION (CARES_STATIC     "Build as a static library"                                             OFF)
-OPTION (CARES_SHARED     "Build as a shared library"                                             ON)
-OPTION (CARES_INSTALL    "Create installation targets (chain builders may want to disable this)" ON)
-OPTION (CARES_STATIC_PIC "Build the static library as PIC (position independent)"                OFF)
-OPTION (CARES_BUILD_TESTS "Build and run tests"                                                  OFF)
+OPTION (HNS_STATIC     "Build as a static library"                                             OFF)
+OPTION (HNS_SHARED     "Build as a shared library"                                             ON)
+OPTION (HNS_INSTALL    "Create installation targets (chain builders may want to disable this)" ON)
+OPTION (HNS_STATIC_PIC "Build the static library as PIC (position independent)"                OFF)
+OPTION (HNS_BUILD_TESTS "Build and run tests"                                                  OFF)
 
 # allow linking against the static runtime library in msvc
 IF (MSVC)
-	OPTION (CARES_MSVC_STATIC_RUNTIME "Link against the static runtime library" OFF)
-	IF (CARES_MSVC_STATIC_RUNTIME)
+	OPTION (HNS_MSVC_STATIC_RUNTIME "Link against the static runtime library" OFF)
+	IF (HNS_MSVC_STATIC_RUNTIME)
 		# CMAKE_CONFIGURATION_TYPES is empty on non-IDE generators (Ninja, NMake)
 		# and that's why we also use CMAKE_BUILD_TYPE to cover for those generators.
 		# For IDE generators, CMAKE_BUILD_TYPE is usually empty
@@ -118,7 +118,7 @@ return 0;
 ENDIF ()
 
 IF (IOS AND HAVE_LIBRESOLV)
-	SET (CARES_USE_LIBRESOLV 1)
+	SET (HNS_USE_LIBRESOLV 1)
 ENDIF()
 
 CHECK_LIBRARY_EXISTS (nsl gethostbyname "" HAVE_LIBNSL)
@@ -192,21 +192,21 @@ ADD_DEFINITIONS(${SYSFLAGS})
 
 
 
-# Tell C-Ares about libraries to depend on
+# Tell HNS about libraries to depend on
 IF (HAVE_LIBRESOLV)
-	LIST (APPEND CARES_DEPENDENT_LIBS resolv)
+	LIST (APPEND HNS_DEPENDENT_LIBS resolv)
 ENDIF ()
 IF (HAVE_LIBNSL)
-	LIST (APPEND CARES_DEPENDENT_LIBS nsl)
+	LIST (APPEND HNS_DEPENDENT_LIBS nsl)
 ENDIF ()
 IF (HAVE_LIBSOCKET)
-	LIST (APPEND CARES_DEPENDENT_LIBS socket)
+	LIST (APPEND HNS_DEPENDENT_LIBS socket)
 ENDIF ()
 IF (HAVE_LIBRT)
-	LIST (APPEND CARES_DEPENDENT_LIBS rt)
+	LIST (APPEND HNS_DEPENDENT_LIBS rt)
 ENDIF ()
 IF (WIN32)
-	LIST (APPEND CARES_DEPENDENT_LIBS ws2_32)
+	LIST (APPEND HNS_DEPENDENT_LIBS ws2_32)
 ENDIF ()
 
 
@@ -217,73 +217,73 @@ ENDIF ()
 # unset them.
 
 SET (CMAKE_REQUIRED_DEFINITIONS ${SYSFLAGS})
-LIST (APPEND CMAKE_REQUIRED_LIBRARIES ${CARES_DEPENDENT_LIBS})
+LIST (APPEND CMAKE_REQUIRED_LIBRARIES ${HNS_DEPENDENT_LIBS})
 
-MACRO (CARES_EXTRAINCLUDE_IFSET var include)
+MACRO (HNS_EXTRAINCLUDE_IFSET var include)
 	IF (${var})
 		LIST (APPEND CMAKE_EXTRA_INCLUDE_FILES ${include})
 	ENDIF ()
 ENDMACRO ()
 
-CARES_EXTRAINCLUDE_IFSET (HAVE_STDBOOL_H      stdbool.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SYS_TYPES_H    sys/types.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_ARPA_INET_H    arpa/inet.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_ARPA_NAMESER_H arpa/nameser.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_NETDB_H        netdb.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_NET_IF_H       net/if.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_NETINET_IN_H   netinet/in.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_NETINET_TCP_H  netinet/tcp.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SIGNAL_H       signal.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_STDLIB_H       stdlib.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_STRING_H       string.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_STRINGS_H      strings.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SYS_IOCTL_H    sys/ioctl.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SYS_SELECT_H   sys/select.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SYS_SOCKET_H   sys/socket.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SYS_TIME_H     sys/time.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_SYS_UIO_H      sys/uio.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_TIME_H         time.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_FCNTL_H        fcntl.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_UNISTD_H       unistd.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_WINSOCK2_H     winsock2.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_WS2TCPIP_H     ws2tcpip.h)
-CARES_EXTRAINCLUDE_IFSET (HAVE_WINDOWS_H      windows.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_STDBOOL_H      stdbool.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SYS_TYPES_H    sys/types.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_ARPA_INET_H    arpa/inet.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_ARPA_NAMESER_H arpa/nameser.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_NETDB_H        netdb.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_NET_IF_H       net/if.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_NETINET_IN_H   netinet/in.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_NETINET_TCP_H  netinet/tcp.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SIGNAL_H       signal.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_STDLIB_H       stdlib.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_STRING_H       string.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_STRINGS_H      strings.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SYS_IOCTL_H    sys/ioctl.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SYS_SELECT_H   sys/select.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SYS_SOCKET_H   sys/socket.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SYS_TIME_H     sys/time.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_SYS_UIO_H      sys/uio.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_TIME_H         time.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_FCNTL_H        fcntl.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_UNISTD_H       unistd.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_WINSOCK2_H     winsock2.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_WS2TCPIP_H     ws2tcpip.h)
+HNS_EXTRAINCLUDE_IFSET (HAVE_WINDOWS_H      windows.h)
 
 # Check Types
 # CHECK_TYPE_SIZE can't be used to see if a type exists because on Apple when
 # building multi-arch, it will throw an error.  So we need to wrap
 # CHECK_C_SOURCE_COMPILES for our tests.
-MACRO (CARES_TYPE_EXISTS type var)
-	SET(_CARES_C_SOURCE "
+MACRO (HNS_TYPE_EXISTS type var)
+	SET(_HNS_C_SOURCE "
 		#include <stdio.h>
 		#include <stdlib.h>
 	")
 	FOREACH(_C_HEADER ${CMAKE_EXTRA_INCLUDE_FILES})
-		SET(_CARES_C_SOURCE "${_CARES_C_SOURCE}
+		SET(_HNS_C_SOURCE "${_HNS_C_SOURCE}
 		#include <${_C_HEADER}>")
 	ENDFOREACH(_C_HEADER)
 
-	SET(_CARES_C_SOURCE "${_CARES_C_SOURCE}
+	SET(_HNS_C_SOURCE "${_HNS_C_SOURCE}
 		int main() {
 			${type} var_exists;
 			(void)var_exists;
 			return 0;
 		}
 	")
-	CHECK_C_SOURCE_COMPILES ("${_CARES_C_SOURCE}" ${var})
+	CHECK_C_SOURCE_COMPILES ("${_HNS_C_SOURCE}" ${var})
 ENDMACRO ()
 
-CARES_TYPE_EXISTS (socklen_t                 HAVE_SOCKLEN_T)
-CARES_TYPE_EXISTS (SOCKET                    HAVE_TYPE_SOCKET)
-CARES_TYPE_EXISTS (bool                      HAVE_BOOL_T)
-CARES_TYPE_EXISTS (ssize_t                   HAVE_SSIZE_T)
-CARES_TYPE_EXISTS ("long long"               HAVE_LONGLONG)
-CARES_TYPE_EXISTS (sig_atomic_t              HAVE_SIG_ATOMIC_T)
-CARES_TYPE_EXISTS ("struct addrinfo"         HAVE_STRUCT_ADDRINFO)
-CARES_TYPE_EXISTS ("struct in6_addr"         HAVE_STRUCT_IN6_ADDR)
-CARES_TYPE_EXISTS ("struct sockaddr_in6"     HAVE_STRUCT_SOCKADDR_IN6)
-CARES_TYPE_EXISTS ("struct sockaddr_storage" HAVE_STRUCT_SOCKADDR_STORAGE)
-CARES_TYPE_EXISTS ("struct timeval"          HAVE_STRUCT_TIMEVAL)
+HNS_TYPE_EXISTS (socklen_t                 HAVE_SOCKLEN_T)
+HNS_TYPE_EXISTS (SOCKET                    HAVE_TYPE_SOCKET)
+HNS_TYPE_EXISTS (bool                      HAVE_BOOL_T)
+HNS_TYPE_EXISTS (ssize_t                   HAVE_SSIZE_T)
+HNS_TYPE_EXISTS ("long long"               HAVE_LONGLONG)
+HNS_TYPE_EXISTS (sig_atomic_t              HAVE_SIG_ATOMIC_T)
+HNS_TYPE_EXISTS ("struct addrinfo"         HAVE_STRUCT_ADDRINFO)
+HNS_TYPE_EXISTS ("struct in6_addr"         HAVE_STRUCT_IN6_ADDR)
+HNS_TYPE_EXISTS ("struct sockaddr_in6"     HAVE_STRUCT_SOCKADDR_IN6)
+HNS_TYPE_EXISTS ("struct sockaddr_storage" HAVE_STRUCT_SOCKADDR_STORAGE)
+HNS_TYPE_EXISTS ("struct timeval"          HAVE_STRUCT_TIMEVAL)
 
 
 # Check for preprocessor defines
@@ -423,26 +423,26 @@ SET (SEND_TYPE_ARG4 int)
 # HAVE_SIG_ATOMIC_T_VOLATILE  ??
 
 
-# Set a few variables by hand that C-Ares wants, logically, based on detection
+# Set a few variables by hand that HNS wants, logically, based on detection
 # data.
 
 IF (HAVE_SOCKLEN_T)
-	Set (CARES_TYPEOF_ARES_SOCKLEN_T "socklen_t")
+	Set (HNS_TYPEOF_HNS_SOCKLEN_T "socklen_t")
 ELSE ()
-	Set (CARES_TYPEOF_ARES_SOCKLEN_T "int")
+	Set (HNS_TYPEOF_HNS_SOCKLEN_T "int")
 ENDIF ()
 
 IF (HAVE_SSIZE_T)
-	Set (CARES_TYPEOF_ARES_SSIZE_T "ssize_t")
+	Set (HNS_TYPEOF_HNS_SSIZE_T "ssize_t")
 ELSE ()
 	IF (WIN32)
 		IF ("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-			Set (CARES_TYPEOF_ARES_SSIZE_T "__int64")
+			Set (HNS_TYPEOF_HNS_SSIZE_T "__int64")
 		ELSE ()
-			Set (CARES_TYPEOF_ARES_SSIZE_T "int")
+			Set (HNS_TYPEOF_HNS_SSIZE_T "int")
 		ENDIF ()
 	ELSE ()
-		Set (CARES_TYPEOF_ARES_SSIZE_T "long")
+		Set (HNS_TYPEOF_HNS_SSIZE_T "long")
 	ENDIF ()
 ENDIF ()
 
@@ -491,21 +491,21 @@ IF (HAVE_GETSERVBYPORT_R)
 	ENDIF ()
 ENDIF ()
 
-# Set some aliases used for ares_build.h
+# Set some aliases used for hns_build.h
 IF (HAVE_SYS_TYPES_H)
-	SET (CARES_HAVE_SYS_TYPES_H 1)
+	SET (HNS_HAVE_SYS_TYPES_H 1)
 ENDIF ()
 IF (HAVE_SYS_SOCKET_H)
-	SET (CARES_HAVE_SYS_SOCKET_H 1)
+	SET (HNS_HAVE_SYS_SOCKET_H 1)
 ENDIF()
 IF (HAVE_WS2TCPIP_H)
-	SET (CARES_HAVE_WS2TCPIP_H 1)
+	SET (HNS_HAVE_WS2TCPIP_H 1)
 ENDIF()
 IF (HAVE_WINSOCK2_H)
-	SET (CARES_HAVE_WINSOCK2_H 1)
+	SET (HNS_HAVE_WINSOCK2_H 1)
 ENDIF()
 IF (HAVE_WINDOWS_H)
-	SET (CARES_HAVE_WINDOWS_H 1)
+	SET (HNS_HAVE_WINDOWS_H 1)
 ENDIF()
 
 #
@@ -519,11 +519,11 @@ SET (USE_SCALAR_8X32 1)
 # /Secp256k1
 #
 
-# Write ares_build.h configuration file.  This is an installed file.
-CONFIGURE_FILE (ares_build.h.cmake ${PROJECT_BINARY_DIR}/ares_build.h)
+# Write hns_build.h configuration file.  This is an installed file.
+CONFIGURE_FILE (hns_build.h.cmake ${PROJECT_BINARY_DIR}/hns_build.h)
 
-# Write ares_config.h configuration file.  This is used only for the build.
-CONFIGURE_FILE (ares_config.h.cmake ${PROJECT_BINARY_DIR}/ares_config.h)
+# Write hns_config.h configuration file.  This is used only for the build.
+CONFIGURE_FILE (hns_config.h.cmake ${PROJECT_BINARY_DIR}/hns_config.h)
 
 
 # TRANSFORM_MAKEFILE_INC
@@ -531,17 +531,17 @@ CONFIGURE_FILE (ares_config.h.cmake ${PROJECT_BINARY_DIR}/ares_config.h)
 # This function consumes the "Makefile.inc" autotools file, and converts it into
 #  "Makefile.inc.cmake", a cmake include file; transforming this:
 #
-# CSOURCES = ares__close_sockets.c	\
-#   ares__get_hostent.c			\
-#   ares__read_line.c			\
+# CSOURCES = hns__close_sockets.c	\
+#   hns__get_hostent.c			\
+#   hns__read_line.c			\
 #   ...
 #
 #   into this:
 #
 # SET (CSOURCES
-# 	ares__close_sockets.c
-# 	ares__get_hostent.c
-# 	ares__read_line.c
+# 	hns__close_sockets.c
+# 	hns__get_hostent.c
+# 	hns__read_line.c
 #	...
 function(TRANSFORM_MAKEFILE_INC INPUT_FILE OUTPUT_FILE)
   file(READ ${INPUT_FILE} MAKEFILE_INC_TEXT)
@@ -564,57 +564,57 @@ include(${PROJECT_BINARY_DIR}/Makefile.inc.cmake)
 
 
 # Build the dynamic/shared library
-IF (CARES_SHARED)
+IF (HNS_SHARED)
 	ADD_LIBRARY (${PROJECT_NAME} SHARED ${CSOURCES})
 
-	# Convert CARES_LIB_VERSIONINFO libtool version format into VERSION and SOVERSION
+	# Convert HNS_LIB_VERSIONINFO libtool version format into VERSION and SOVERSION
 	# Convert from ":" separated into CMake list format using ";"
-	STRING (REPLACE ":" ";" CARES_LIB_VERSIONINFO ${CARES_LIB_VERSIONINFO})
-	LIST (GET CARES_LIB_VERSIONINFO 0 CARES_LIB_VERSION_CURRENT)
-	LIST (GET CARES_LIB_VERSIONINFO 1 CARES_LIB_VERSION_REVISION)
-	LIST (GET CARES_LIB_VERSIONINFO 2 CARES_LIB_VERSION_AGE)
-	MATH (EXPR CARES_LIB_VERSION_MAJOR "${CARES_LIB_VERSION_CURRENT} - ${CARES_LIB_VERSION_AGE}")
-	SET  (CARES_LIB_VERSION_MINOR "${CARES_LIB_VERSION_AGE}")
-	SET  (CARES_LIB_VERSION_RELEASE "${CARES_LIB_VERSION_REVISION}")
+	STRING (REPLACE ":" ";" HNS_LIB_VERSIONINFO ${HNS_LIB_VERSIONINFO})
+	LIST (GET HNS_LIB_VERSIONINFO 0 HNS_LIB_VERSION_CURRENT)
+	LIST (GET HNS_LIB_VERSIONINFO 1 HNS_LIB_VERSION_REVISION)
+	LIST (GET HNS_LIB_VERSIONINFO 2 HNS_LIB_VERSION_AGE)
+	MATH (EXPR HNS_LIB_VERSION_MAJOR "${HNS_LIB_VERSION_CURRENT} - ${HNS_LIB_VERSION_AGE}")
+	SET  (HNS_LIB_VERSION_MINOR "${HNS_LIB_VERSION_AGE}")
+	SET  (HNS_LIB_VERSION_RELEASE "${HNS_LIB_VERSION_REVISION}")
 
 	SET_TARGET_PROPERTIES (${PROJECT_NAME} PROPERTIES
-		EXPORT_NAME cares
-		OUTPUT_NAME cares
-		VERSION     "${CARES_LIB_VERSION_MAJOR}.${CARES_LIB_VERSION_MINOR}.${CARES_LIB_VERSION_RELEASE}"
-		SOVERSION   "${CARES_LIB_VERSION_MAJOR}"
+		EXPORT_NAME hns
+		OUTPUT_NAME hns
+		VERSION     "${HNS_LIB_VERSION_MAJOR}.${HNS_LIB_VERSION_MINOR}.${HNS_LIB_VERSION_RELEASE}"
+		SOVERSION   "${HNS_LIB_VERSION_MAJOR}"
 	)
 
 	TARGET_INCLUDE_DIRECTORIES (${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>")
 	TARGET_INCLUDE_DIRECTORIES (${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
-	TARGET_COMPILE_DEFINITIONS (${PROJECT_NAME} PRIVATE HAVE_CONFIG_H=1 CARES_BUILDING_LIBRARY)
+	TARGET_COMPILE_DEFINITIONS (${PROJECT_NAME} PRIVATE HAVE_CONFIG_H=1 HNS_BUILDING_LIBRARY)
 
-	TARGET_LINK_LIBRARIES (${PROJECT_NAME} PUBLIC ${CARES_DEPENDENT_LIBS})
+	TARGET_LINK_LIBRARIES (${PROJECT_NAME} PUBLIC ${HNS_DEPENDENT_LIBS})
 
-	IF (CARES_INSTALL)
+	IF (HNS_INSTALL)
 		INSTALL (TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets
 			${TARGETS_INST_DEST}
 		)
 	ENDIF ()
 	SET (STATIC_SUFFIX "_static")
 
-	# For chain building: add alias targets that look like import libs that would be returned by find_package(c-ares).
-	ADD_LIBRARY (${PROJECT_NAME}::cares_shared ALIAS ${PROJECT_NAME})
-	ADD_LIBRARY (${PROJECT_NAME}::cares        ALIAS ${PROJECT_NAME})
+	# For chain building: add alias targets that look like import libs that would be returned by find_package(hns).
+	ADD_LIBRARY (${PROJECT_NAME}::hns_shared ALIAS ${PROJECT_NAME})
+	ADD_LIBRARY (${PROJECT_NAME}::hns        ALIAS ${PROJECT_NAME})
 ENDIF ()
 
 # Build the static library
-IF (CARES_STATIC)
+IF (HNS_STATIC)
 	SET (LIBNAME ${PROJECT_NAME}${STATIC_SUFFIX})
 
 	ADD_LIBRARY (${LIBNAME} STATIC ${CSOURCES})
 
 	SET_TARGET_PROPERTIES (${LIBNAME} PROPERTIES
-		EXPORT_NAME cares${STATIC_SUFFIX}
-		OUTPUT_NAME cares${STATIC_SUFFIX}
+		EXPORT_NAME hns${STATIC_SUFFIX}
+		OUTPUT_NAME hns${STATIC_SUFFIX}
 	)
 
-	IF (CARES_STATIC_PIC)
+	IF (HNS_STATIC_PIC)
 		SET_TARGET_PROPERTIES (${LIBNAME} PROPERTIES POSITION_INDEPENDENT_CODE True)
 	ENDIF ()
 
@@ -622,38 +622,38 @@ IF (CARES_STATIC)
 	TARGET_INCLUDE_DIRECTORIES (${LIBNAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
 	TARGET_COMPILE_DEFINITIONS (${LIBNAME}
-		PUBLIC  CARES_STATICLIB
+		PUBLIC  HNS_STATICLIB
 		PRIVATE HAVE_CONFIG_H=1
 	)
 
-	TARGET_LINK_LIBRARIES (${LIBNAME} PUBLIC ${CARES_DEPENDENT_LIBS})
-	IF (CARES_INSTALL)
+	TARGET_LINK_LIBRARIES (${LIBNAME} PUBLIC ${HNS_DEPENDENT_LIBS})
+	IF (HNS_INSTALL)
 		INSTALL (TARGETS ${LIBNAME} EXPORT ${PROJECT_NAME}-targets
 			${TARGETS_INST_DEST}
 		)
 	ENDIF ()
 
-	# For chain building: add alias targets that look like import libs that would be returned by find_package(c-ares).
-	ADD_LIBRARY (${PROJECT_NAME}::cares_static ALIAS ${LIBNAME})
-	IF (NOT TARGET ${PROJECT_NAME}::cares)
+	# For chain building: add alias targets that look like import libs that would be returned by find_package(hns).
+	ADD_LIBRARY (${PROJECT_NAME}::hns_static ALIAS ${LIBNAME})
+	IF (NOT TARGET ${PROJECT_NAME}::hns)
 		# Only use static for the generic alias if shared lib wasn't built.
-		ADD_LIBRARY (${PROJECT_NAME}::cares ALIAS ${LIBNAME})
+		ADD_LIBRARY (${PROJECT_NAME}::hns ALIAS ${LIBNAME})
 	ENDIF ()
 ENDIF ()
 
-IF (CARES_BUILD_TESTS)
+IF (HNS_BUILD_TESTS)
 	ENABLE_TESTING ()
 	ADD_SUBDIRECTORY (test)
 ENDIF ()
 
 # Headers installation target
-IF (CARES_INSTALL)
-	SET (CARES_HEADERS ares.h ares_version.h ares_dns.h "${PROJECT_BINARY_DIR}/ares_build.h" ares_rules.h)
-	INSTALL (FILES ${CARES_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+IF (HNS_INSTALL)
+	SET (HNS_HEADERS hns.h hns_version.h hns_dns.h "${PROJECT_BINARY_DIR}/hns_build.h" hns_rules.h)
+	INSTALL (FILES ${HNS_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 ENDIF ()
 
 # Export targets
-IF (CARES_INSTALL)
+IF (HNS_INSTALL)
 	SET (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 	INCLUDE (CMakePackageConfigHelpers)
 	CONFIGURE_PACKAGE_CONFIG_FILE (${PROJECT_NAME}-config.cmake.in ${PROJECT_NAME}-config.cmake
@@ -665,44 +665,44 @@ IF (CARES_INSTALL)
 	INSTALL (FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake" DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 
 	# pkgconfig support
-	IF (NOT CARES_SHARED)
-		SET (CPPFLAG_CARES_STATICLIB "-DCARES_STATICLIB")
-		FOREACH (LIB ${CARES_DEPENDENT_LIBS})
-			SET (CARES_PRIVATE_LIBS "${CARES_PRIVATE_LIBS} -l${LIB}")
+	IF (NOT HNS_SHARED)
+		SET (CPPFLAG_HNS_STATICLIB "-DHNS_STATICLIB")
+		FOREACH (LIB ${HNS_DEPENDENT_LIBS})
+			SET (HNS_PRIVATE_LIBS "${HNS_PRIVATE_LIBS} -l${LIB}")
 		ENDFOREACH ()
 	ENDIF ()
-	CONFIGURE_FILE("libcares.pc.cmake" "libcares.pc" @ONLY)
-	INSTALL (FILES "${CMAKE_CURRENT_BINARY_DIR}/libcares.pc" DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+	CONFIGURE_FILE("libhns.pc.cmake" "libhns.pc" @ONLY)
+	INSTALL (FILES "${CMAKE_CURRENT_BINARY_DIR}/libhns.pc" DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 ENDIF ()
 
 # Legacy chain-building variables (provided for compatibility with old code).
-# Don't use these, external code should be updated to refer to the aliases directly (e.g., Cares::cares).
-SET (CARES_FOUND 1 CACHE INTERNAL "CARES LIBRARY FOUND")
-SET (CARES_LIBRARIES ${PROJECT_NAME}::cares CACHE INTERNAL "CARES LIBRARIES")
+# Don't use these, external code should be updated to refer to the aliases directly (e.g., Hns::hns).
+SET (HNS_FOUND 1 CACHE INTERNAL "HNS LIBRARY FOUND")
+SET (HNS_LIBRARIES ${PROJECT_NAME}::hns CACHE INTERNAL "HNS LIBRARIES")
 
 
-# Build ahost
-ADD_EXECUTABLE (ahost ahost.c ${SAMPLESOURCES})
-TARGET_COMPILE_DEFINITIONS (ahost PRIVATE HAVE_CONFIG_H=1)
-TARGET_LINK_LIBRARIES (ahost PRIVATE ${PROJECT_NAME})
-IF (CARES_INSTALL)
-	INSTALL (TARGETS ahost ${TARGETS_INST_DEST})
+# Build hhost
+ADD_EXECUTABLE (hhost hhost.c ${SAMPLESOURCES})
+TARGET_COMPILE_DEFINITIONS (hhost PRIVATE HAVE_CONFIG_H=1)
+TARGET_LINK_LIBRARIES (hhost PRIVATE ${PROJECT_NAME})
+IF (HNS_INSTALL)
+	INSTALL (TARGETS hhost ${TARGETS_INST_DEST})
 ENDIF ()
 
 
-# Build adig
-ADD_EXECUTABLE (adig adig.c ${SAMPLESOURCES})
-TARGET_COMPILE_DEFINITIONS (adig PRIVATE HAVE_CONFIG_H=1)
-TARGET_LINK_LIBRARIES (adig PRIVATE ${PROJECT_NAME})
-IF (CARES_INSTALL)
-	INSTALL (TARGETS adig ${TARGETS_INST_DEST})
+# Build hdig
+ADD_EXECUTABLE (hdig hdig.c ${SAMPLESOURCES})
+TARGET_COMPILE_DEFINITIONS (hdig PRIVATE HAVE_CONFIG_H=1)
+TARGET_LINK_LIBRARIES (hdig PRIVATE ${PROJECT_NAME})
+IF (HNS_INSTALL)
+	INSTALL (TARGETS hdig ${TARGETS_INST_DEST})
 ENDIF ()
 
 
-# Build acountry
-ADD_EXECUTABLE (acountry acountry.c ${SAMPLESOURCES})
-TARGET_COMPILE_DEFINITIONS (acountry PRIVATE HAVE_CONFIG_H=1)
-TARGET_LINK_LIBRARIES (acountry PRIVATE ${PROJECT_NAME})
-IF (CARES_INSTALL)
-	INSTALL (TARGETS acountry ${TARGETS_INST_DEST})
+# Build hcountry
+ADD_EXECUTABLE (hcountry hcountry.c ${SAMPLESOURCES})
+TARGET_COMPILE_DEFINITIONS (hcountry PRIVATE HAVE_CONFIG_H=1)
+TARGET_LINK_LIBRARIES (hcountry PRIVATE ${PROJECT_NAME})
+IF (HNS_INSTALL)
+	INSTALL (TARGETS hcountry ${TARGETS_INST_DEST})
 ENDIF ()

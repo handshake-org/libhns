@@ -16,7 +16,7 @@
  */
 
 #include <string.h>
-#include "ares_sha1.h"
+#include "hns_sha1.h"
 
 static inline uint32_t bswap_32(uint32_t x) {
 	x = ((x << 8) & 0xFF00FF00u) | ((x >> 8) & 0x00FF00FFu);
@@ -42,7 +42,7 @@ static void swap_copy_str_to_u32(void* to, int index, const void* from, size_t l
 
 #define IS_ALIGNED_32(p) (0 == (3 & ((const char*)(p) - (const char*)0)))
 
-#ifdef ARES_BIG_ENDIAN
+#ifdef HNS_BIG_ENDIAN
 #define be2me_32(x) (x)
 #define le2me_32(x) bswap_32(x)
 #define be32_copy(to, index, from, length) memcpy((to) + (index), (from), (length))
@@ -60,7 +60,7 @@ static void swap_copy_str_to_u32(void* to, int index, const void* from, size_t l
  *
  * @param ctx context to initialize
  */
-void ares_sha1_init(ares_sha1_ctx *ctx)
+void hns_sha1_init(hns_sha1_ctx *ctx)
 {
 	ctx->length = 0;
 
@@ -79,7 +79,7 @@ void ares_sha1_init(ares_sha1_ctx *ctx)
  * @param hash algorithm state
  * @param block the message block to process
  */
-static void ares_sha1_process_block(unsigned* hash, const unsigned* block)
+static void hns_sha1_process_block(unsigned* hash, const unsigned* block)
 {
 	int           t;                 /* Loop counter */
 	uint32_t      temp;              /* Temporary word value */
@@ -157,7 +157,7 @@ static void ares_sha1_process_block(unsigned* hash, const unsigned* block)
  * @param msg message chunk
  * @param size length of the message chunk
  */
-void ares_sha1_update(ares_sha1_ctx *ctx, const unsigned char* msg, size_t size)
+void hns_sha1_update(hns_sha1_ctx *ctx, const unsigned char* msg, size_t size)
 {
 	unsigned index = (unsigned)ctx->length & 63;
 	ctx->length += size;
@@ -169,7 +169,7 @@ void ares_sha1_update(ares_sha1_ctx *ctx, const unsigned char* msg, size_t size)
 		if (size < left) return;
 
 		/* process partial block */
-		ares_sha1_process_block(ctx->hash, (unsigned*)ctx->message);
+		hns_sha1_process_block(ctx->hash, (unsigned*)ctx->message);
 		msg  += left;
 		size -= left;
 	}
@@ -184,7 +184,7 @@ void ares_sha1_update(ares_sha1_ctx *ctx, const unsigned char* msg, size_t size)
 			aligned_message_block = (unsigned*)ctx->message;
 		}
 
-		ares_sha1_process_block(ctx->hash, aligned_message_block);
+		hns_sha1_process_block(ctx->hash, aligned_message_block);
 		msg  += sha1_block_size;
 		size -= sha1_block_size;
 	}
@@ -200,7 +200,7 @@ void ares_sha1_update(ares_sha1_ctx *ctx, const unsigned char* msg, size_t size)
  * @param ctx the algorithm context containing current hashing state
  * @param result calculated hash in binary form
  */
-void ares_sha1_final(ares_sha1_ctx *ctx, unsigned char* result)
+void hns_sha1_final(hns_sha1_ctx *ctx, unsigned char* result)
 {
 	unsigned  index = (unsigned)ctx->length & 63;
 	unsigned* msg32 = (unsigned*)ctx->message;
@@ -218,7 +218,7 @@ void ares_sha1_final(ares_sha1_ctx *ctx, unsigned char* result)
 		while (index < 16) {
 			msg32[index++] = 0;
 		}
-		ares_sha1_process_block(ctx->hash, msg32);
+		hns_sha1_process_block(ctx->hash, msg32);
 		index = 0;
 	}
 	while (index < 14) {
@@ -226,7 +226,7 @@ void ares_sha1_final(ares_sha1_ctx *ctx, unsigned char* result)
 	}
 	msg32[14] = be2me_32( (unsigned)(ctx->length >> 29) );
 	msg32[15] = be2me_32( (unsigned)(ctx->length << 3) );
-	ares_sha1_process_block(ctx->hash, msg32);
+	hns_sha1_process_block(ctx->hash, msg32);
 
 	if (result) be32_copy(result, 0, &ctx->hash, sha1_hash_size);
 }

@@ -12,42 +12,42 @@
    More information about the BLAKE2 hash function can be found at
    https://blake2.net.
 */
-#ifndef HEADER_CARES_BLAKE2B_H
-#define HEADER_CARES_BLAKE2B_H
+#ifndef HEADER_HNS_BLAKE2B_H
+#define HEADER_HNS_BLAKE2B_H
 
 #include <stddef.h>
 #include <stdint.h>
 
 #if defined(_MSC_VER)
-#define ARES_BLAKE2_PACKED(x) __pragma(pack(push, 1)) x __pragma(pack(pop))
+#define HNS_BLAKE2_PACKED(x) __pragma(pack(push, 1)) x __pragma(pack(pop))
 #else
-#define ARES_BLAKE2_PACKED(x) x __attribute__((packed))
+#define HNS_BLAKE2_PACKED(x) x __attribute__((packed))
 #endif
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-  enum ares_blake2b_constant
+  enum hns_blake2b_constant
   {
-    ARES_BLAKE2B_BLOCKBYTES = 128,
-    ARES_BLAKE2B_OUTBYTES   = 64,
-    ARES_BLAKE2B_KEYBYTES   = 64,
-    ARES_BLAKE2B_SALTBYTES  = 16,
-    ARES_BLAKE2B_PERSONALBYTES = 16
+    HNS_BLAKE2B_BLOCKBYTES = 128,
+    HNS_BLAKE2B_OUTBYTES   = 64,
+    HNS_BLAKE2B_KEYBYTES   = 64,
+    HNS_BLAKE2B_SALTBYTES  = 16,
+    HNS_BLAKE2B_PERSONALBYTES = 16
   };
 
-  typedef struct ares_blake2b_ctx__
+  typedef struct hns_blake2b_ctx__
   {
     uint64_t h[8];
     uint64_t t[2];
     uint64_t f[2];
-    uint8_t  buf[ARES_BLAKE2B_BLOCKBYTES];
+    uint8_t  buf[HNS_BLAKE2B_BLOCKBYTES];
     size_t   buflen;
     size_t   outlen;
     uint8_t  last_node;
-  } ares_blake2b_ctx;
+  } hns_blake2b_ctx;
 
-  ARES_BLAKE2_PACKED(struct ares_blake2b_param__
+  HNS_BLAKE2_PACKED(struct hns_blake2b_param__
   {
     uint8_t  digest_length; /* 1 */
     uint8_t  key_length;    /* 2 */
@@ -59,26 +59,26 @@ extern "C" {
     uint8_t  node_depth;    /* 17 */
     uint8_t  inner_length;  /* 18 */
     uint8_t  reserved[14];  /* 32 */
-    uint8_t  salt[ARES_BLAKE2B_SALTBYTES]; /* 48 */
-    uint8_t  personal[ARES_BLAKE2B_PERSONALBYTES];  /* 64 */
+    uint8_t  salt[HNS_BLAKE2B_SALTBYTES]; /* 48 */
+    uint8_t  personal[HNS_BLAKE2B_PERSONALBYTES];  /* 64 */
   });
 
-  typedef struct ares_blake2b_param__ ares_blake2b_param;
+  typedef struct hns_blake2b_param__ hns_blake2b_param;
 
   /* Padded structs result in a compile-time error */
   enum {
-    ARES_BLAKE2_DUMMY_1 = 1/(sizeof(ares_blake2b_param) == ARES_BLAKE2B_OUTBYTES)
+    HNS_BLAKE2_DUMMY_1 = 1/(sizeof(hns_blake2b_param) == HNS_BLAKE2B_OUTBYTES)
   };
 
   /* Streaming API */
-  int ares_blake2b_init( ares_blake2b_ctx *S, size_t outlen );
-  int ares_blake2b_init_key( ares_blake2b_ctx *S, size_t outlen, const void *key, size_t keylen );
-  int ares_blake2b_init_param( ares_blake2b_ctx *S, const ares_blake2b_param *P );
-  int ares_blake2b_update( ares_blake2b_ctx *S, const void *in, size_t inlen );
-  int ares_blake2b_final( ares_blake2b_ctx *S, void *out, size_t outlen );
+  int hns_blake2b_init( hns_blake2b_ctx *S, size_t outlen );
+  int hns_blake2b_init_key( hns_blake2b_ctx *S, size_t outlen, const void *key, size_t keylen );
+  int hns_blake2b_init_param( hns_blake2b_ctx *S, const hns_blake2b_param *P );
+  int hns_blake2b_update( hns_blake2b_ctx *S, const void *in, size_t inlen );
+  int hns_blake2b_final( hns_blake2b_ctx *S, void *out, size_t outlen );
 
   /* Simple API */
-  int ares_blake2b( void *out, size_t outlen, const void *in, size_t inlen, const void *key, size_t keylen );
+  int hns_blake2b( void *out, size_t outlen, const void *in, size_t inlen, const void *key, size_t keylen );
 
 #if defined(__cplusplus)
 }

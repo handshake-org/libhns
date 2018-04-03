@@ -1,5 +1,5 @@
-#ifndef ARES_SECP256K1_H
-#define ARES_SECP256K1_H
+#ifndef HNS_SECP256K1_H
+#define HNS_SECP256K1_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,12 +35,12 @@ extern "C" {
  *  A constructed context can safely be used from multiple threads
  *  simultaneously, but API call that take a non-const pointer to a context
  *  need exclusive access to it. In particular this is the case for
- *  ares_secp256k1_context_destroy and ares_secp256k1_context_randomize.
+ *  hns_secp256k1_context_destroy and hns_secp256k1_context_randomize.
  *
  *  Regarding randomization, either do it once at creation time (in which case
  *  you do not need any locking for the other calls), or use a read-write lock.
  */
-typedef struct ares_secp256k1_context_struct ares_secp256k1_context;
+typedef struct hns_secp256k1_context_struct hns_secp256k1_context;
 
 /** Opaque data structure that holds rewriteable "scratch space"
  *
@@ -53,7 +53,7 @@ typedef struct ares_secp256k1_context_struct ares_secp256k1_context;
  *  Unlike the context object, this cannot safely be shared between threads
  *  without additional synchronization logic.
  */
-typedef struct ares_secp256k1_scratch_space_struct ares_secp256k1_scratch_space;
+typedef struct hns_secp256k1_scratch_space_struct hns_secp256k1_scratch_space;
 
 /** Opaque data structure that holds a parsed and valid public key.
  *
@@ -61,11 +61,11 @@ typedef struct ares_secp256k1_scratch_space_struct ares_secp256k1_scratch_space;
  *  guaranteed to be portable between different platforms or versions. It is
  *  however guaranteed to be 64 bytes in size, and can be safely copied/moved.
  *  If you need to convert to a format suitable for storage, transmission, or
- *  comparison, use ares_secp256k1_ec_pubkey_serialize and ares_secp256k1_ec_pubkey_parse.
+ *  comparison, use hns_secp256k1_ec_pubkey_serialize and hns_secp256k1_ec_pubkey_parse.
  */
 typedef struct {
     unsigned char data[64];
-} ares_secp256k1_pubkey;
+} hns_secp256k1_pubkey;
 
 /** Opaque data structured that holds a parsed ECDSA signature.
  *
@@ -73,12 +73,12 @@ typedef struct {
  *  guaranteed to be portable between different platforms or versions. It is
  *  however guaranteed to be 64 bytes in size, and can be safely copied/moved.
  *  If you need to convert to a format suitable for storage, transmission, or
- *  comparison, use the ares_secp256k1_ecdsa_signature_serialize_* and
- *  ares_secp256k1_ecdsa_signature_parse_* functions.
+ *  comparison, use the hns_secp256k1_ecdsa_signature_serialize_* and
+ *  hns_secp256k1_ecdsa_signature_parse_* functions.
  */
 typedef struct {
     unsigned char data[64];
-} ares_secp256k1_ecdsa_signature;
+} hns_secp256k1_ecdsa_signature;
 
 /** A pointer to a function to deterministically generate a nonce.
  *
@@ -96,7 +96,7 @@ typedef struct {
  * Except for test cases, this function should compute some cryptographic hash of
  * the message, the algorithm, the key and the attempt.
  */
-typedef int (*ares_secp256k1_nonce_function)(
+typedef int (*hns_secp256k1_nonce_function)(
     unsigned char *nonce32,
     const unsigned char *msg32,
     const unsigned char *key32,
@@ -105,107 +105,107 @@ typedef int (*ares_secp256k1_nonce_function)(
     unsigned int attempt
 );
 
-# if !defined(ARES_SECP256K1_GNUC_PREREQ)
+# if !defined(HNS_SECP256K1_GNUC_PREREQ)
 #  if defined(__GNUC__)&&defined(__GNUC_MINOR__)
-#   define ARES_SECP256K1_GNUC_PREREQ(_maj,_min) \
+#   define HNS_SECP256K1_GNUC_PREREQ(_maj,_min) \
  ((__GNUC__<<16)+__GNUC_MINOR__>=((_maj)<<16)+(_min))
 #  else
-#   define ARES_SECP256K1_GNUC_PREREQ(_maj,_min) 0
+#   define HNS_SECP256K1_GNUC_PREREQ(_maj,_min) 0
 #  endif
 # endif
 
 # if (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L) )
-#  if ARES_SECP256K1_GNUC_PREREQ(2,7)
-#   define ARES_SECP256K1_INLINE __inline__
+#  if HNS_SECP256K1_GNUC_PREREQ(2,7)
+#   define HNS_SECP256K1_INLINE __inline__
 #  elif (defined(_MSC_VER))
-#   define ARES_SECP256K1_INLINE __inline
+#   define HNS_SECP256K1_INLINE __inline
 #  else
-#   define ARES_SECP256K1_INLINE
+#   define HNS_SECP256K1_INLINE
 #  endif
 # else
-#  define ARES_SECP256K1_INLINE inline
+#  define HNS_SECP256K1_INLINE inline
 # endif
 
-#ifndef ARES_SECP256K1_API
+#ifndef HNS_SECP256K1_API
 # if defined(_WIN32)
-#  ifdef CARES_BUILDING_LIBRARY
-#   define ARES_SECP256K1_API __declspec(dllexport)
+#  ifdef HNS_BUILDING_LIBRARY
+#   define HNS_SECP256K1_API __declspec(dllexport)
 #  else
-#   define ARES_SECP256K1_API
+#   define HNS_SECP256K1_API
 #  endif
-# elif defined(__GNUC__) && defined(CARES_BUILDING_LIBRARY)
-#  define ARES_SECP256K1_API __attribute__ ((visibility ("default")))
+# elif defined(__GNUC__) && defined(HNS_BUILDING_LIBRARY)
+#  define HNS_SECP256K1_API __attribute__ ((visibility ("default")))
 # else
-#  define ARES_SECP256K1_API
+#  define HNS_SECP256K1_API
 # endif
 #endif
 
 /**Warning attributes
-  * NONNULL is not used if CARES_BUILDING_LIBRARY is set to avoid the compiler optimizing out
+  * NONNULL is not used if HNS_BUILDING_LIBRARY is set to avoid the compiler optimizing out
   * some paranoid null checks. */
-# if defined(__GNUC__) && ARES_SECP256K1_GNUC_PREREQ(3, 4)
-#  define ARES_SECP256K1_WARN_UNUSED_RESULT __attribute__ ((__warn_unused_result__))
+# if defined(__GNUC__) && HNS_SECP256K1_GNUC_PREREQ(3, 4)
+#  define HNS_SECP256K1_WARN_UNUSED_RESULT __attribute__ ((__warn_unused_result__))
 # else
-#  define ARES_SECP256K1_WARN_UNUSED_RESULT
+#  define HNS_SECP256K1_WARN_UNUSED_RESULT
 # endif
-# if !defined(CARES_BUILDING_LIBRARY) && defined(__GNUC__) && ARES_SECP256K1_GNUC_PREREQ(3, 4)
-#  define ARES_SECP256K1_ARG_NONNULL(_x)  __attribute__ ((__nonnull__(_x)))
+# if !defined(HNS_BUILDING_LIBRARY) && defined(__GNUC__) && HNS_SECP256K1_GNUC_PREREQ(3, 4)
+#  define HNS_SECP256K1_ARG_NONNULL(_x)  __attribute__ ((__nonnull__(_x)))
 # else
-#  define ARES_SECP256K1_ARG_NONNULL(_x)
+#  define HNS_SECP256K1_ARG_NONNULL(_x)
 # endif
 
 /** All flags' lower 8 bits indicate what they're for. Do not use directly. */
-#define ARES_SECP256K1_FLAGS_TYPE_MASK ((1 << 8) - 1)
-#define ARES_SECP256K1_FLAGS_TYPE_CONTEXT (1 << 0)
-#define ARES_SECP256K1_FLAGS_TYPE_COMPRESSION (1 << 1)
+#define HNS_SECP256K1_FLAGS_TYPE_MASK ((1 << 8) - 1)
+#define HNS_SECP256K1_FLAGS_TYPE_CONTEXT (1 << 0)
+#define HNS_SECP256K1_FLAGS_TYPE_COMPRESSION (1 << 1)
 /** The higher bits contain the actual data. Do not use directly. */
-#define ARES_SECP256K1_FLAGS_BIT_CONTEXT_VERIFY (1 << 8)
-#define ARES_SECP256K1_FLAGS_BIT_CONTEXT_SIGN (1 << 9)
-#define ARES_SECP256K1_FLAGS_BIT_COMPRESSION (1 << 8)
+#define HNS_SECP256K1_FLAGS_BIT_CONTEXT_VERIFY (1 << 8)
+#define HNS_SECP256K1_FLAGS_BIT_CONTEXT_SIGN (1 << 9)
+#define HNS_SECP256K1_FLAGS_BIT_COMPRESSION (1 << 8)
 
-/** Flags to pass to ares_secp256k1_context_create. */
-#define ARES_SECP256K1_CONTEXT_VERIFY (ARES_SECP256K1_FLAGS_TYPE_CONTEXT | ARES_SECP256K1_FLAGS_BIT_CONTEXT_VERIFY)
-#define ARES_SECP256K1_CONTEXT_SIGN (ARES_SECP256K1_FLAGS_TYPE_CONTEXT | ARES_SECP256K1_FLAGS_BIT_CONTEXT_SIGN)
-#define ARES_SECP256K1_CONTEXT_NONE (ARES_SECP256K1_FLAGS_TYPE_CONTEXT)
+/** Flags to pass to hns_secp256k1_context_create. */
+#define HNS_SECP256K1_CONTEXT_VERIFY (HNS_SECP256K1_FLAGS_TYPE_CONTEXT | HNS_SECP256K1_FLAGS_BIT_CONTEXT_VERIFY)
+#define HNS_SECP256K1_CONTEXT_SIGN (HNS_SECP256K1_FLAGS_TYPE_CONTEXT | HNS_SECP256K1_FLAGS_BIT_CONTEXT_SIGN)
+#define HNS_SECP256K1_CONTEXT_NONE (HNS_SECP256K1_FLAGS_TYPE_CONTEXT)
 
-/** Flag to pass to ares_secp256k1_ec_pubkey_serialize and ares_secp256k1_ec_privkey_export. */
-#define ARES_SECP256K1_EC_COMPRESSED (ARES_SECP256K1_FLAGS_TYPE_COMPRESSION | ARES_SECP256K1_FLAGS_BIT_COMPRESSION)
-#define ARES_SECP256K1_EC_UNCOMPRESSED (ARES_SECP256K1_FLAGS_TYPE_COMPRESSION)
+/** Flag to pass to hns_secp256k1_ec_pubkey_serialize and hns_secp256k1_ec_privkey_export. */
+#define HNS_SECP256K1_EC_COMPRESSED (HNS_SECP256K1_FLAGS_TYPE_COMPRESSION | HNS_SECP256K1_FLAGS_BIT_COMPRESSION)
+#define HNS_SECP256K1_EC_UNCOMPRESSED (HNS_SECP256K1_FLAGS_TYPE_COMPRESSION)
 
 /** Prefix byte used to tag various encoded curvepoints for specific purposes */
-#define ARES_SECP256K1_TAG_PUBKEY_EVEN 0x02
-#define ARES_SECP256K1_TAG_PUBKEY_ODD 0x03
-#define ARES_SECP256K1_TAG_PUBKEY_UNCOMPRESSED 0x04
-#define ARES_SECP256K1_TAG_PUBKEY_HYBRID_EVEN 0x06
-#define ARES_SECP256K1_TAG_PUBKEY_HYBRID_ODD 0x07
+#define HNS_SECP256K1_TAG_PUBKEY_EVEN 0x02
+#define HNS_SECP256K1_TAG_PUBKEY_ODD 0x03
+#define HNS_SECP256K1_TAG_PUBKEY_UNCOMPRESSED 0x04
+#define HNS_SECP256K1_TAG_PUBKEY_HYBRID_EVEN 0x06
+#define HNS_SECP256K1_TAG_PUBKEY_HYBRID_ODD 0x07
 
 /** Create a secp256k1 context object.
  *
  *  Returns: a newly created context object.
  *  In:      flags: which parts of the context to initialize.
  *
- *  See also ares_secp256k1_context_randomize.
+ *  See also hns_secp256k1_context_randomize.
  */
-ARES_SECP256K1_API ares_secp256k1_context* ares_secp256k1_context_create(
+HNS_SECP256K1_API hns_secp256k1_context* hns_secp256k1_context_create(
     unsigned int flags
-) ARES_SECP256K1_WARN_UNUSED_RESULT;
+) HNS_SECP256K1_WARN_UNUSED_RESULT;
 
 /** Copies a secp256k1 context object.
  *
  *  Returns: a newly created context object.
  *  Args:    ctx: an existing context to copy (cannot be NULL)
  */
-ARES_SECP256K1_API ares_secp256k1_context* ares_secp256k1_context_clone(
-    const ares_secp256k1_context* ctx
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_WARN_UNUSED_RESULT;
+HNS_SECP256K1_API hns_secp256k1_context* hns_secp256k1_context_clone(
+    const hns_secp256k1_context* ctx
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_WARN_UNUSED_RESULT;
 
 /** Destroy a secp256k1 context object.
  *
  *  The context pointer may not be used afterwards.
  *  Args:   ctx: an existing context to destroy (cannot be NULL)
  */
-ARES_SECP256K1_API void ares_secp256k1_context_destroy(
-    ares_secp256k1_context* ctx
+HNS_SECP256K1_API void hns_secp256k1_context_destroy(
+    hns_secp256k1_context* ctx
 );
 
 /** Set a callback function to be called when an illegal argument is passed to
@@ -228,11 +228,11 @@ ARES_SECP256K1_API void ares_secp256k1_context_destroy(
  *              (NULL restores a default handler that calls abort).
  *        data: the opaque pointer to pass to fun above.
  */
-ARES_SECP256K1_API void ares_secp256k1_context_set_illegal_callback(
-    ares_secp256k1_context* ctx,
+HNS_SECP256K1_API void hns_secp256k1_context_set_illegal_callback(
+    hns_secp256k1_context* ctx,
     void (*fun)(const char* message, void* data),
     const void* data
-) ARES_SECP256K1_ARG_NONNULL(1);
+) HNS_SECP256K1_ARG_NONNULL(1);
 
 /** Set a callback function to be called when an internal consistency check
  *  fails. The default is crashing.
@@ -240,7 +240,7 @@ ARES_SECP256K1_API void ares_secp256k1_context_set_illegal_callback(
  *  This can only trigger in case of a hardware failure, miscompilation,
  *  memory corruption, serious bug in the library, or other error would can
  *  otherwise result in undefined behaviour. It will not trigger due to mere
- *  incorrect usage of the API (see ares_secp256k1_context_set_illegal_callback
+ *  incorrect usage of the API (see hns_secp256k1_context_set_illegal_callback
  *  for that). After this callback returns, anything may happen, including
  *  crashing.
  *
@@ -250,11 +250,11 @@ ARES_SECP256K1_API void ares_secp256k1_context_set_illegal_callback(
  *              handler that calls abort).
  *        data: the opaque pointer to pass to fun above.
  */
-ARES_SECP256K1_API void ares_secp256k1_context_set_error_callback(
-    ares_secp256k1_context* ctx,
+HNS_SECP256K1_API void hns_secp256k1_context_set_error_callback(
+    hns_secp256k1_context* ctx,
     void (*fun)(const char* message, void* data),
     const void* data
-) ARES_SECP256K1_ARG_NONNULL(1);
+) HNS_SECP256K1_ARG_NONNULL(1);
 
 /** Create a secp256k1 scratch space object.
  *
@@ -263,19 +263,19 @@ ARES_SECP256K1_API void ares_secp256k1_context_set_error_callback(
  *  In:  init_size: initial amount of memory to allocate
  *        max_size: maximum amount of memory to allocate
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT ares_secp256k1_scratch_space* ares_secp256k1_scratch_space_create(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT hns_secp256k1_scratch_space* hns_secp256k1_scratch_space_create(
+    const hns_secp256k1_context* ctx,
     size_t init_size,
     size_t max_size
-) ARES_SECP256K1_ARG_NONNULL(1);
+) HNS_SECP256K1_ARG_NONNULL(1);
 
 /** Destroy a secp256k1 scratch space.
  *
  *  The pointer may not be used afterwards.
  *  Args:   scratch: space to destroy
  */
-ARES_SECP256K1_API void ares_secp256k1_scratch_space_destroy(
-    ares_secp256k1_scratch_space* scratch
+HNS_SECP256K1_API void hns_secp256k1_scratch_space_destroy(
+    hns_secp256k1_scratch_space* scratch
 );
 
 /** Parse a variable-length public key into the pubkey object.
@@ -292,12 +292,12 @@ ARES_SECP256K1_API void ares_secp256k1_scratch_space_destroy(
  *  0x03), uncompressed (65 bytes, header byte 0x04), or hybrid (65 bytes, header
  *  byte 0x06 or 0x07) format public keys.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubkey_parse(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_pubkey* pubkey,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_pubkey_parse(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_pubkey* pubkey,
     const unsigned char *input,
     size_t inputlen
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Serialize a pubkey object into a serialized byte sequence.
  *
@@ -309,18 +309,18 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubke
  *  In/Out: outputlen:  a pointer to an integer which is initially set to the
  *                      size of output, and is overwritten with the written
  *                      size.
- *  In:     pubkey:     a pointer to a ares_secp256k1_pubkey containing an
+ *  In:     pubkey:     a pointer to a hns_secp256k1_pubkey containing an
  *                      initialized public key.
- *          flags:      ARES_SECP256K1_EC_COMPRESSED if serialization should be in
- *                      compressed format, otherwise ARES_SECP256K1_EC_UNCOMPRESSED.
+ *          flags:      HNS_SECP256K1_EC_COMPRESSED if serialization should be in
+ *                      compressed format, otherwise HNS_SECP256K1_EC_UNCOMPRESSED.
  */
-ARES_SECP256K1_API int ares_secp256k1_ec_pubkey_serialize(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API int hns_secp256k1_ec_pubkey_serialize(
+    const hns_secp256k1_context* ctx,
     unsigned char *output,
     size_t *outputlen,
-    const ares_secp256k1_pubkey* pubkey,
+    const hns_secp256k1_pubkey* pubkey,
     unsigned int flags
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3) ARES_SECP256K1_ARG_NONNULL(4);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3) HNS_SECP256K1_ARG_NONNULL(4);
 
 /** Parse an ECDSA signature in compact (64 bytes) format.
  *
@@ -337,11 +337,11 @@ ARES_SECP256K1_API int ares_secp256k1_ec_pubkey_serialize(
  *  S are zero, the resulting sig value is guaranteed to fail validation for any
  *  message and public key.
  */
-ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_parse_compact(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_ecdsa_signature* sig,
+HNS_SECP256K1_API int hns_secp256k1_ecdsa_signature_parse_compact(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_ecdsa_signature* sig,
     const unsigned char *input64
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Parse a DER ECDSA signature.
  *
@@ -358,12 +358,12 @@ ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_parse_compact(
  *  encoded numbers are out of range, signature validation with it is
  *  guaranteed to fail for every message and public key.
  */
-ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_parse_der(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_ecdsa_signature* sig,
+HNS_SECP256K1_API int hns_secp256k1_ecdsa_signature_parse_der(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_ecdsa_signature* sig,
     const unsigned char *input,
     size_t inputlen
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Serialize an ECDSA signature in DER format.
  *
@@ -376,12 +376,12 @@ ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_parse_der(
  *                     if 0 was returned).
  *  In:     sig:       a pointer to an initialized signature object
  */
-ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_serialize_der(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API int hns_secp256k1_ecdsa_signature_serialize_der(
+    const hns_secp256k1_context* ctx,
     unsigned char *output,
     size_t *outputlen,
-    const ares_secp256k1_ecdsa_signature* sig
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3) ARES_SECP256K1_ARG_NONNULL(4);
+    const hns_secp256k1_ecdsa_signature* sig
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3) HNS_SECP256K1_ARG_NONNULL(4);
 
 /** Serialize an ECDSA signature in compact (64 byte) format.
  *
@@ -390,13 +390,13 @@ ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_serialize_der(
  *  Out:    output64:  a pointer to a 64-byte array to store the compact serialization
  *  In:     sig:       a pointer to an initialized signature object
  *
- *  See ares_secp256k1_ecdsa_signature_parse_compact for details about the encoding.
+ *  See hns_secp256k1_ecdsa_signature_parse_compact for details about the encoding.
  */
-ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_serialize_compact(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API int hns_secp256k1_ecdsa_signature_serialize_compact(
+    const hns_secp256k1_context* ctx,
     unsigned char *output64,
-    const ares_secp256k1_ecdsa_signature* sig
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+    const hns_secp256k1_ecdsa_signature* sig
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Verify an ECDSA signature.
  *
@@ -411,17 +411,17 @@ ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_serialize_compact(
  * form are accepted.
  *
  * If you need to accept ECDSA signatures from sources that do not obey this
- * rule, apply ares_secp256k1_ecdsa_signature_normalize to the signature prior to
+ * rule, apply hns_secp256k1_ecdsa_signature_normalize to the signature prior to
  * validation, but be aware that doing so results in malleable signatures.
  *
  * For details, see the comments for that function.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ecdsa_verify(
-    const ares_secp256k1_context* ctx,
-    const ares_secp256k1_ecdsa_signature *sig,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ecdsa_verify(
+    const hns_secp256k1_context* ctx,
+    const hns_secp256k1_ecdsa_signature *sig,
     const unsigned char *msg32,
-    const ares_secp256k1_pubkey *pubkey
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3) ARES_SECP256K1_ARG_NONNULL(4);
+    const hns_secp256k1_pubkey *pubkey
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3) HNS_SECP256K1_ARG_NONNULL(4);
 
 /** Convert a signature to a normalized lower-S form.
  *
@@ -460,25 +460,25 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ecdsa_ve
  *  accept various non-unique encodings, so care should be taken when this
  *  property is required for an application.
  *
- *  The ares_secp256k1_ecdsa_sign function will by default create signatures in the
- *  lower-S form, and ares_secp256k1_ecdsa_verify will not accept others. In case
+ *  The hns_secp256k1_ecdsa_sign function will by default create signatures in the
+ *  lower-S form, and hns_secp256k1_ecdsa_verify will not accept others. In case
  *  signatures come from a system that cannot enforce this property,
- *  ares_secp256k1_ecdsa_signature_normalize must be called before verification.
+ *  hns_secp256k1_ecdsa_signature_normalize must be called before verification.
  */
-ARES_SECP256K1_API int ares_secp256k1_ecdsa_signature_normalize(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_ecdsa_signature *sigout,
-    const ares_secp256k1_ecdsa_signature *sigin
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(3);
+HNS_SECP256K1_API int hns_secp256k1_ecdsa_signature_normalize(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_ecdsa_signature *sigout,
+    const hns_secp256k1_ecdsa_signature *sigin
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** An implementation of RFC6979 (using HMAC-SHA256) as nonce generation function.
  * If a data pointer is passed, it is assumed to be a pointer to 32 bytes of
  * extra entropy.
  */
-ARES_SECP256K1_API extern const ares_secp256k1_nonce_function ares_secp256k1_nonce_function_rfc6979;
+HNS_SECP256K1_API extern const hns_secp256k1_nonce_function hns_secp256k1_nonce_function_rfc6979;
 
-/** A default safe nonce generation function (currently equal to ares_secp256k1_nonce_function_rfc6979). */
-ARES_SECP256K1_API extern const ares_secp256k1_nonce_function ares_secp256k1_nonce_function_default;
+/** A default safe nonce generation function (currently equal to hns_secp256k1_nonce_function_rfc6979). */
+HNS_SECP256K1_API extern const hns_secp256k1_nonce_function hns_secp256k1_nonce_function_default;
 
 /** Create an ECDSA signature.
  *
@@ -488,20 +488,20 @@ ARES_SECP256K1_API extern const ares_secp256k1_nonce_function ares_secp256k1_non
  *  Out:     sig:    pointer to an array where the signature will be placed (cannot be NULL)
  *  In:      msg32:  the 32-byte message hash being signed (cannot be NULL)
  *           seckey: pointer to a 32-byte secret key (cannot be NULL)
- *           noncefp:pointer to a nonce generation function. If NULL, ares_secp256k1_nonce_function_default is used
+ *           noncefp:pointer to a nonce generation function. If NULL, hns_secp256k1_nonce_function_default is used
  *           ndata:  pointer to arbitrary data used by the nonce generation function (can be NULL)
  *
  * The created signature is always in lower-S form. See
- * ares_secp256k1_ecdsa_signature_normalize for more details.
+ * hns_secp256k1_ecdsa_signature_normalize for more details.
  */
-ARES_SECP256K1_API int ares_secp256k1_ecdsa_sign(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_ecdsa_signature *sig,
+HNS_SECP256K1_API int hns_secp256k1_ecdsa_sign(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_ecdsa_signature *sig,
     const unsigned char *msg32,
     const unsigned char *seckey,
-    ares_secp256k1_nonce_function noncefp,
+    hns_secp256k1_nonce_function noncefp,
     const void *ndata
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3) ARES_SECP256K1_ARG_NONNULL(4);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3) HNS_SECP256K1_ARG_NONNULL(4);
 
 /** Verify an ECDSA secret key.
  *
@@ -510,10 +510,10 @@ ARES_SECP256K1_API int ares_secp256k1_ecdsa_sign(
  *  Args:    ctx: pointer to a context object (cannot be NULL)
  *  In:      seckey: pointer to a 32-byte secret key (cannot be NULL)
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_seckey_verify(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_seckey_verify(
+    const hns_secp256k1_context* ctx,
     const unsigned char *seckey
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2);
 
 /** Compute the public key for a secret key.
  *
@@ -523,11 +523,11 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_secke
  *  Out:    pubkey:     pointer to the created public key (cannot be NULL)
  *  In:     seckey:     pointer to a 32-byte private key (cannot be NULL)
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubkey_create(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_pubkey *pubkey,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_pubkey_create(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_pubkey *pubkey,
     const unsigned char *seckey
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Negates a private key in place.
  *
@@ -535,10 +535,10 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubke
  *  Args:   ctx:        pointer to a context object
  *  In/Out: pubkey:     pointer to the public key to be negated (cannot be NULL)
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_privkey_negate(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_privkey_negate(
+    const hns_secp256k1_context* ctx,
     unsigned char *seckey
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2);
 
 /** Negates a public key in place.
  *
@@ -546,10 +546,10 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_privk
  *  Args:   ctx:        pointer to a context object
  *  In/Out: pubkey:     pointer to the public key to be negated (cannot be NULL)
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubkey_negate(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_pubkey *pubkey
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2);
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_pubkey_negate(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_pubkey *pubkey
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2);
 
 /** Tweak a private key by adding tweak to it.
  * Returns: 0 if the tweak was out of range (chance of around 1 in 2^128 for
@@ -560,11 +560,11 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubke
  * In/Out:  seckey: pointer to a 32-byte private key.
  * In:      tweak:  pointer to a 32-byte tweak.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_privkey_tweak_add(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_privkey_tweak_add(
+    const hns_secp256k1_context* ctx,
     unsigned char *seckey,
     const unsigned char *tweak
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Tweak a public key by adding tweak times the generator to it.
  * Returns: 0 if the tweak was out of range (chance of around 1 in 2^128 for
@@ -576,11 +576,11 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_privk
  * In/Out:  pubkey: pointer to a public key object.
  * In:      tweak:  pointer to a 32-byte tweak.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubkey_tweak_add(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_pubkey *pubkey,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_pubkey_tweak_add(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_pubkey *pubkey,
     const unsigned char *tweak
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Tweak a private key by multiplying it by a tweak.
  * Returns: 0 if the tweak was out of range (chance of around 1 in 2^128 for
@@ -589,11 +589,11 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubke
  * In/Out: seckey: pointer to a 32-byte private key.
  * In:     tweak:  pointer to a 32-byte tweak.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_privkey_tweak_mul(
-    const ares_secp256k1_context* ctx,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_privkey_tweak_mul(
+    const hns_secp256k1_context* ctx,
     unsigned char *seckey,
     const unsigned char *tweak
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Tweak a public key by multiplying it by a tweak value.
  * Returns: 0 if the tweak was out of range (chance of around 1 in 2^128 for
@@ -603,11 +603,11 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_privk
  * In/Out:  pubkey: pointer to a public key obkect.
  * In:      tweak:  pointer to a 32-byte tweak.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubkey_tweak_mul(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_pubkey *pubkey,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_pubkey_tweak_mul(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_pubkey *pubkey,
     const unsigned char *tweak
-) ARES_SECP256K1_ARG_NONNULL(1) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(1) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 /** Updates the context randomization to protect against side-channel leakage.
  *  Returns: 1: randomization successfully updated
@@ -625,13 +625,13 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubke
  * that it does not affect function results, but shields against attacks which
  * rely on any input-dependent behaviour.
  *
- * You should call this after ares_secp256k1_context_create or
- * ares_secp256k1_context_clone, and may call this repeatedly afterwards.
+ * You should call this after hns_secp256k1_context_create or
+ * hns_secp256k1_context_clone, and may call this repeatedly afterwards.
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_context_randomize(
-    ares_secp256k1_context* ctx,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_context_randomize(
+    hns_secp256k1_context* ctx,
     const unsigned char *seed32
-) ARES_SECP256K1_ARG_NONNULL(1);
+) HNS_SECP256K1_ARG_NONNULL(1);
 
 /** Add a number of public keys together.
  *  Returns: 1: the sum of the public keys is valid.
@@ -642,15 +642,15 @@ ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_context_
  *  In:     ins:        pointer to array of pointers to public keys (cannot be NULL)
  *          n:          the number of public keys to add together (must be at least 1)
  */
-ARES_SECP256K1_API ARES_SECP256K1_WARN_UNUSED_RESULT int ares_secp256k1_ec_pubkey_combine(
-    const ares_secp256k1_context* ctx,
-    ares_secp256k1_pubkey *out,
-    const ares_secp256k1_pubkey * const * ins,
+HNS_SECP256K1_API HNS_SECP256K1_WARN_UNUSED_RESULT int hns_secp256k1_ec_pubkey_combine(
+    const hns_secp256k1_context* ctx,
+    hns_secp256k1_pubkey *out,
+    const hns_secp256k1_pubkey * const * ins,
     size_t n
-) ARES_SECP256K1_ARG_NONNULL(2) ARES_SECP256K1_ARG_NONNULL(3);
+) HNS_SECP256K1_ARG_NONNULL(2) HNS_SECP256K1_ARG_NONNULL(3);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* ARES_SECP256K1_H */
+#endif /* HNS_SECP256K1_H */

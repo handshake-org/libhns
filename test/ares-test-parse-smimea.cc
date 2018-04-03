@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 /* webmaster@example.com */
@@ -28,9 +28,9 @@ TEST_F(LibraryTest, ParseSmimeaReplyOK) {
 
   std::vector<byte> data = pkt.data();
 
-  struct ares_smimea_reply *smimea = nullptr;
-  EXPECT_EQ(ARES_SUCCESS,
-    ares_parse_smimea_reply(data.data(), data.size(), &smimea));
+  struct hns_smimea_reply *smimea = nullptr;
+  EXPECT_EQ(HNS_SUCCESS,
+    hns_parse_smimea_reply(data.data(), data.size(), &smimea));
   ASSERT_NE(nullptr, smimea);
 
   ASSERT_EQ(smimea->usage, 3);
@@ -39,12 +39,12 @@ TEST_F(LibraryTest, ParseSmimeaReplyOK) {
   ASSERT_NE(smimea->certificate, nullptr);
 
   ASSERT_EQ(
-    ares_smimea_name_size("example.com", "webmaster@example.com"),
+    hns_smimea_name_size("example.com", "webmaster@example.com"),
     strlen(smimea_domain));
 
   char enc_name[256];
 
-  ASSERT_NE(ares_smimea_encode_name(
+  ASSERT_NE(hns_smimea_encode_name(
     "example.com", "webmaster@example.com", enc_name, 255), 0);
 
   ASSERT_EQ(strcmp(enc_name, smimea_domain), 0);
@@ -110,10 +110,10 @@ TEST_F(LibraryTest, ParseSmimeaReplyOK) {
     cert.push_back(chr);
   }
 
-  ASSERT_EQ(ares_smimea_verify(smimea, cert.data(), cert.size()), 1);
+  ASSERT_EQ(hns_smimea_verify(smimea, cert.data(), cert.size()), 1);
 
-  ares_free_data(smimea);
+  hns_free_data(smimea);
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

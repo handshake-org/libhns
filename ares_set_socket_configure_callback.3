@@ -1,33 +1,33 @@
 .\"
-.TH ARES_SET_SOCKET_CONFIGURE_CALLBACK 3 "6 Feb 2016"
+.TH HNS_SET_SOCKET_CONFIGURE_CALLBACK 3 "6 Feb 2016"
 .SH NAME
-ares_set_socket_configure_callback \- Set a socket configuration callback
+hns_set_socket_configure_callback \- Set a socket configuration callback
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B typedef int (*ares_sock_config_callback)(ares_socket_t \fIsocket_fd\fP,
+.B typedef int (*hns_sock_config_callback)(hns_socket_t \fIsocket_fd\fP,
                                          int \fItype\fP,
                                          void *\fIuserdata\fP)
 .PP
-.B void ares_set_socket_configure_callback(ares_channel \fIchannel\fP,
-                             ares_sock_config_callback \fIcallback\fP,
+.B void hns_set_socket_configure_callback(hns_channel \fIchannel\fP,
+                             hns_sock_config_callback \fIcallback\fP,
                              void *\fIuserdata\fP)
 .PP
-.B cc file.c -lcares
+.B cc file.c -lhns
 .fi
 .SH DESCRIPTION
 .PP
-This function sets a \fIcallback\fP in the given ares channel handle. This
+This function sets a \fIcallback\fP in the given hns channel handle. This
 callback function will be invoked after the socket has been created, but
 before it has been connected to the remote server, which is an ideal time
-to configure various socket options.  The callback must return ARES_SUCCESS
+to configure various socket options.  The callback must return HNS_SUCCESS
 if things are fine, or return -1 to signal an error. A returned error will
-abort the ares operation.
+abort the hns operation.
 .SH SEE ALSO
-.BR ares_init_options (3), ares_set_socket_callback (3)
+.BR hns_init_options (3), hns_set_socket_callback (3)
 .SH AVAILABILITY
-ares_set_socket_configure_callback(3) was added in c-ares 1.11.0
+hns_set_socket_configure_callback(3) was added in hns 1.11.0
 .SH AUTHOR
 Andrew Ayer
 

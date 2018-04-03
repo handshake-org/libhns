@@ -15,17 +15,17 @@
 
 # ------------------------------------------------------------------------------
 #
-# Makefile for building c-ares libraries and sample programs with MSVC.
+# Makefile for building hns libraries and sample programs with MSVC.
 #
 # Usage: nmake /f makefile.msvc CFG=<config> <target>
 #
 # <config> must be one of: [ lib-release | lib-debug | dll-release | dll-debug }
-# <target> must be one of: [ ALL | c-ares | acountry | adig | ahost | clean }
+# <target> must be one of: [ ALL | hns | hcountry | hdig | hhost | clean }
 #
 # If a <target> other than ALL or clean is given, <config> becomes mandatory.
 #
 # If neither <config> nor <target> are specified this results in
-# all targets being built for all <config> c-ares library types.
+# all targets being built for all <config> hns library types.
 #
 # This makefile must be processed from the subdir where it is located.
 #
@@ -33,10 +33,10 @@
 #
 # ------------------------------------------------------------------------------
 
-NAME = cares
+NAME = hns
 
 # ------------------------------------------------
-# c-ares static and dynamic libraries common base
+# hns static and dynamic libraries common base
 # file names for release and debug configurations
 # ------------------------------------------------
 
@@ -46,7 +46,7 @@ STA_LIB_DBG = $(STA_LIB_REL)d
 DYN_LIB_DBG = $(DYN_LIB_REL)d
 
 # -------------------------------------------
-# Base names for c-ares DLL import libraries
+# Base names for hns DLL import libraries
 # -------------------------------------------
 
 IMP_LIB_REL = $(DYN_LIB_REL)
@@ -77,11 +77,11 @@ USE_WATT32 = 0
 !INCLUDE .\msvc_ver.inc
 
 # ----------------------------------------------------
-# Verify that current subdir is the c-ares source one
+# Verify that current subdir is the hns source one
 # ----------------------------------------------------
 
-!IF ! EXIST(.\ares_init.c)
-!  MESSAGE Can not process Makefile.msvc from outside of c-ares source subdirectory.
+!IF ! EXIST(.\hns_init.c)
+!  MESSAGE Can not process Makefile.msvc from outside of hns source subdirectory.
 !  MESSAGE Change to the subdirectory where Makefile.msvc is found, and try again.
 !  ERROR   See previous message.
 !ENDIF
@@ -125,17 +125,17 @@ VALID_CFGSET = TRUE
 !ENDIF
 
 !IF "$(VALID_CFGSET)" == "FALSE" && "$(CFG)" != ""
-!  MESSAGE MSVC c-ares makefile
+!  MESSAGE MSVC hns makefile
 !  MESSAGE
 !  MESSAGE Usage: nmake /f makefile.msvc CFG=<config> <target>
 !  MESSAGE
 !  MESSAGE <config> must be one of: [ lib-release | lib-debug | dll-release | dll-debug }
-!  MESSAGE <target> must be one of: [ ALL | c-ares | acountry | adig | ahost | clean }
+!  MESSAGE <target> must be one of: [ ALL | hns | hcountry | hdig | hhost | clean }
 !  MESSAGE
 !  MESSAGE If a <target> other than ALL or clean is given, <config> becomes mandatory.
 !  MESSAGE
 !  MESSAGE If neither <config> nor <target> are specified this results in
-!  MESSAGE all targets being built for all <config> c-ares library types.
+!  MESSAGE all targets being built for all <config> hns library types.
 !  MESSAGE
 !  ERROR Choose a valid configuration.
 !ENDIF
@@ -144,10 +144,10 @@ VALID_CFGSET = TRUE
 # Project subdirs independent of configuration being used
 # --------------------------------------------------------
 
-CARES_DIR = $(BASE_DIR)\cares
-PROG1_DIR = $(BASE_DIR)\acountry
-PROG2_DIR = $(BASE_DIR)\adig
-PROG3_DIR = $(BASE_DIR)\ahost
+HNS_DIR = $(BASE_DIR)\hns
+PROG1_DIR = $(BASE_DIR)\hcountry
+PROG2_DIR = $(BASE_DIR)\hdig
+PROG3_DIR = $(BASE_DIR)\hhost
 
 # ---------------------------------------------------
 # Subdirs which are configuration dependent are only
@@ -155,20 +155,20 @@ PROG3_DIR = $(BASE_DIR)\ahost
 # ---------------------------------------------------
 
 !IF "$(VALID_CFGSET)" == "TRUE"
-CARES_OUTDIR = $(CARES_DIR)\$(CFG)
+HNS_OUTDIR = $(HNS_DIR)\$(CFG)
 PROG1_OUTDIR = $(PROG1_DIR)\$(CFG)
 PROG2_OUTDIR = $(PROG2_DIR)\$(CFG)
 PROG3_OUTDIR = $(PROG3_DIR)\$(CFG)
-CARES_OBJDIR = $(CARES_OUTDIR)\obj
+HNS_OBJDIR = $(HNS_OUTDIR)\obj
 PROG1_OBJDIR = $(PROG1_OUTDIR)\obj
 PROG2_OBJDIR = $(PROG2_OUTDIR)\obj
 PROG3_OBJDIR = $(PROG3_OUTDIR)\obj
 !ELSE
-!UNDEF CARES_OUTDIR
+!UNDEF HNS_OUTDIR
 !UNDEF PROG1_OUTDIR
 !UNDEF PROG2_OUTDIR
 !UNDEF PROG3_OUTDIR
-!UNDEF CARES_OBJDIR
+!UNDEF HNS_OBJDIR
 !UNDEF PROG1_OBJDIR
 !UNDEF PROG2_OBJDIR
 !UNDEF PROG3_OBJDIR
@@ -229,34 +229,34 @@ LINK_CMD_EXE_DBG = $(LINK_CMD_EXE) /debug $(PDBTYPE_CONSOLIDATE)
 # ---------------------------------
 
 !IF "$(CFG)" == "lib-release"
-CARES_TARGET = $(STA_LIB_REL).lib
-CARES_CFLAGS = /DCARES_BUILDING_LIBRARY /DCARES_STATICLIB
-CARES_LFLAGS =
-SPROG_CFLAGS = /DCARES_STATICLIB
-SPROG_LFLAGS = /libpath:$(CARES_OUTDIR) $(EX_LIBS_REL) $(STA_LIB_REL).lib
-CARES_LINK   = $(LINK_CMD_LIB)
+HNS_TARGET = $(STA_LIB_REL).lib
+HNS_CFLAGS = /DHNS_BUILDING_LIBRARY /DHNS_STATICLIB
+HNS_LFLAGS =
+SPROG_CFLAGS = /DHNS_STATICLIB
+SPROG_LFLAGS = /libpath:$(HNS_OUTDIR) $(EX_LIBS_REL) $(STA_LIB_REL).lib
+HNS_LINK   = $(LINK_CMD_LIB)
 SPROG_LINK   = $(LINK_CMD_EXE_REL)
 CC_CMD       = $(CC_CMD_REL)
 !ENDIF
 
 !IF "$(CFG)" == "lib-debug"
-CARES_TARGET = $(STA_LIB_DBG).lib
-CARES_CFLAGS = /DCARES_BUILDING_LIBRARY /DCARES_STATICLIB /DDEBUGBUILD
-CARES_LFLAGS =
-SPROG_CFLAGS = /DCARES_STATICLIB
-SPROG_LFLAGS = /libpath:$(CARES_OUTDIR) $(EX_LIBS_DBG) $(STA_LIB_DBG).lib
-CARES_LINK   = $(LINK_CMD_LIB)
+HNS_TARGET = $(STA_LIB_DBG).lib
+HNS_CFLAGS = /DHNS_BUILDING_LIBRARY /DHNS_STATICLIB /DDEBUGBUILD
+HNS_LFLAGS =
+SPROG_CFLAGS = /DHNS_STATICLIB
+SPROG_LFLAGS = /libpath:$(HNS_OUTDIR) $(EX_LIBS_DBG) $(STA_LIB_DBG).lib
+HNS_LINK   = $(LINK_CMD_LIB)
 SPROG_LINK   = $(LINK_CMD_EXE_DBG)
 CC_CMD       = $(CC_CMD_DBG)
 !ENDIF
 
 !IF "$(CFG)" == "dll-release"
-CARES_TARGET = $(DYN_LIB_REL).dll
-CARES_CFLAGS = /DCARES_BUILDING_LIBRARY
-CARES_LFLAGS = /release $(EX_LIBS_REL) /implib:$(CARES_OUTDIR)\$(IMP_LIB_REL).lib $(PDB_NONE)
+HNS_TARGET = $(DYN_LIB_REL).dll
+HNS_CFLAGS = /DHNS_BUILDING_LIBRARY
+HNS_LFLAGS = /release $(EX_LIBS_REL) /implib:$(HNS_OUTDIR)\$(IMP_LIB_REL).lib $(PDB_NONE)
 SPROG_CFLAGS =
-SPROG_LFLAGS = /libpath:$(CARES_OUTDIR) $(EX_LIBS_REL) $(IMP_LIB_REL).lib
-CARES_LINK   = $(LINK_CMD_DLL)
+SPROG_LFLAGS = /libpath:$(HNS_OUTDIR) $(EX_LIBS_REL) $(IMP_LIB_REL).lib
+HNS_LINK   = $(LINK_CMD_DLL)
 SPROG_LINK   = $(LINK_CMD_EXE_REL)
 CC_CMD       = $(CC_CMD_REL)
 USE_RES_FILE = TRUE
@@ -264,12 +264,12 @@ RC_CMD       = $(RC_CMD_REL)
 !ENDIF
 
 !IF "$(CFG)" == "dll-debug"
-CARES_TARGET = $(DYN_LIB_DBG).dll
-CARES_CFLAGS = /DCARES_BUILDING_LIBRARY /DDEBUGBUILD
-CARES_LFLAGS = /debug $(EX_LIBS_DBG) /implib:$(CARES_OUTDIR)\$(IMP_LIB_DBG).lib /pdb:$(CARES_OUTDIR)\$(DYN_LIB_DBG).pdb $(PDBTYPE_CONSOLIDATE)
+HNS_TARGET = $(DYN_LIB_DBG).dll
+HNS_CFLAGS = /DHNS_BUILDING_LIBRARY /DDEBUGBUILD
+HNS_LFLAGS = /debug $(EX_LIBS_DBG) /implib:$(HNS_OUTDIR)\$(IMP_LIB_DBG).lib /pdb:$(HNS_OUTDIR)\$(DYN_LIB_DBG).pdb $(PDBTYPE_CONSOLIDATE)
 SPROG_CFLAGS =
-SPROG_LFLAGS = /libpath:$(CARES_OUTDIR) $(EX_LIBS_DBG) $(IMP_LIB_DBG).lib
-CARES_LINK   = $(LINK_CMD_DLL)
+SPROG_LFLAGS = /libpath:$(HNS_OUTDIR) $(EX_LIBS_DBG) $(IMP_LIB_DBG).lib
+HNS_LINK   = $(LINK_CMD_DLL)
 SPROG_LINK   = $(LINK_CMD_EXE_DBG)
 CC_CMD       = $(CC_CMD_DBG)
 USE_RES_FILE = TRUE
@@ -288,16 +288,16 @@ RC_CMD       = $(RC_CMD_DBG)
 
 !IF "$(VALID_CFGSET)" == "TRUE"
 
-!IF [ECHO CARES_OBJS=^$(CARES_OBJDIR)\$(CSOURCES: = $(CARES_OBJDIR^)\) > .\cares_objs.inc] == 0
-!INCLUDE .\cares_objs.inc
-!IF [DEL .\cares_objs.inc]
+!IF [ECHO HNS_OBJS=^$(HNS_OBJDIR)\$(CSOURCES: = $(HNS_OBJDIR^)\) > .\hns_objs.inc] == 0
+!INCLUDE .\hns_objs.inc
+!IF [DEL .\hns_objs.inc]
 !ENDIF
 !ELSE
-!ERROR Problem generating CARES_OBJS list.
+!ERROR Problem generating HNS_OBJS list.
 !ENDIF
-CARES_OBJS = $(CARES_OBJS:.c=.obj)
+HNS_OBJS = $(HNS_OBJS:.c=.obj)
 !IF "$(USE_RES_FILE)" == "TRUE"
-CARES_OBJS = $(CARES_OBJS) $(CARES_OBJDIR)\cares.res
+HNS_OBJS = $(HNS_OBJS) $(HNS_OBJDIR)\hns.res
 !ENDIF
 
 !IF [ECHO PROG1_OBJS=^$(PROG1_OBJDIR)\$(SAMPLESOURCES: = $(PROG1_OBJDIR^)\) > .\prog1_objs.inc] == 0
@@ -308,7 +308,7 @@ CARES_OBJS = $(CARES_OBJS) $(CARES_OBJDIR)\cares.res
 !ERROR Problem generating PROG1_OBJS list.
 !ENDIF
 PROG1_OBJS = $(PROG1_OBJS:.c=.obj)
-PROG1_OBJS = $(PROG1_OBJS) $(PROG1_OBJDIR)\acountry.obj
+PROG1_OBJS = $(PROG1_OBJS) $(PROG1_OBJDIR)\hcountry.obj
 
 !IF [ECHO PROG2_OBJS=^$(PROG2_OBJDIR)\$(SAMPLESOURCES: = $(PROG2_OBJDIR^)\) > .\prog2_objs.inc] == 0
 !INCLUDE .\prog2_objs.inc
@@ -318,7 +318,7 @@ PROG1_OBJS = $(PROG1_OBJS) $(PROG1_OBJDIR)\acountry.obj
 !ERROR Problem generating PROG2_OBJS list.
 !ENDIF
 PROG2_OBJS = $(PROG2_OBJS:.c=.obj)
-PROG2_OBJS = $(PROG2_OBJS) $(PROG2_OBJDIR)\adig.obj
+PROG2_OBJS = $(PROG2_OBJS) $(PROG2_OBJDIR)\hdig.obj
 
 !IF [ECHO PROG3_OBJS=^$(PROG3_OBJDIR)\$(SAMPLESOURCES: = $(PROG3_OBJDIR^)\) > .\prog3_objs.inc] == 0
 !INCLUDE .\prog3_objs.inc
@@ -328,7 +328,7 @@ PROG2_OBJS = $(PROG2_OBJS) $(PROG2_OBJDIR)\adig.obj
 !ERROR Problem generating PROG3_OBJS list.
 !ENDIF
 PROG3_OBJS = $(PROG3_OBJS:.c=.obj)
-PROG3_OBJS = $(PROG3_OBJS) $(PROG3_OBJDIR)\ahost.obj
+PROG3_OBJS = $(PROG3_OBJS) $(PROG3_OBJDIR)\hhost.obj
 
 !ENDIF
 
@@ -339,11 +339,11 @@ PROG3_OBJS = $(PROG3_OBJS) $(PROG3_OBJDIR)\ahost.obj
 .SUFFIXES:
 .SUFFIXES: .c .rc
 
-{$(SRCDIR)}.rc{$(CARES_OBJDIR)}.res:
+{$(SRCDIR)}.rc{$(HNS_OBJDIR)}.res:
     $(RC_CMD) /Fo $@ $<
 
-{$(SRCDIR)}.c{$(CARES_OBJDIR)}.obj:
-    $(CC_CMD) $(CC_CFLAGS) $(CARES_CFLAGS) /Fo$@ /Fd$(@D)\ /c $<
+{$(SRCDIR)}.c{$(HNS_OBJDIR)}.obj:
+    $(CC_CMD) $(CC_CFLAGS) $(HNS_CFLAGS) /Fo$@ /Fd$(@D)\ /c $<
 
 {$(SRCDIR)}.c{$(PROG1_OBJDIR)}.obj:
     $(CC_CMD) $(CC_CFLAGS) $(SPROG_CFLAGS) /Fo$@ /Fd$(@D)\ /c $<
@@ -357,7 +357,7 @@ PROG3_OBJS = $(PROG3_OBJS) $(PROG3_OBJDIR)\ahost.obj
 # ------------------------------------------------------------- #
 # ------------------------------------------------------------- #
 # Default target when no CFG library type has been specified,   #
-# results in building target ALL for all c-ares library types.  #
+# results in building target ALL for all hns library types.  #
 # ------------------------------------------------------------- #
 # ------------------------------------------------------------- #
 
@@ -386,29 +386,29 @@ install:
 
 !IF "$(VALID_CFGSET)" == "TRUE"
 
-ALL: c-ares acountry adig ahost
+ALL: hns hcountry hdig hhost
     @
 
-c-ares: $(HHEADERS) $(CSOURCES) $(CARES_OBJDIR) $(CARES_OBJS) $(CARES_OUTDIR)
-    $(CARES_LINK) $(CARES_LFLAGS) /out:$(CARES_OUTDIR)\$(CARES_TARGET) $(CARES_OBJS)
+hns: $(HHEADERS) $(CSOURCES) $(HNS_OBJDIR) $(HNS_OBJS) $(HNS_OUTDIR)
+    $(HNS_LINK) $(HNS_LFLAGS) /out:$(HNS_OUTDIR)\$(HNS_TARGET) $(HNS_OBJS)
 !   IF "$(USE_RES_FILE)" == "TRUE"
-    @if exist $(CARES_OUTDIR)\$(CARES_TARGET).manifest mt -nologo -manifest $(CARES_OUTDIR)\$(CARES_TARGET).manifest -outputresource:$(CARES_OUTDIR)\$(CARES_TARGET);2
+    @if exist $(HNS_OUTDIR)\$(HNS_TARGET).manifest mt -nologo -manifest $(HNS_OUTDIR)\$(HNS_TARGET).manifest -outputresource:$(HNS_OUTDIR)\$(HNS_TARGET);2
 !   ENDIF
 
-acountry: c-ares acountry.c $(SAMPLESOURCES) $(SAMPLEHEADERS) $(PROG1_OBJDIR) $(PROG1_OBJS) $(PROG1_OUTDIR)
-    $(SPROG_LINK) $(SPROG_LFLAGS) /out:$(PROG1_OUTDIR)\acountry.exe $(PROG1_OBJS)
-    @if exist $(PROG1_OUTDIR)\acountry.exe.manifest mt -nologo -manifest $(PROG1_OUTDIR)\acountry.exe.manifest -outputresource:$(PROG1_OUTDIR)\acountry.exe;1
+hcountry: hns hcountry.c $(SAMPLESOURCES) $(SAMPLEHEADERS) $(PROG1_OBJDIR) $(PROG1_OBJS) $(PROG1_OUTDIR)
+    $(SPROG_LINK) $(SPROG_LFLAGS) /out:$(PROG1_OUTDIR)\hcountry.exe $(PROG1_OBJS)
+    @if exist $(PROG1_OUTDIR)\hcountry.exe.manifest mt -nologo -manifest $(PROG1_OUTDIR)\hcountry.exe.manifest -outputresource:$(PROG1_OUTDIR)\hcountry.exe;1
 
-adig: c-ares adig.c $(SAMPLESOURCES) $(SAMPLEHEADERS) $(PROG2_OBJDIR) $(PROG2_OBJS) $(PROG2_OUTDIR)
-    $(SPROG_LINK) $(SPROG_LFLAGS) /out:$(PROG2_OUTDIR)\adig.exe $(PROG2_OBJS)
-    @if exist $(PROG2_OUTDIR)\adig.exe.manifest mt -nologo -manifest $(PROG2_OUTDIR)\adig.exe.manifest -outputresource:$(PROG2_OUTDIR)\adig.exe;1
+hdig: hns hdig.c $(SAMPLESOURCES) $(SAMPLEHEADERS) $(PROG2_OBJDIR) $(PROG2_OBJS) $(PROG2_OUTDIR)
+    $(SPROG_LINK) $(SPROG_LFLAGS) /out:$(PROG2_OUTDIR)\hdig.exe $(PROG2_OBJS)
+    @if exist $(PROG2_OUTDIR)\hdig.exe.manifest mt -nologo -manifest $(PROG2_OUTDIR)\hdig.exe.manifest -outputresource:$(PROG2_OUTDIR)\hdig.exe;1
 
-ahost: c-ares ahost.c $(SAMPLESOURCES) $(SAMPLEHEADERS) $(PROG3_OBJDIR) $(PROG3_OBJS) $(PROG3_OUTDIR)
-    $(SPROG_LINK) $(SPROG_LFLAGS) /out:$(PROG3_OUTDIR)\ahost.exe $(PROG3_OBJS)
-    @if exist $(PROG3_OUTDIR)\ahost.exe.manifest mt -nologo -manifest $(PROG3_OUTDIR)\ahost.exe.manifest -outputresource:$(PROG3_OUTDIR)\ahost.exe;1
+hhost: hns hhost.c $(SAMPLESOURCES) $(SAMPLEHEADERS) $(PROG3_OBJDIR) $(PROG3_OBJS) $(PROG3_OUTDIR)
+    $(SPROG_LINK) $(SPROG_LFLAGS) /out:$(PROG3_OUTDIR)\hhost.exe $(PROG3_OBJS)
+    @if exist $(PROG3_OUTDIR)\hhost.exe.manifest mt -nologo -manifest $(PROG3_OUTDIR)\hhost.exe.manifest -outputresource:$(PROG3_OUTDIR)\hhost.exe;1
 
-$(CARES_OUTDIR): $(CARES_DIR)
-    @if not exist $(CARES_OUTDIR) mkdir $(CARES_OUTDIR)
+$(HNS_OUTDIR): $(HNS_DIR)
+    @if not exist $(HNS_OUTDIR) mkdir $(HNS_OUTDIR)
 
 $(PROG1_OUTDIR): $(PROG1_DIR)
     @if not exist $(PROG1_OUTDIR) mkdir $(PROG1_OUTDIR)
@@ -419,8 +419,8 @@ $(PROG2_OUTDIR): $(PROG2_DIR)
 $(PROG3_OUTDIR): $(PROG3_DIR)
     @if not exist $(PROG3_OUTDIR) mkdir $(PROG3_OUTDIR)
 
-$(CARES_OBJDIR): $(CARES_OUTDIR)
-    @if not exist $(CARES_OBJDIR) mkdir $(CARES_OBJDIR)
+$(HNS_OBJDIR): $(HNS_OUTDIR)
+    @if not exist $(HNS_OBJDIR) mkdir $(HNS_OBJDIR)
 
 $(PROG1_OBJDIR): $(PROG1_OUTDIR)
     @if not exist $(PROG1_OBJDIR) mkdir $(PROG1_OBJDIR)
@@ -432,31 +432,31 @@ $(PROG3_OBJDIR): $(PROG3_OUTDIR)
     @if not exist $(PROG3_OBJDIR) mkdir $(PROG3_OBJDIR)
 
 clean:
-    @-RMDIR /S /Q $(CARES_OUTDIR) >NUL 2>&1
+    @-RMDIR /S /Q $(HNS_OUTDIR) >NUL 2>&1
     @-RMDIR /S /Q $(PROG1_OUTDIR) >NUL 2>&1
     @-RMDIR /S /Q $(PROG2_OUTDIR) >NUL 2>&1
     @-RMDIR /S /Q $(PROG3_OUTDIR) >NUL 2>&1
 
 install:
-    @if not exist $(CARES_OUTDIR)\$(CARES_TARGET) \
-        $(MAKE) /f .\Makefile.msvc CFG=$(CFG) c-ares
+    @if not exist $(HNS_OUTDIR)\$(HNS_TARGET) \
+        $(MAKE) /f .\Makefile.msvc CFG=$(CFG) hns
     @if not exist "$(INSTALL_DIR)"     mkdir "$(INSTALL_DIR)"
     @if not exist "$(INSTALL_DIR_LIB)" mkdir "$(INSTALL_DIR_LIB)"
     @if not exist "$(INSTALL_DIR_INC)" mkdir "$(INSTALL_DIR_INC)"
-    @copy /y $(CARES_OUTDIR)\*.*      "$(INSTALL_DIR_LIB)" >NUL
-    @copy /y $(SRCDIR)\ares.h         "$(INSTALL_DIR_INC)" >NUL
-    @copy /y $(SRCDIR)\ares_build.h   "$(INSTALL_DIR_INC)" >NUL
-    @copy /y $(SRCDIR)\ares_rules.h   "$(INSTALL_DIR_INC)" >NUL
-    @copy /y $(SRCDIR)\ares_version.h "$(INSTALL_DIR_INC)" >NUL
-    @echo Installed c-ares $(CFG)
+    @copy /y $(HNS_OUTDIR)\*.*      "$(INSTALL_DIR_LIB)" >NUL
+    @copy /y $(SRCDIR)\hns.h         "$(INSTALL_DIR_INC)" >NUL
+    @copy /y $(SRCDIR)\hns_build.h   "$(INSTALL_DIR_INC)" >NUL
+    @copy /y $(SRCDIR)\hns_rules.h   "$(INSTALL_DIR_INC)" >NUL
+    @copy /y $(SRCDIR)\hns_version.h "$(INSTALL_DIR_INC)" >NUL
+    @echo Installed hns $(CFG)
 
 !ENDIF
 
 $(BASE_DIR):
     @if not exist $(BASE_DIR) mkdir $(BASE_DIR)
 
-$(CARES_DIR): $(BASE_DIR)
-    @if not exist $(CARES_DIR) mkdir $(CARES_DIR)
+$(HNS_DIR): $(BASE_DIR)
+    @if not exist $(HNS_DIR) mkdir $(HNS_DIR)
 
 $(PROG1_DIR): $(BASE_DIR)
     @if not exist $(PROG1_DIR) mkdir $(PROG1_DIR)

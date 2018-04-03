@@ -14,13 +14,13 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_private.h"
-#include "ares_dane.h"
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_private.h"
+#include "hns_dane.h"
 
 int
-ares_tlsa_encode_name(
+hns_tlsa_encode_name(
   const char *name,
   const char *protocol,
   unsigned int port,
@@ -30,7 +30,7 @@ ares_tlsa_encode_name(
   if (name == NULL || protocol == NULL || out == NULL)
     return 0;
 
-  size_t size = ares_tlsa_name_size(name, protocol, port);
+  size_t size = hns_tlsa_name_size(name, protocol, port);
 
   if (size > out_len)
     return 0;
@@ -44,7 +44,7 @@ ares_tlsa_encode_name(
 }
 
 size_t
-ares_tlsa_name_size(const char *name, const char *protocol, unsigned int port) {
+hns_tlsa_name_size(const char *name, const char *protocol, unsigned int port) {
   size_t size = 5;
 
   port &= 0xffff;
@@ -62,10 +62,10 @@ ares_tlsa_name_size(const char *name, const char *protocol, unsigned int port) {
 }
 
 int
-ares_tlsa_verify(
-  struct ares_tlsa_reply *tlsa_reply,
+hns_tlsa_verify(
+  struct hns_tlsa_reply *tlsa_reply,
   unsigned char *cert,
   size_t cert_len
 ) {
-  return ares_dane_verify(tlsa_reply, cert, cert_len);
+  return hns_dane_verify(tlsa_reply, cert, cert_len);
 }

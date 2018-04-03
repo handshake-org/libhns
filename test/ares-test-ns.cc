@@ -1,4 +1,4 @@
-#include "ares-test.h"
+#include "hns-test.h"
 
 #ifdef HAVE_CONTAINER
 
@@ -13,7 +13,7 @@
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 namespace {
@@ -151,7 +151,7 @@ int RunInContainer(ContainerFilesystem* fs, const std::string& hostname,
 }
 
 ContainerFilesystem::ContainerFilesystem(NameContentList files, const std::string& mountpt) {
-  rootdir_ = TempNam(nullptr, "ares-chroot");
+  rootdir_ = TempNam(nullptr, "hns-chroot");
   mkdir(rootdir_.c_str(), 0755);
   dirs_.push_front(rootdir_);
   for (const auto& nc : files) {
@@ -194,6 +194,6 @@ void ContainerFilesystem::EnsureDirExists(const std::string& dir) {
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns
 
 #endif

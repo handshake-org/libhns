@@ -13,23 +13,23 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_QUERY 3 "24 July 1998"
+.TH HNS_QUERY 3 "24 July 1998"
 .SH NAME
-ares_query \- Initiate a single-question DNS query
+hns_query \- Initiate a single-question DNS query
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B typedef void (*ares_callback)(void *\fIarg\fP, int \fIstatus\fP,
+.B typedef void (*hns_callback)(void *\fIarg\fP, int \fIstatus\fP,
 .B	int \fItimeouts\fP, unsigned char *\fIabuf\fP, int \fIalen\fP)
 .PP
-.B void ares_query(ares_channel \fIchannel\fP, const char *\fIname\fP,
-.B 	int \fIdnsclass\fP, int \fItype\fP, ares_callback \fIcallback\fP,
+.B void hns_query(hns_channel \fIchannel\fP, const char *\fIname\fP,
+.B 	int \fIdnsclass\fP, int \fItype\fP, hns_callback \fIcallback\fP,
 .B	void *\fIarg\fP)
 .fi
 .SH DESCRIPTION
 The
-.B ares_query
+.B hns_query
 function initiates a single-question DNS query on the name service
 channel identified by
 .IR channel .
@@ -43,18 +43,18 @@ and
 .I type
 give the class and type of the query using the values defined in
 .BR <arpa/nameser.h> .
-When the query is complete or has failed, the ares library will invoke
+When the query is complete or has failed, the hns library will invoke
 .IR callback .
 Completion or failure of the query may happen immediately, or may
 happen during a later call to
-.BR ares_process (3)
+.BR hns_process (3)
 or
-.BR ares_destroy (3).
+.BR hns_destroy (3).
 .PP
 The callback argument
 .I arg
 is copied from the
-.B ares_query
+.B hns_query
 argument
 .IR arg .
 The callback argument
@@ -62,66 +62,66 @@ The callback argument
 indicates whether the query succeeded and, if not, how it failed.  It
 may have any of the following values:
 .TP 19
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 The query completed successfully.
 .TP 19
-.B ARES_ENODATA
+.B HNS_ENODATA
 The query completed but contains no answers.
 .TP 19
-.B ARES_EFORMERR
+.B HNS_EFORMERR
 The query completed but the server claims that the query was
 malformatted.
 .TP 19
-.B ARES_ESERVFAIL
+.B HNS_ESERVFAIL
 The query completed but the server claims to have experienced a
 failure.  (This code can only occur if the
-.B ARES_FLAG_NOCHECKRESP
+.B HNS_FLAG_NOCHECKRESP
 flag was specified at channel initialization time; otherwise, such
 responses are ignored at the
-.BR ares_send (3)
+.BR hns_send (3)
 level.)
 .TP 19
-.B ARES_ENOTFOUND
+.B HNS_ENOTFOUND
 The query completed but the queried-for domain name was not found.
 .TP 19
-.B ARES_ENOTIMP
+.B HNS_ENOTIMP
 The query completed but the server does not implement the operation
 requested by the query.  (This code can only occur if the
-.B ARES_FLAG_NOCHECKRESP
+.B HNS_FLAG_NOCHECKRESP
 flag was specified at channel initialization time; otherwise, such
 responses are ignored at the
-.BR ares_send (3)
+.BR hns_send (3)
 level.)
 .TP 19
-.B ARES_EREFUSED
+.B HNS_EREFUSED
 The query completed but the server refused the query.  (This code can
 only occur if the
-.B ARES_FLAG_NOCHECKRESP
+.B HNS_FLAG_NOCHECKRESP
 flag was specified at channel initialization time; otherwise, such
 responses are ignored at the
-.BR ares_send (3)
+.BR hns_send (3)
 level.)
 .TP 19
-.B ARES_EBADNAME
+.B HNS_EBADNAME
 The query name
 .I name
 could not be encoded as a domain name, either because it contained a
 zero-length label or because it contained a label of more than 63
 characters.
 .TP 19
-.B ARES_ETIMEOUT
+.B HNS_ETIMEOUT
 No name servers responded within the timeout period.
 .TP 19
-.B ARES_ECONNREFUSED
+.B HNS_ECONNREFUSED
 No name servers could be contacted.
 .TP 19
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .TP 19
-.B ARES_ECANCELLED
+.B HNS_ECANCELLED
 The query was cancelled.
 .TP 19
-.B ARES_EDESTRUCTION
+.B HNS_EDESTRUCTION
 The name service channel
 .I channel
 is being destroyed; the query will not be completed.
@@ -142,7 +142,7 @@ will be NULL and
 .I alen
 will be 0.
 .SH SEE ALSO
-.BR ares_process (3)
+.BR hns_process (3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br

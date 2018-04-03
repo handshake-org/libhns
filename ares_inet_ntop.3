@@ -13,21 +13,21 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_INET_NTOP 3 "17 Feb 2013"
+.TH HNS_INET_NTOP 3 "17 Feb 2013"
 .SH NAME
-ares_inet_ntop \- convert a network format address to presentation format
+hns_inet_ntop \- convert a network format address to presentation format
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
 .B const char *
-.B ares_inet_ntop(int af, const void *src, char *dst, ares_socklen_t size);
+.B hns_inet_ntop(int af, const void *src, char *dst, hns_socklen_t size);
 .fi
 .SH DESCRIPTION
 This is a portable version with the identical functionality of the commonly
 available \fIinet_ntop\fP.
 
-The ares_inet_ntop() function converts a numeric address into a text string
+The hns_inet_ntop() function converts a numeric address into a text string
 suitable for presentation. The \fBaf\fP argument shall specify the family of
 the address. This can be AF_INET or AF_INET6.  The \fBsrc\fP argument points
 to a buffer holding an IPv4 address if the af argument is AF_INET, or an IPv6
@@ -38,10 +38,10 @@ the size of this buffer, which shall be large enough to hold the text string
 (INET_ADDRSTRLEN (16) characters for IPv4, INET6_ADDRSTRLEN (46) characters
 for IPv6).
 .SH SEE ALSO
-.BR ares_init(3),
-.BR ares_inet_pton(3)
+.BR hns_init(3),
+.BR hns_inet_pton(3)
 .SH AVAILABILITY
-made properly publicly available in c-ares for real in version 1.10.0
+made properly publicly available in hns for real in version 1.10.0
 .SH AUTHOR
 Daniel Stenberg
 

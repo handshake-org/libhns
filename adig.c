@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -38,24 +38,24 @@
 #  include <strings.h>
 #endif
 
-#include "ares.h"
-#include "ares_dns.h"
-#include "ares_getopt.h"
-#include "ares_nowarn.h"
+#include "hns.h"
+#include "hns_dns.h"
+#include "hns_getopt.h"
+#include "hns_nowarn.h"
 
 #ifndef HAVE_STRDUP
-#  include "ares_strdup.h"
-#  define strdup(ptr) ares_strdup(ptr)
+#  include "hns_strdup.h"
+#  define strdup(ptr) hns_strdup(ptr)
 #endif
 
 #ifndef HAVE_STRCASECMP
-#  include "ares_strcasecmp.h"
-#  define strcasecmp(p1,p2) ares_strcasecmp(p1,p2)
+#  include "hns_strcasecmp.h"
+#  define strcasecmp(p1,p2) hns_strcasecmp(p1,p2)
 #endif
 
 #ifndef HAVE_STRNCASECMP
-#  include "ares_strcasecmp.h"
-#  define strncasecmp(p1,p2,n) ares_strncasecmp(p1,p2,n)
+#  include "hns_strcasecmp.h"
+#  define strncasecmp(p1,p2,n) hns_strncasecmp(p1,p2,n)
 #endif
 
 #ifdef WATT32
@@ -90,12 +90,12 @@ struct nv {
 };
 
 static const struct nv flags[] = {
-  { "usevc",            ARES_FLAG_USEVC },
-  { "primary",          ARES_FLAG_PRIMARY },
-  { "igntc",            ARES_FLAG_IGNTC },
-  { "norecurse",        ARES_FLAG_NORECURSE },
-  { "stayopen",         ARES_FLAG_STAYOPEN },
-  { "noaliases",        ARES_FLAG_NOALIASES }
+  { "usevc",            HNS_FLAG_USEVC },
+  { "primary",          HNS_FLAG_PRIMARY },
+  { "igntc",            HNS_FLAG_IGNTC },
+  { "norecurse",        HNS_FLAG_NORECURSE },
+  { "stayopen",         HNS_FLAG_STAYOPEN },
+  { "noaliases",        HNS_FLAG_NOALIASES }
 };
 static const int nflags = sizeof(flags) / sizeof(flags[0]);
 
@@ -177,20 +177,20 @@ static const unsigned char *display_rr(const unsigned char *aptr,
 static const char *type_name(int type);
 static const char *class_name(int dnsclass);
 static void usage(void);
-static void destroy_addr_list(struct ares_addr_node *head);
-static void append_addr_list(struct ares_addr_node **head,
-                             struct ares_addr_node *node);
+static void destroy_addr_list(struct hns_addr_node *head);
+static void append_addr_list(struct hns_addr_node **head,
+                             struct hns_addr_node *node);
 
 int main(int argc, char **argv)
 {
-  ares_channel channel;
-  int c, i, optmask = ARES_OPT_FLAGS, dnsclass = C_IN, type = T_A;
+  hns_channel channel;
+  int c, i, optmask = HNS_OPT_FLAGS, dnsclass = C_IN, type = T_A;
   int status, nfds, count;
-  struct ares_options options;
+  struct hns_options options;
   struct hostent *hostent;
   fd_set read_fds, write_fds;
   struct timeval *tvp, tv;
-  struct ares_addr_node *srvr, *servers = NULL;
+  struct hns_addr_node *srvr, *servers = NULL;
 
 #ifdef USE_WINSOCK
   WORD wVersionRequested = MAKEWORD(USE_WINSOCK,USE_WINSOCK);
@@ -198,17 +198,17 @@ int main(int argc, char **argv)
   WSAStartup(wVersionRequested, &wsaData);
 #endif
 
-  status = ares_library_init(ARES_LIB_INIT_ALL);
-  if (status != ARES_SUCCESS)
+  status = hns_library_init(HNS_LIB_INIT_ALL);
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "ares_library_init: %s\n", ares_strerror(status));
+      fprintf(stderr, "hns_library_init: %s\n", hns_strerror(status));
       return 1;
     }
 
-  options.flags = ARES_FLAG_NOCHECKRESP;
+  options.flags = HNS_FLAG_NOCHECKRESP;
   options.servers = NULL;
   options.nservers = 0;
-  while ((c = ares_getopt(argc, argv, "df:s:c:t:T:U:")) != -1)
+  while ((c = hns_getopt(argc, argv, "df:s:c:t:T:U:")) != -1)
     {
       switch (c)
         {
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
 
         case 's':
           /* User-specified name servers override default ones. */
-          srvr = malloc(sizeof(struct ares_addr_node));
+          srvr = malloc(sizeof(struct hns_addr_node));
           if (!srvr)
             {
               fprintf(stderr, "Out of memory!\n");
@@ -241,16 +241,16 @@ int main(int argc, char **argv)
               return 1;
             }
           append_addr_list(&servers, srvr);
-          if (ares_inet_pton(AF_INET, optarg, &srvr->addr.addr4) > 0)
+          if (hns_inet_pton(AF_INET, optarg, &srvr->addr.addr4) > 0)
             srvr->family = AF_INET;
-          else if (ares_inet_pton(AF_INET6, optarg, &srvr->addr.addr6) > 0)
+          else if (hns_inet_pton(AF_INET6, optarg, &srvr->addr.addr6) > 0)
             srvr->family = AF_INET6;
           else
             {
               hostent = gethostbyname(optarg);
               if (!hostent)
                 {
-                  fprintf(stderr, "adig: server %s not found.\n", optarg);
+                  fprintf(stderr, "hdig: server %s not found.\n", optarg);
                   destroy_addr_list(servers);
                   return 1;
                 }
@@ -268,21 +268,21 @@ int main(int argc, char **argv)
                     break;
                   default:
                     fprintf(stderr,
-                      "adig: server %s unsupported address family.\n", optarg);
+                      "hdig: server %s unsupported address family.\n", optarg);
                     destroy_addr_list(servers);
                     return 1;
                 }
             }
-          /* Notice that calling ares_init_options() without servers in the
-           * options struct and with ARES_OPT_SERVERS set simultaneously in
+          /* Notice that calling hns_init_options() without servers in the
+           * options struct and with HNS_OPT_SERVERS set simultaneously in
            * the options mask, results in an initialization with no servers.
            * When alternative name servers have been specified these are set
-           * later calling ares_set_servers() overriding any existing server
+           * later calling hns_set_servers() overriding any existing server
            * configuration. To prevent initial configuration with default
-           * servers that will be discarded later, ARES_OPT_SERVERS is set.
+           * servers that will be discarded later, HNS_OPT_SERVERS is set.
            * If this flag is not set here the result shall be the same but
-           * ares_init_options() will do needless work. */
-          optmask |= ARES_OPT_SERVERS;
+           * hns_init_options() will do needless work. */
+          optmask |= HNS_OPT_SERVERS;
           break;
 
         case 'c':
@@ -316,7 +316,7 @@ int main(int argc, char **argv)
           if (!ISDIGIT(*optarg))
             usage();
           options.tcp_port = (unsigned short)strtol(optarg, NULL, 0);
-          optmask |= ARES_OPT_TCP_PORT;
+          optmask |= HNS_OPT_TCP_PORT;
           break;
 
         case 'U':
@@ -324,7 +324,7 @@ int main(int argc, char **argv)
           if (!ISDIGIT(*optarg))
             usage();
           options.udp_port = (unsigned short)strtol(optarg, NULL, 0);
-          optmask |= ARES_OPT_UDP_PORT;
+          optmask |= HNS_OPT_UDP_PORT;
           break;
         }
     }
@@ -333,23 +333,23 @@ int main(int argc, char **argv)
   if (argc == 0)
     usage();
 
-  status = ares_init_options(&channel, &options, optmask);
+  status = hns_init_options(&channel, &options, optmask);
 
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     {
-      fprintf(stderr, "ares_init_options: %s\n",
-              ares_strerror(status));
+      fprintf(stderr, "hns_init_options: %s\n",
+              hns_strerror(status));
       return 1;
     }
 
   if(servers)
     {
-      status = ares_set_servers(channel, servers);
+      status = hns_set_servers(channel, servers);
       destroy_addr_list(servers);
-      if (status != ARES_SUCCESS)
+      if (status != HNS_SUCCESS)
         {
-          fprintf(stderr, "ares_init_options: %s\n",
-                  ares_strerror(status));
+          fprintf(stderr, "hns_init_options: %s\n",
+                  hns_strerror(status));
           return 1;
         }
     }
@@ -360,11 +360,11 @@ int main(int argc, char **argv)
    * distinguish responses for the user when printing them out.
    */
   if (argc == 1)
-    ares_query(channel, *argv, dnsclass, type, callback, (char *) NULL);
+    hns_query(channel, *argv, dnsclass, type, callback, (char *) NULL);
   else
     {
       for (; *argv; argv++)
-        ares_query(channel, *argv, dnsclass, type, callback, *argv);
+        hns_query(channel, *argv, dnsclass, type, callback, *argv);
     }
 
   /* Wait for all queries to complete. */
@@ -372,22 +372,22 @@ int main(int argc, char **argv)
     {
       FD_ZERO(&read_fds);
       FD_ZERO(&write_fds);
-      nfds = ares_fds(channel, &read_fds, &write_fds);
+      nfds = hns_fds(channel, &read_fds, &write_fds);
       if (nfds == 0)
         break;
-      tvp = ares_timeout(channel, NULL, &tv);
+      tvp = hns_timeout(channel, NULL, &tv);
       count = select(nfds, &read_fds, &write_fds, NULL, tvp);
       if (count < 0 && (status = SOCKERRNO) != EINVAL)
         {
           printf("select fail: %d", status);
           return 1;
         }
-      ares_process(channel, &read_fds, &write_fds);
+      hns_process(channel, &read_fds, &write_fds);
     }
 
-  ares_destroy(channel);
+  hns_destroy(channel);
 
-  ares_library_cleanup();
+  hns_library_cleanup();
 
 #ifdef USE_WINSOCK
   WSACleanup();
@@ -413,9 +413,9 @@ static void callback(void *arg, int status, int timeouts,
   /* Display an error message if there was an error, but only stop if
    * we actually didn't get an answer buffer.
    */
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     {
-      printf("%s\n", ares_strerror(status));
+      printf("%s\n", hns_strerror(status));
       if (!abuf)
         return;
     }
@@ -496,8 +496,8 @@ static const unsigned char *display_question(const unsigned char *aptr,
   long len;
 
   /* Parse the question name. */
-  status = ares_expand_name(aptr, abuf, alen, &name, &len);
-  if (status != ARES_SUCCESS)
+  status = hns_expand_name(aptr, abuf, alen, &name, &len);
+  if (status != HNS_SUCCESS)
     return NULL;
   aptr += len;
 
@@ -506,7 +506,7 @@ static const unsigned char *display_question(const unsigned char *aptr,
    */
   if (aptr + QFIXEDSZ > abuf + alen)
     {
-      ares_free_string(name);
+      hns_free_string(name);
       return NULL;
     }
 
@@ -522,7 +522,7 @@ static const unsigned char *display_question(const unsigned char *aptr,
   if (dnsclass != C_IN)
     printf("\t%s", class_name(dnsclass));
   printf("\t%s\n", type_name(type));
-  ares_free_string(name);
+  hns_free_string(name);
   return aptr;
 }
 
@@ -539,8 +539,8 @@ static const unsigned char *display_rr(const unsigned char *aptr,
   } name;
 
   /* Parse the RR name. */
-  status = ares_expand_name(aptr, abuf, alen, &name.as_char, &len);
-  if (status != ARES_SUCCESS)
+  status = hns_expand_name(aptr, abuf, alen, &name.as_char, &len);
+  if (status != HNS_SUCCESS)
     return NULL;
   aptr += len;
 
@@ -549,7 +549,7 @@ static const unsigned char *display_rr(const unsigned char *aptr,
    */
   if (aptr + RRFIXEDSZ > abuf + alen)
     {
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       return NULL;
     }
 
@@ -562,7 +562,7 @@ static const unsigned char *display_rr(const unsigned char *aptr,
   aptr += RRFIXEDSZ;
   if (aptr + dlen > abuf + alen)
     {
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       return NULL;
     }
 
@@ -571,7 +571,7 @@ static const unsigned char *display_rr(const unsigned char *aptr,
   if (dnsclass != C_IN)
     printf("\t%s", class_name(dnsclass));
   printf("\t%s", type_name(type));
-  ares_free_string(name.as_char);
+  hns_free_string(name.as_char);
 
   /* Display the RR data.  Don't touch aptr. */
   switch (type)
@@ -585,11 +585,11 @@ static const unsigned char *display_rr(const unsigned char *aptr,
     case T_NS:
     case T_PTR:
       /* For these types, the RR data is just a domain name. */
-      status = ares_expand_name(aptr, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(aptr, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s.", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       break;
 
     case T_HINFO:
@@ -598,36 +598,36 @@ static const unsigned char *display_rr(const unsigned char *aptr,
       len = *p;
       if (p + len + 1 > aptr + dlen)
         return NULL;
-      status = ares_expand_string(p, abuf, alen, &name.as_uchar, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_string(p, abuf, alen, &name.as_uchar, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
       len = *p;
       if (p + len + 1 > aptr + dlen)
         return NULL;
-      status = ares_expand_string(p, abuf, alen, &name.as_uchar, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_string(p, abuf, alen, &name.as_uchar, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       break;
 
     case T_MINFO:
       /* The RR data is two domain names. */
       p = aptr;
-      status = ares_expand_name(p, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(p, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s.", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
-      status = ares_expand_name(p, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(p, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s.", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       break;
 
     case T_MX:
@@ -637,11 +637,11 @@ static const unsigned char *display_rr(const unsigned char *aptr,
       if (dlen < 2)
         return NULL;
       printf("\t%d", (int)DNS__16BIT(aptr));
-      status = ares_expand_name(aptr + 2, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(aptr + 2, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s.", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       break;
 
     case T_SOA:
@@ -649,17 +649,17 @@ static const unsigned char *display_rr(const unsigned char *aptr,
        * numbers giving the serial number and some timeouts.
        */
       p = aptr;
-      status = ares_expand_name(p, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(p, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s.\n", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
-      status = ares_expand_name(p, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(p, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t\t\t\t\t\t%s.\n", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
       if (p + 20 > aptr + dlen)
         return NULL;
@@ -678,11 +678,11 @@ static const unsigned char *display_rr(const unsigned char *aptr,
           len = *p;
           if (p + len + 1 > aptr + dlen)
             return NULL;
-          status = ares_expand_string(p, abuf, alen, &name.as_uchar, &len);
-          if (status != ARES_SUCCESS)
+          status = hns_expand_string(p, abuf, alen, &name.as_uchar, &len);
+          if (status != HNS_SUCCESS)
             return NULL;
           printf("\t%s", name.as_char);
-          ares_free_string(name.as_char);
+          hns_free_string(name.as_char);
           p += len;
         }
       break;
@@ -691,14 +691,14 @@ static const unsigned char *display_rr(const unsigned char *aptr,
       /* The RR data is a four-byte Internet address. */
       if (dlen != 4)
         return NULL;
-      printf("\t%s", ares_inet_ntop(AF_INET,aptr,addr,sizeof(addr)));
+      printf("\t%s", hns_inet_ntop(AF_INET,aptr,addr,sizeof(addr)));
       break;
 
     case T_AAAA:
       /* The RR data is a 16-byte IPv6 address. */
       if (dlen != 16)
         return NULL;
-      printf("\t%s", ares_inet_ntop(AF_INET6,aptr,addr,sizeof(addr)));
+      printf("\t%s", hns_inet_ntop(AF_INET6,aptr,addr,sizeof(addr)));
       break;
 
     case T_WKS:
@@ -714,11 +714,11 @@ static const unsigned char *display_rr(const unsigned char *aptr,
       printf(" %d", (int)DNS__16BIT(aptr + 2));
       printf(" %d", (int)DNS__16BIT(aptr + 4));
 
-      status = ares_expand_name(aptr + 6, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(aptr + 6, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t%s.", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       break;
 
     case T_NAPTR:
@@ -727,32 +727,32 @@ static const unsigned char *display_rr(const unsigned char *aptr,
       printf(" %d\n", (int)DNS__16BIT(aptr + 2)); /* preference */
 
       p = aptr + 4;
-      status = ares_expand_string(p, abuf, alen, &name.as_uchar, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_string(p, abuf, alen, &name.as_uchar, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t\t\t\t\t\t%s\n", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
 
-      status = ares_expand_string(p, abuf, alen, &name.as_uchar, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_string(p, abuf, alen, &name.as_uchar, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t\t\t\t\t\t%s\n", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
 
-      status = ares_expand_string(p, abuf, alen, &name.as_uchar, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_string(p, abuf, alen, &name.as_uchar, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t\t\t\t\t\t%s\n", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       p += len;
 
-      status = ares_expand_name(p, abuf, alen, &name.as_char, &len);
-      if (status != ARES_SUCCESS)
+      status = hns_expand_name(p, abuf, alen, &name.as_char, &len);
+      if (status != HNS_SUCCESS)
         return NULL;
       printf("\t\t\t\t\t\t%s", name.as_char);
-      ares_free_string(name.as_char);
+      hns_free_string(name.as_char);
       break;
 
     case T_DS:
@@ -801,25 +801,25 @@ static const char *class_name(int dnsclass)
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: adig [-f flag] [-s server] [-c class] "
+  fprintf(stderr, "usage: hdig [-f flag] [-s server] [-c class] "
           "[-t type] [-p port] name ...\n");
   exit(1);
 }
 
-static void destroy_addr_list(struct ares_addr_node *head)
+static void destroy_addr_list(struct hns_addr_node *head)
 {
   while(head)
     {
-      struct ares_addr_node *detached = head;
+      struct hns_addr_node *detached = head;
       head = head->next;
       free(detached);
     }
 }
 
-static void append_addr_list(struct ares_addr_node **head,
-                             struct ares_addr_node *node)
+static void append_addr_list(struct hns_addr_node **head,
+                             struct hns_addr_node *node)
 {
-  struct ares_addr_node *last;
+  struct hns_addr_node *last;
   node->next = NULL;
   if(*head)
     {

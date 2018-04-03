@@ -4,8 +4,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_ECMULT_GEN_H
-#define ARES_SECP256K1_ECMULT_GEN_H
+#ifndef HNS_SECP256K1_ECMULT_GEN_H
+#define HNS_SECP256K1_ECMULT_GEN_H
 
 #include "scalar.h"
 #include "group.h"
@@ -23,21 +23,21 @@ typedef struct {
      * None of the resulting prec group elements have a known scalar, and neither do any of
      * the intermediate sums while computing a*G.
      */
-    ares_secp256k1_ge_storage (*prec)[64][16]; /* prec[j][i] = 16^j * i * G + U_i */
-    ares_secp256k1_scalar blind;
-    ares_secp256k1_gej initial;
-} ares_secp256k1_ecmult_gen_context;
+    hns_secp256k1_ge_storage (*prec)[64][16]; /* prec[j][i] = 16^j * i * G + U_i */
+    hns_secp256k1_scalar blind;
+    hns_secp256k1_gej initial;
+} hns_secp256k1_ecmult_gen_context;
 
-static void ares_secp256k1_ecmult_gen_context_init(ares_secp256k1_ecmult_gen_context* ctx);
-static void ares_secp256k1_ecmult_gen_context_build(ares_secp256k1_ecmult_gen_context* ctx, const ares_secp256k1_callback* cb);
-static void ares_secp256k1_ecmult_gen_context_clone(ares_secp256k1_ecmult_gen_context *dst,
-                                               const ares_secp256k1_ecmult_gen_context* src, const ares_secp256k1_callback* cb);
-static void ares_secp256k1_ecmult_gen_context_clear(ares_secp256k1_ecmult_gen_context* ctx);
-static int ares_secp256k1_ecmult_gen_context_is_built(const ares_secp256k1_ecmult_gen_context* ctx);
+static void hns_secp256k1_ecmult_gen_context_init(hns_secp256k1_ecmult_gen_context* ctx);
+static void hns_secp256k1_ecmult_gen_context_build(hns_secp256k1_ecmult_gen_context* ctx, const hns_secp256k1_callback* cb);
+static void hns_secp256k1_ecmult_gen_context_clone(hns_secp256k1_ecmult_gen_context *dst,
+                                               const hns_secp256k1_ecmult_gen_context* src, const hns_secp256k1_callback* cb);
+static void hns_secp256k1_ecmult_gen_context_clear(hns_secp256k1_ecmult_gen_context* ctx);
+static int hns_secp256k1_ecmult_gen_context_is_built(const hns_secp256k1_ecmult_gen_context* ctx);
 
 /** Multiply with the generator: R = a*G */
-static void ares_secp256k1_ecmult_gen(const ares_secp256k1_ecmult_gen_context* ctx, ares_secp256k1_gej *r, const ares_secp256k1_scalar *a);
+static void hns_secp256k1_ecmult_gen(const hns_secp256k1_ecmult_gen_context* ctx, hns_secp256k1_gej *r, const hns_secp256k1_scalar *a);
 
-static void ares_secp256k1_ecmult_gen_blind(ares_secp256k1_ecmult_gen_context *ctx, const unsigned char *seed32);
+static void hns_secp256k1_ecmult_gen_blind(hns_secp256k1_ecmult_gen_context *ctx, const unsigned char *seed32);
 
-#endif /* ARES_SECP256K1_ECMULT_GEN_H */
+#endif /* HNS_SECP256K1_ECMULT_GEN_H */

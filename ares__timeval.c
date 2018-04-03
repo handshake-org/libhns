@@ -12,13 +12,13 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_private.h"
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_private.h"
 
 #if defined(WIN32) && !defined(MSDOS)
 
-struct timeval ares__tvnow(void)
+struct timeval hns__tvnow(void)
 {
   /*
   ** GetTickCount() is available on _all_ Windows versions from W95 up
@@ -34,7 +34,7 @@ struct timeval ares__tvnow(void)
 
 #elif defined(HAVE_CLOCK_GETTIME_MONOTONIC)
 
-struct timeval ares__tvnow(void)
+struct timeval hns__tvnow(void)
 {
   /*
   ** clock_gettime() is granted to be increased monotonically when the
@@ -68,7 +68,7 @@ struct timeval ares__tvnow(void)
 
 #elif defined(HAVE_GETTIMEOFDAY)
 
-struct timeval ares__tvnow(void)
+struct timeval hns__tvnow(void)
 {
   /*
   ** gettimeofday() is not granted to be increased monotonically, due to
@@ -82,7 +82,7 @@ struct timeval ares__tvnow(void)
 
 #else
 
-struct timeval ares__tvnow(void)
+struct timeval hns__tvnow(void)
 {
   /*
   ** time() returns the value of time in seconds since the Epoch.
@@ -102,7 +102,7 @@ struct timeval ares__tvnow(void)
  *
  * Returns: the time difference in number of milliseconds.
  */
-long ares__tvdiff(struct timeval newer, struct timeval older)
+long hns__tvdiff(struct timeval newer, struct timeval older)
 {
   return (newer.tv_sec-older.tv_sec)*1000+
     (newer.tv_usec-older.tv_usec)/1000;

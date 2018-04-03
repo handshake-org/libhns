@@ -1,27 +1,27 @@
-# Microsoft Developer Studio Project File - Name="cares" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="hns" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=cares - Win32 LIB Debug
+CFG=hns - Win32 LIB Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "vc6cares.mak".
+!MESSAGE NMAKE /f "vc6hns.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "vc6cares.mak" CFG="cares - Win32 LIB Debug"
+!MESSAGE NMAKE /f "vc6hns.mak" CFG="hns - Win32 LIB Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "cares - Win32 DLL Debug" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "cares - Win32 DLL Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "cares - Win32 LIB Debug" (based on "Win32 (x86) Static Library")
-!MESSAGE "cares - Win32 LIB Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "hns - Win32 DLL Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "hns - Win32 DLL Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "hns - Win32 LIB Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "hns - Win32 LIB Release" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CFG=cares - Win32 LIB Debug
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 
-!IF  "$(CFG)" == "cares - Win32 DLL Debug"
+!IF  "$(CFG)" == "hns - Win32 DLL Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -43,8 +43,8 @@ CFG=cares - Win32 LIB Debug
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "CARES_BUILDING_LIBRARY" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "CARES_BUILDING_LIBRARY" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "HNS_BUILDING_LIBRARY" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "HNS_BUILDING_LIBRARY" /FD /GZ /c
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /win32
@@ -55,10 +55,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /incremental:no /debug /machine:I386 /out:"dll-debug/caresd.dll" /implib:"dll-debug/caresd.lib" /pdbtype:con /fixed:no
-# ADD LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /incremental:no /debug /machine:I386 /out:"dll-debug/caresd.dll" /implib:"dll-debug/caresd.lib" /pdbtype:con /fixed:no
+# ADD BASE LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /incremental:no /debug /machine:I386 /out:"dll-debug/hnsd.dll" /implib:"dll-debug/hnsd.lib" /pdbtype:con /fixed:no
+# ADD LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /incremental:no /debug /machine:I386 /out:"dll-debug/hnsd.dll" /implib:"dll-debug/hnsd.lib" /pdbtype:con /fixed:no
 
-!ELSEIF  "$(CFG)" == "cares - Win32 DLL Release"
+!ELSEIF  "$(CFG)" == "hns - Win32 DLL Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -72,8 +72,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "CARES_BUILDING_LIBRARY" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "CARES_BUILDING_LIBRARY" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "HNS_BUILDING_LIBRARY" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "HNS_BUILDING_LIBRARY" /FD /c
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /win32
@@ -84,10 +84,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /pdb:none /machine:I386 /out:"dll-release/cares.dll" /implib:"dll-release/cares.lib" /fixed:no /release /incremental:no
-# ADD LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /pdb:none /machine:I386 /out:"dll-release/cares.dll" /implib:"dll-release/cares.lib" /fixed:no /release /incremental:no
+# ADD BASE LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /pdb:none /machine:I386 /out:"dll-release/hns.dll" /implib:"dll-release/hns.lib" /fixed:no /release /incremental:no
+# ADD LINK32 ws2_32.lib advapi32.lib kernel32.lib /nologo /dll /pdb:none /machine:I386 /out:"dll-release/hns.dll" /implib:"dll-release/hns.lib" /fixed:no /release /incremental:no
 
-!ELSEIF  "$(CFG)" == "cares - Win32 LIB Debug"
+!ELSEIF  "$(CFG)" == "hns - Win32 LIB Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -100,8 +100,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "lib-debug/obj"
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "CARES_BUILDING_LIBRARY" /D "CARES_STATICLIB" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "CARES_BUILDING_LIBRARY" /D "CARES_STATICLIB" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "HNS_BUILDING_LIBRARY" /D "HNS_STATICLIB" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "DEBUGBUILD" /D "HNS_BUILDING_LIBRARY" /D "HNS_STATICLIB" /FD /GZ /c
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -109,10 +109,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"lib-debug/libcaresd.lib" /machine:I386
-# ADD LIB32 /nologo /out:"lib-debug/libcaresd.lib" /machine:I386
+# ADD BASE LIB32 /nologo /out:"lib-debug/libhnsd.lib" /machine:I386
+# ADD LIB32 /nologo /out:"lib-debug/libhnsd.lib" /machine:I386
 
-!ELSEIF  "$(CFG)" == "cares - Win32 LIB Release"
+!ELSEIF  "$(CFG)" == "hns - Win32 LIB Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -125,8 +125,8 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "lib-release/obj"
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "CARES_BUILDING_LIBRARY" /D "CARES_STATICLIB" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "CARES_BUILDING_LIBRARY" /D "CARES_STATICLIB" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "HNS_BUILDING_LIBRARY" /D "HNS_STATICLIB" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "HNS_BUILDING_LIBRARY" /D "HNS_STATICLIB" /FD /c
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -134,195 +134,195 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"lib-release/libcares.lib" /machine:I386
-# ADD LIB32 /nologo /out:"lib-release/libcares.lib" /machine:I386
+# ADD BASE LIB32 /nologo /out:"lib-release/libhns.lib" /machine:I386
+# ADD LIB32 /nologo /out:"lib-release/libhns.lib" /machine:I386
 
 !ENDIF 
 
 # Begin Target
 
-# Name "cares - Win32 DLL Debug"
-# Name "cares - Win32 DLL Release"
-# Name "cares - Win32 LIB Debug"
-# Name "cares - Win32 LIB Release"
+# Name "hns - Win32 DLL Debug"
+# Name "hns - Win32 DLL Release"
+# Name "hns - Win32 LIB Debug"
+# Name "hns - Win32 LIB Release"
 # Begin Group "Source Files"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\ares__close_sockets.c
+SOURCE=..\..\hns__close_sockets.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares__get_hostent.c
+SOURCE=..\..\hns__get_hostent.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares__read_line.c
+SOURCE=..\..\hns__read_line.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares__timeval.c
+SOURCE=..\..\hns__timeval.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_cancel.c
+SOURCE=..\..\hns_cancel.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_create_query.c
+SOURCE=..\..\hns_create_query.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_data.c
+SOURCE=..\..\hns_data.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_destroy.c
+SOURCE=..\..\hns_destroy.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_expand_name.c
+SOURCE=..\..\hns_expand_name.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_expand_string.c
+SOURCE=..\..\hns_expand_string.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_fds.c
+SOURCE=..\..\hns_fds.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_free_hostent.c
+SOURCE=..\..\hns_free_hostent.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_free_string.c
+SOURCE=..\..\hns_free_string.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_getenv.c
+SOURCE=..\..\hns_getenv.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_gethostbyaddr.c
+SOURCE=..\..\hns_gethostbyaddr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_gethostbyname.c
+SOURCE=..\..\hns_gethostbyname.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_getnameinfo.c
+SOURCE=..\..\hns_getnameinfo.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_getsock.c
+SOURCE=..\..\hns_getsock.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_init.c
+SOURCE=..\..\hns_init.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_library_init.c
+SOURCE=..\..\hns_library_init.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_llist.c
+SOURCE=..\..\hns_llist.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_mkquery.c
+SOURCE=..\..\hns_mkquery.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_nowarn.c
+SOURCE=..\..\hns_nowarn.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_options.c
+SOURCE=..\..\hns_options.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_a_reply.c
+SOURCE=..\..\hns_parse_a_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_aaaa_reply.c
+SOURCE=..\..\hns_parse_aaaa_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_mx_reply.c
+SOURCE=..\..\hns_parse_mx_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_naptr_reply.c
+SOURCE=..\..\hns_parse_naptr_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_ns_reply.c
+SOURCE=..\..\hns_parse_ns_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_ptr_reply.c
+SOURCE=..\..\hns_parse_ptr_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_soa_reply.c
+SOURCE=..\..\hns_parse_soa_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_srv_reply.c
+SOURCE=..\..\hns_parse_srv_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_parse_txt_reply.c
+SOURCE=..\..\hns_parse_txt_reply.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_platform.c
+SOURCE=..\..\hns_platform.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_process.c
+SOURCE=..\..\hns_process.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_query.c
+SOURCE=..\..\hns_query.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_search.c
+SOURCE=..\..\hns_search.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_send.c
+SOURCE=..\..\hns_send.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strcasecmp.c
+SOURCE=..\..\hns_strcasecmp.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strdup.c
+SOURCE=..\..\hns_strdup.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strerror.c
+SOURCE=..\..\hns_strerror.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_timeout.c
+SOURCE=..\..\hns_timeout.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_version.c
+SOURCE=..\..\hns_version.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_writev.c
+SOURCE=..\..\hns_writev.c
 # End Source File
 # Begin Source File
 
@@ -346,75 +346,75 @@ SOURCE=..\..\windows_port.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\ares.h
+SOURCE=..\..\hns.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_build.h
+SOURCE=..\..\hns_build.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_data.h
+SOURCE=..\..\hns_data.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_dns.h
+SOURCE=..\..\hns_dns.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_getenv.h
+SOURCE=..\..\hns_getenv.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_iphlpapi.h
+SOURCE=..\..\hns_iphlpapi.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_ipv6.h
+SOURCE=..\..\hns_ipv6.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_library_init.h
+SOURCE=..\..\hns_library_init.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_llist.h
+SOURCE=..\..\hns_llist.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_nowarn.h
+SOURCE=..\..\hns_nowarn.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_platform.h
+SOURCE=..\..\hns_platform.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_private.h
+SOURCE=..\..\hns_private.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_rules.h
+SOURCE=..\..\hns_rules.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_setup.h
+SOURCE=..\..\hns_setup.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strcasecmp.h
+SOURCE=..\..\hns_strcasecmp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_strdup.h
+SOURCE=..\..\hns_strdup.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_version.h
+SOURCE=..\..\hns_version.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ares_writev.h
+SOURCE=..\..\hns_writev.h
 # End Source File
 # Begin Source File
 
@@ -446,7 +446,7 @@ SOURCE=..\..\setup_once.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\cares.rc
+SOURCE=..\..\hns.rc
 # End Source File
 # End Group
 # End Target

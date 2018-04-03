@@ -1,6 +1,6 @@
 AC_PREREQ(2.57)
-AC_INIT([c-ares-test],[-],[-])
-AC_CONFIG_SRCDIR([ares-test.cc])
+AC_INIT([hns-test],[-],[-])
+AC_CONFIG_SRCDIR([hns-test.cc])
 AC_CONFIG_MACRO_DIR([../m4])
 
 AM_INIT_AUTOMAKE([no-define])

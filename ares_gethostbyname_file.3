@@ -13,19 +13,19 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_GETHOSTBYNAME 3 "25 July 1998"
+.TH HNS_GETHOSTBYNAME 3 "25 July 1998"
 .SH NAME
-ares_gethostbyname_file \- Lookup a name in the system's hosts file
+hns_gethostbyname_file \- Lookup a name in the system's hosts file
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_gethostbyname_file(ares_channel \fIchannel\fP, const char *\fIname\fP,
+.B int hns_gethostbyname_file(hns_channel \fIchannel\fP, const char *\fIname\fP,
 .B 	int \fIfamily\fP, struct hostent **host)
 .fi
 .SH DESCRIPTION
 The
-.B ares_gethostbyname_file
+.B hns_gethostbyname_file
 function performs a host lookup by name against the system's hosts file (or equivalent local hostname database).  
 The
 .IR channel
@@ -33,7 +33,7 @@ parameter is required, but no asynchronous queries are performed.  Instead, the
 lookup is done via the same mechanism used to perform 'f' lookups
 (see the
 .I lookups
-options field in \fIares_init_options(3)\fP).
+options field in \fIhns_init_options(3)\fP).
 The parameter
 .I name
 gives the hostname as a NUL-terminated C string, and
@@ -43,20 +43,20 @@ gives the desired type of address for the resulting host entry.
 The return value indicates whether the query succeeded and, if not, how it
 failed.  It may have any of the following values:
 .TP 19
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 The host lookup completed successfully and 
 .I host
-now points to the result (and must be freed with \fIares_free_hostent(3)\fP).
+now points to the result (and must be freed with \fIhns_free_hostent(3)\fP).
 .TP 19
-.B ARES_ENOTFOUND
+.B HNS_ENOTFOUND
 The hostname
 .I name
 was not found.
 .TP 19
-.B ARES_EFILE
+.B HNS_EFILE
 There was a file I/O error while performing the lookup.
 .TP 19
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .PP
 On successful completion of the query, the pointer pointed to by
@@ -66,17 +66,17 @@ points to a
 containing the address of the host returned by the lookup.  The user must
 free the memory pointed to by
 .IR host
-when finished with it by calling \fIares_free_hostent(3)\fP.  If the lookup did
+when finished with it by calling \fIhns_free_hostent(3)\fP.  If the lookup did
 not complete successfully, 
 .I host
 will be
 .BR NULL .
 .SH AVAILABILITY
-Added in c-ares 1.5.4
+Added in hns 1.5.4
 .SH SEE ALSO
-.BR ares_gethostbyname (3),
-.BR ares_free_hostent (3),
-.BR ares_init_options (3)
+.BR hns_gethostbyname (3),
+.BR hns_free_hostent (3),
+.BR hns_init_options (3)
 .SH AUTHOR
 Brad Spencer
 .br

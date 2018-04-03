@@ -14,42 +14,42 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_INIT 3 "5 March 2010"
+.TH HNS_INIT 3 "5 March 2010"
 .SH NAME
-ares_init \- Initialize a resolver channel
+hns_init \- Initialize a resolver channel
 .SH SYNOPSIS
 .nf
-#include <ares.h>
+#include <hns.h>
 
-int ares_init(ares_channel *\fIchannelptr\fP)
+int hns_init(hns_channel *\fIchannelptr\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_init(3)\fP function initializes a communications channel for name
-service lookups.  If it returns successfully, \fBares_init(3)\fP will set the
+The \fBhns_init(3)\fP function initializes a communications channel for name
+service lookups.  If it returns successfully, \fBhns_init(3)\fP will set the
 variable pointed to by \fIchannelptr\fP to a handle used to identify the name
-service channel.  The caller should invoke \fIares_destroy(3)\fP on the handle
+service channel.  The caller should invoke \fIhns_destroy(3)\fP on the handle
 when the channel is no longer needed.
 
-The \fIares_init_options(3)\fP function is provide to offer more init
+The \fIhns_init_options(3)\fP function is provide to offer more init
 alternatives.
 .SH RETURN VALUES
-\fIares_init(3)\fP can return any of the following values:
+\fIhns_init(3)\fP can return any of the following values:
 .TP 14
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 Initialization succeeded.
 .TP 14
-.B ARES_EFILE
+.B HNS_EFILE
 A configuration file could not be read.
 .TP 14
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 The process's available memory was exhausted.
 .TP 14
-.B ARES_ENOTINITIALIZED
-c-ares library initialization not yet performed.
+.B HNS_ENOTINITIALIZED
+hns library initialization not yet performed.
 .SH NOTES
 When initializing from
 .B /etc/resolv.conf,
-.BR ares_init (3)
+.BR hns_init (3)
 reads the
 .I domain
 and
@@ -68,11 +68,11 @@ please see the
 .BR resolv.conf (5)
 manual page.
 .SH SEE ALSO
-.BR ares_init_options(3),
-.BR ares_destroy(3),
-.BR ares_dup(3),
-.BR ares_library_init(3),
-.BR ares_set_servers(3)
+.BR hns_init_options(3),
+.BR hns_destroy(3),
+.BR hns_dup(3),
+.BR hns_library_init(3),
+.BR hns_set_servers(3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br

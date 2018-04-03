@@ -1,5 +1,5 @@
-#ifndef __ARES_PRIVATE_H
-#define __ARES_PRIVATE_H
+#ifndef __HNS_PRIVATE_H
+#define __HNS_PRIVATE_H
 
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
@@ -43,7 +43,7 @@
 #define INADDR_NONE 0xffffffff
 #endif
 
-#ifdef CARES_EXPOSE_STATICS
+#ifdef HNS_EXPOSE_STATICS
 /* Make some internal functions visible for testing */
 #define STATIC_TESTABLE
 #else
@@ -94,32 +94,32 @@
 
 #endif
 
-#define ARES_ID_KEY_LEN 31
+#define HNS_ID_KEY_LEN 31
 
-#include "ares_ipv6.h"
-#include "ares_llist.h"
-#include "ares_ec.h"
+#include "hns_ipv6.h"
+#include "hns_llist.h"
+#include "hns_ec.h"
 
 #ifndef HAVE_GETENV
-#  include "ares_getenv.h"
-#  define getenv(ptr) ares_getenv(ptr)
+#  include "hns_getenv.h"
+#  define getenv(ptr) hns_getenv(ptr)
 #endif
 
-#include "ares_strdup.h"
+#include "hns_strdup.h"
 
 #ifndef HAVE_STRCASECMP
-#  include "ares_strcasecmp.h"
-#  define strcasecmp(p1,p2) ares_strcasecmp(p1,p2)
+#  include "hns_strcasecmp.h"
+#  define strcasecmp(p1,p2) hns_strcasecmp(p1,p2)
 #endif
 
 #ifndef HAVE_STRNCASECMP
-#  include "ares_strcasecmp.h"
-#  define strncasecmp(p1,p2,n) ares_strncasecmp(p1,p2,n)
+#  include "hns_strcasecmp.h"
+#  define strncasecmp(p1,p2,n) hns_strncasecmp(p1,p2,n)
 #endif
 
 #ifndef HAVE_WRITEV
-#  include "ares_writev.h"
-#  define writev(s,ptr,cnt) ares_writev(s,ptr,cnt)
+#  include "hns_writev.h"
+#  define writev(s,ptr,cnt) hns_writev(s,ptr,cnt)
 #endif
 
 /********* EDNS defines section ******/
@@ -129,11 +129,11 @@
 #define EDNSFIXEDSZ    11    /* Size of EDNS header */
 /********* EDNS defines section ******/
 
-struct ares_addr {
+struct hns_addr {
   int family;
   union {
     struct in_addr       addr4;
-    struct ares_in6_addr addr6;
+    struct hns_in6_addr addr6;
   } addr;
   int udp_port;  /* stored in network order */
   int tcp_port;  /* stored in network order */
@@ -160,9 +160,9 @@ struct send_request {
 };
 
 struct server_state {
-  struct ares_addr addr;
-  ares_socket_t udp_socket;
-  ares_socket_t tcp_socket;
+  struct hns_addr addr;
+  hns_socket_t udp_socket;
+  hns_socket_t tcp_socket;
 
   /* Mini-buffer for reading the length word */
   unsigned char tcp_lenbuf[2];
@@ -187,7 +187,7 @@ struct server_state {
   struct list_node queries_to_server;
 
   /* Link back to owning channel */
-  ares_channel channel;
+  hns_channel channel;
 
   /* Is this server broken? We mark connections as broken when a
    * request that is queued for sending times out.
@@ -216,10 +216,10 @@ struct query {
   unsigned char *tcpbuf;
   int tcplen;
 
-  /* Arguments passed to ares_send() (qbuf points into tcpbuf) */
+  /* Arguments passed to hns_send() (qbuf points into tcpbuf) */
   const unsigned char *qbuf;
   int qlen;
-  ares_callback callback;
+  hns_callback callback;
   void *arg;
 
   /* Query status */
@@ -245,12 +245,12 @@ struct apattern {
   union
   {
     struct in_addr       addr4;
-    struct ares_in6_addr addr6;
+    struct hns_in6_addr addr6;
   } addr;
   union
   {
     struct in_addr       addr4;
-    struct ares_in6_addr addr6;
+    struct hns_in6_addr addr6;
     unsigned short       bits;
   } mask;
   int family;
@@ -264,7 +264,7 @@ typedef struct rc4_key
   unsigned char y;
 } rc4_key;
 
-struct ares_channeldata {
+struct hns_channeldata {
   /* Configuration data */
   int flags;
   int timeout; /* in milliseconds */
@@ -314,57 +314,57 @@ struct ares_channeldata {
   /* All active queries in a single list: */
   struct list_node all_queries;
   /* Queries bucketed by qid, for quickly dispatching DNS responses: */
-#define ARES_QID_TABLE_SIZE 2048
-  struct list_node queries_by_qid[ARES_QID_TABLE_SIZE];
+#define HNS_QID_TABLE_SIZE 2048
+  struct list_node queries_by_qid[HNS_QID_TABLE_SIZE];
   /* Queries bucketed by timeout, for quickly handling timeouts: */
-#define ARES_TIMEOUT_TABLE_SIZE 1024
-  struct list_node queries_by_timeout[ARES_TIMEOUT_TABLE_SIZE];
+#define HNS_TIMEOUT_TABLE_SIZE 1024
+  struct list_node queries_by_timeout[HNS_TIMEOUT_TABLE_SIZE];
 
-  ares_sock_state_cb sock_state_cb;
+  hns_sock_state_cb sock_state_cb;
   void *sock_state_cb_data;
 
-  ares_sock_create_callback sock_create_cb;
+  hns_sock_create_callback sock_create_cb;
   void *sock_create_cb_data;
 
-  ares_sock_config_callback sock_config_cb;
+  hns_sock_config_callback sock_config_cb;
   void *sock_config_cb_data;
 
-  const struct ares_socket_functions * sock_funcs;
+  const struct hns_socket_functions * sock_funcs;
   void *sock_func_cb_data;
 };
 
 /* Memory management functions */
-extern void *(*ares_malloc)(size_t size);
-extern void *(*ares_realloc)(void *ptr, size_t size);
-extern void (*ares_free)(void *ptr);
+extern void *(*hns_malloc)(size_t size);
+extern void *(*hns_realloc)(void *ptr, size_t size);
+extern void (*hns_free)(void *ptr);
 
 /* EC context */
-extern ares_ec_t *ares_ec;
+extern hns_ec_t *hns_ec;
 
 /* return true if now is exactly check time or later */
-int ares__timedout(struct timeval *now,
+int hns__timedout(struct timeval *now,
                    struct timeval *check);
 
-void ares__send_query(ares_channel channel, struct query *query,
+void hns__send_query(hns_channel channel, struct query *query,
                       struct timeval *now);
-void ares__close_sockets(ares_channel channel, struct server_state *server);
-int ares__get_hostent(FILE *fp, int family, struct hostent **host);
-int ares__read_line(FILE *fp, char **buf, size_t *bufsize);
-void ares__free_query(struct query *query);
-unsigned short ares__generate_new_id(rc4_key* key);
-struct timeval ares__tvnow(void);
-int ares__expand_name_for_response(const unsigned char *encoded,
+void hns__close_sockets(hns_channel channel, struct server_state *server);
+int hns__get_hostent(FILE *fp, int family, struct hostent **host);
+int hns__read_line(FILE *fp, char **buf, size_t *bufsize);
+void hns__free_query(struct query *query);
+unsigned short hns__generate_new_id(rc4_key* key);
+struct timeval hns__tvnow(void);
+int hns__expand_name_for_response(const unsigned char *encoded,
                                    const unsigned char *abuf, int alen,
                                    char **s, long *enclen);
-void ares__init_servers_state(ares_channel channel);
-void ares__destroy_servers_state(ares_channel channel);
+void hns__init_servers_state(hns_channel channel);
+void hns__destroy_servers_state(hns_channel channel);
 #if 0 /* Not used */
-long ares__tvdiff(struct timeval t1, struct timeval t2);
+long hns__tvdiff(struct timeval t1, struct timeval t2);
 #endif
 
-void ares__socket_close(ares_channel, ares_socket_t);
+void hns__socket_close(hns_channel, hns_socket_t);
 
-#define ARES_SWAP_BYTE(a,b) \
+#define HNS_SWAP_BYTE(a,b) \
   { unsigned char swapByte = *(a);  *(a) = *(b);  *(b) = swapByte; }
 
 #define SOCK_STATE_CALLBACK(c, s, r, w)                                 \
@@ -376,10 +376,10 @@ void ares__socket_close(ares_channel, ares_socket_t);
 #ifdef CURLDEBUG
 /* This is low-level hard-hacking memory leak tracking and similar. Using the
    libcurl lowlevel code from within library is ugly and only works when
-   c-ares is built and linked with a similarly curldebug-enabled libcurl,
+   hns is built and linked with a similarly curldebug-enabled libcurl,
    but we do this anyway for convenience. */
 #define HEADER_CURL_SETUP_ONCE_H
 #include "../lib/memdebug.h"
 #endif
 
-#endif /* __ARES_PRIVATE_H */
+#endif /* __HNS_PRIVATE_H */

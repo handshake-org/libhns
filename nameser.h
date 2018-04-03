@@ -1,6 +1,6 @@
 
-#ifndef ARES_NAMESER_H
-#define ARES_NAMESER_H
+#ifndef HNS_NAMESER_H
+#define HNS_NAMESER_H
 
 /* header file provided by liren@vivisimo.com */
 
@@ -214,4 +214,4 @@ typedef enum __ns_rcode {
 
 #endif /* HAVE_ARPA_NAMESER_COMPAT_H */
 
-#endif /* ARES_NAMESER_H */
+#endif /* HNS_NAMESER_H */

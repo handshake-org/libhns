@@ -15,15 +15,15 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_private.h"
-#include "ares_sha1.h"
-#include "ares_sha256.h"
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_private.h"
+#include "hns_sha1.h"
+#include "hns_sha256.h"
 
 int
-ares_sshfp_verify(
-  struct ares_sshfp_reply *sshfp_reply,
+hns_sshfp_verify(
+  struct hns_sshfp_reply *sshfp_reply,
   unsigned char *key,
   size_t key_len
 ) {
@@ -36,19 +36,19 @@ ares_sshfp_verify(
 
   switch (sshfp_reply->digest_type) {
     case 1: { /* SHA1 */
-      ares_sha1_ctx ctx;
-      ares_sha1_init(&ctx);
-      ares_sha1_update(&ctx, key, key_len);
-      ares_sha1_final(&ctx, &buf[0]);
+      hns_sha1_ctx ctx;
+      hns_sha1_init(&ctx);
+      hns_sha1_update(&ctx, key, key_len);
+      hns_sha1_final(&ctx, &buf[0]);
       hash = &buf[0];
       hash_len = 20;
       break;
     }
     case 2: { /* SHA256 */
-      ares_sha256_ctx ctx;
-      ares_sha256_init(&ctx);
-      ares_sha256_update(&ctx, key, key_len);
-      ares_sha256_final(&ctx, &buf[0]);
+      hns_sha256_ctx ctx;
+      hns_sha256_init(&ctx);
+      hns_sha256_update(&ctx, key, key_len);
+      hns_sha256_final(&ctx, &buf[0]);
       hash = &buf[0];
       hash_len = 32;
       break;

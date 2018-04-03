@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -28,12 +28,12 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_dns.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_dns.h"
+#include "hns_private.h"
 
-void ares_send(ares_channel channel, const unsigned char *qbuf, int qlen,
-               ares_callback callback, void *arg)
+void hns_send(hns_channel channel, const unsigned char *qbuf, int qlen,
+               hns_callback callback, void *arg)
 {
   struct query *query;
   int i, packetsz;
@@ -42,37 +42,37 @@ void ares_send(ares_channel channel, const unsigned char *qbuf, int qlen,
   /* Verify that the query is at least long enough to hold the header. */
   if (qlen < HFIXEDSZ || qlen >= (1 << 16))
     {
-      callback(arg, ARES_EBADQUERY, 0, NULL, 0);
+      callback(arg, HNS_EBADQUERY, 0, NULL, 0);
       return;
     }
 
   /* Allocate space for query and allocated fields. */
-  query = ares_malloc(sizeof(struct query));
+  query = hns_malloc(sizeof(struct query));
   if (!query)
     {
-      callback(arg, ARES_ENOMEM, 0, NULL, 0);
+      callback(arg, HNS_ENOMEM, 0, NULL, 0);
       return;
     }
-  query->tcpbuf = ares_malloc(qlen + 2);
+  query->tcpbuf = hns_malloc(qlen + 2);
   if (!query->tcpbuf)
     {
-      ares_free(query);
-      callback(arg, ARES_ENOMEM, 0, NULL, 0);
+      hns_free(query);
+      callback(arg, HNS_ENOMEM, 0, NULL, 0);
       return;
     }
   if (channel->nservers < 1)
     {
-      ares_free(query);
-      callback(arg, ARES_ESERVFAIL, 0, NULL, 0);
+      hns_free(query);
+      callback(arg, HNS_ESERVFAIL, 0, NULL, 0);
       return;
     }
-  query->server_info = ares_malloc(channel->nservers *
+  query->server_info = hns_malloc(channel->nservers *
                                    sizeof(query->server_info[0]));
   if (!query->server_info)
     {
-      ares_free(query->tcpbuf);
-      ares_free(query);
-      callback(arg, ARES_ENOMEM, 0, NULL, 0);
+      hns_free(query->tcpbuf);
+      hns_free(query);
+      callback(arg, HNS_ENOMEM, 0, NULL, 0);
       return;
     }
 
@@ -110,28 +110,28 @@ void ares_send(ares_channel channel, const unsigned char *qbuf, int qlen,
       query->server_info[i].tcp_connection_generation = 0;
     }
 
-  packetsz = (channel->flags & ARES_FLAG_EDNS) ? channel->ednspsz : PACKETSZ;
-  query->using_tcp = (channel->flags & ARES_FLAG_USEVC) || qlen > packetsz;
+  packetsz = (channel->flags & HNS_FLAG_EDNS) ? channel->ednspsz : PACKETSZ;
+  query->using_tcp = (channel->flags & HNS_FLAG_USEVC) || qlen > packetsz;
 
-  query->error_status = ARES_ECONNREFUSED;
+  query->error_status = HNS_ECONNREFUSED;
   query->timeouts = 0;
 
   /* Initialize our list nodes. */
-  ares__init_list_node(&(query->queries_by_qid),     query);
-  ares__init_list_node(&(query->queries_by_timeout), query);
-  ares__init_list_node(&(query->queries_to_server),  query);
-  ares__init_list_node(&(query->all_queries),        query);
+  hns__init_list_node(&(query->queries_by_qid),     query);
+  hns__init_list_node(&(query->queries_by_timeout), query);
+  hns__init_list_node(&(query->queries_to_server),  query);
+  hns__init_list_node(&(query->all_queries),        query);
 
   /* Chain the query into the list of all queries. */
-  ares__insert_in_list(&(query->all_queries), &(channel->all_queries));
+  hns__insert_in_list(&(query->all_queries), &(channel->all_queries));
   /* Keep track of queries bucketed by qid, so we can process DNS
    * responses quickly.
    */
-  ares__insert_in_list(
+  hns__insert_in_list(
     &(query->queries_by_qid),
-    &(channel->queries_by_qid[query->qid % ARES_QID_TABLE_SIZE]));
+    &(channel->queries_by_qid[query->qid % HNS_QID_TABLE_SIZE]));
 
   /* Perform the first query action. */
-  now = ares__tvnow();
-  ares__send_query(channel, query, &now);
+  now = hns__tvnow();
+  hns__send_query(channel, query, &now);
 }

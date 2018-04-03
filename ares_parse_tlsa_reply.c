@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_ARPA_NAMESER_H
 #  include <arpa/nameser.h>
@@ -25,9 +25,9 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_private.h"
-#include "ares_dane.h"
+#include "hns.h"
+#include "hns_private.h"
+#include "hns_dane.h"
 
 /* AIX portability check */
 #ifndef T_TLSA
@@ -35,8 +35,8 @@
 #endif
 
 int
-ares_parse_tlsa_reply (const unsigned char *abuf, int alen,
-                      struct ares_tlsa_reply **tlsa_out)
+hns_parse_tlsa_reply (const unsigned char *abuf, int alen,
+                      struct hns_tlsa_reply **tlsa_out)
 {
-  return ares_parse_dane_reply(abuf, alen, tlsa_out, T_TLSA);
+  return hns_parse_dane_reply(abuf, alen, tlsa_out, T_TLSA);
 }

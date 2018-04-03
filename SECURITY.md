@@ -1,13 +1,13 @@
-c-ares security
+hns security
 ===============
 
 This document is intended to provide guidance on how security vulnerabilities
-should be handled in the c-ares project.
+should be handled in the hns project.
 
 Publishing Information
 ----------------------
 
-All known and public c-ares vulnerabilities will be listed on [the c-ares web
+All known and public hns vulnerabilities will be listed on [the hns web
 site](https://c-ares.haxx.se/vulns.html).
 
 Security vulnerabilities should not be entered in the project's public bug
@@ -28,11 +28,11 @@ reference to the security nature of the commit if done prior to the public
 announcement.
 
 - The person discovering the issue, the reporter, reports the vulnerability
-  privately to `c-ares-security@haxx.se`. That's an email alias that reaches a
+  privately to `hns-security@haxx.se`. That's an email alias that reaches a
   handful of selected and trusted people.
 
 - Messages that do not relate to the reporting or managing of an undisclosed
-  security vulnerability in c-ares are ignored and no further action is
+  security vulnerability in hns are ignored and no further action is
   required.
 
 - A person in the security team sends an e-mail to the original reporter to
@@ -80,19 +80,19 @@ announcement.
 - The project team creates a release that includes the fix.
 
 - The project team announces the release and the vulnerability to the world in
-  the same manner we always announce releases. It gets sent to the c-ares
+  the same manner we always announce releases. It gets sent to the hns
   mailing list and the oss-security mailing list.
 
 - The security web page on the web site should get the new vulnerability
   mentioned.
 
-C-ARES-SECURITY (at haxx dot se)
+C-HNS-SECURITY (at haxx dot se)
 --------------------------------
 
 Who is on this list? There are a couple of criteria you must meet, and then we
 might ask you to join the list or you can ask to join it. It really isn't very
 formal. We basically only require that you have a long-term presence in the
-c-ares project and you have shown an understanding for the project and its way
+hns project and you have shown an understanding for the project and its way
 of working. You must've been around for a good while and you should have no
 plans in vanishing in the near future.
 

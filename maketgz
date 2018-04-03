@@ -7,8 +7,8 @@ if($version eq "") {
     exit;
 }
 
-if(!-f "ares.h") {
-    print "run this script in the ares source root dir\n";
+if(!-f "hns.h") {
+    print "run this script in the hns source root dir\n";
     exit;
 }
 
@@ -18,30 +18,30 @@ $major += 0;
 $minor += 0;
 $patch += 0;
 
-open(VER, "<ares_version.h") ||
-    die "can't open ares_version.h";
-open(NEWV, ">ares_version.h.dist");
+open(VER, "<hns_version.h") ||
+    die "can't open hns_version.h";
+open(NEWV, ">hns_version.h.dist");
 while(<VER>) {
-    $_ =~ s/^\#define ARES_VERSION_MAJOR .*/\#define ARES_VERSION_MAJOR $major/;
-    $_ =~ s/^\#define ARES_VERSION_MINOR .*/\#define ARES_VERSION_MINOR $minor/;
-    $_ =~ s/^\#define ARES_VERSION_PATCH .*/\#define ARES_VERSION_PATCH $patch/;
-    $_ =~ s/^\#define ARES_VERSION_STR .*/\#define ARES_VERSION_STR \"$version\"/;
+    $_ =~ s/^\#define HNS_VERSION_MAJOR .*/\#define HNS_VERSION_MAJOR $major/;
+    $_ =~ s/^\#define HNS_VERSION_MINOR .*/\#define HNS_VERSION_MINOR $minor/;
+    $_ =~ s/^\#define HNS_VERSION_PATCH .*/\#define HNS_VERSION_PATCH $patch/;
+    $_ =~ s/^\#define HNS_VERSION_STR .*/\#define HNS_VERSION_STR \"$version\"/;
 
     print NEWV $_;
 }
 close(VER);
 close(NEWV);
-print "ares_version.h.dist created\n";
+print "hns_version.h.dist created\n";
 
 if(!-f "configure") {
     print "running buildconf\n";
     `./buildconf`;
 }
 print "adding $version in the configure.ac file\n";
-`sed -e 's/AC_INIT.*/AC_INIT([c-ares], [$version],/' < configure.ac > configure.ac.dist`;
+`sed -e 's/AC_INIT.*/AC_INIT([hns], [$version],/' < configure.ac > configure.ac.dist`;
 
 print "adding $version in the CMakeLists.txt file\n";
-`sed -e 's/SET.*CARES_VERSION.*/SET (CARES_VERSION "$version")/' < CMakeLists.txt > CMakeLists.txt.dist && rm -f CMakeLists.txt && mv CMakeLists.txt.dist CMakeLists.txt`;
+`sed -e 's/SET.*HNS_VERSION.*/SET (HNS_VERSION "$version")/' < CMakeLists.txt > CMakeLists.txt.dist && rm -f CMakeLists.txt && mv CMakeLists.txt.dist CMakeLists.txt`;
 
 # now make a new configure script with this
 print "makes a new configure script\n";
@@ -63,7 +63,7 @@ print "running make dist\n";
 
 print "removing temporary configure.ac file\n";
 `rm configure.ac.dist`;
-print "removing temporary ares_version.h file\n";
-`rm ares_version.h.dist`;
+print "removing temporary hns_version.h file\n";
+`rm hns_version.h.dist`;
 
 print "NOTE: now tag this release!\n";

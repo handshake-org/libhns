@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_STRCASECMP_H
-#define HEADER_CARES_STRCASECMP_H
+#ifndef HEADER_HNS_STRCASECMP_H
+#define HEADER_HNS_STRCASECMP_H
 
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
@@ -17,14 +17,14 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifndef HAVE_STRCASECMP
-extern int ares_strcasecmp(const char *a, const char *b);
+extern int hns_strcasecmp(const char *a, const char *b);
 #endif
 
 #ifndef HAVE_STRNCASECMP
-extern int ares_strncasecmp(const char *a, const char *b, size_t n);
+extern int hns_strncasecmp(const char *a, const char *b, size_t n);
 #endif
 
-#endif /* HEADER_CARES_STRCASECMP_H */
+#endif /* HEADER_HNS_STRCASECMP_H */

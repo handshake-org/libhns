@@ -14,12 +14,12 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
-#include "ares.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_private.h"
 
-void ares_free_string(void *str)
+void hns_free_string(void *str)
 {
-  ares_free(str);
+  hns_free(str);
 }

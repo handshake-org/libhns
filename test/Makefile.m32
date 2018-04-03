@@ -1,6 +1,6 @@
 #############################################################
 #
-## Makefile for building arestest.exe with MingW32 (GCC-3.2)
+## Makefile for building hnstest.exe with MingW32 (GCC-3.2)
 ## Use: make -f Makefile.m32
 #
 ########################################################
@@ -8,13 +8,13 @@ CXX = g++
 CC = gcc
 LD = g++
 
-# Where to find the c-ares source code; needed because the tests use library-internal headers
-ARES_SRC_DIR = ..
-# Where to find the built c-ares static library
-ARES_BLD_DIR = ..
-ARESLIB = $(ARES_BLD_DIR)/libcares.a
+# Where to find the hns source code; needed because the tests use library-internal headers
+HNS_SRC_DIR = ..
+# Where to find the built hns static library
+HNS_BLD_DIR = ..
+HNSLIB = $(HNS_BLD_DIR)/libhns.a
 GMOCK_DIR = gmock-1.8.0
-CPPFLAGS = -I$(ARES_SRC_DIR) -I$(GMOCK_DIR) -DCARES_STATICLIB
+CPPFLAGS = -I$(HNS_SRC_DIR) -I$(GMOCK_DIR) -DHNS_STATICLIB
 CXXFLAGS = -Wall $(PTHREAD_CFLAGS) -std=gnu++11
 LDFLAGS =
 LDLIBS = -lwsock32
@@ -27,19 +27,19 @@ FUZZOBJS := $(patsubst %.c,%.o,$(strip $(FUZZSOURCES)))
 FUZZNAMEOBJS := $(patsubst %.c,%.o,$(strip $(FUZZNAMESOURCES)))
 DNSDUMPOBJS := $(patsubst %.cc,%.o,$(strip $(DUMPSOURCES)))
 
-all: arestest.exe aresfuzz.exe aresfuzzname.exe dnsdump.exe
+all: hnstest.exe hnsfuzz.exe hnsfuzzname.exe dnsdump.exe
 
-arestest.exe: $(OBJS) gmock-gtest-all.o
-	$(LD) $(LDFLAGS) -o $@ $^  -L$(ARES_BLD_DIR) -lcares $(LDLIBS)
+hnstest.exe: $(OBJS) gmock-gtest-all.o
+	$(LD) $(LDFLAGS) -o $@ $^  -L$(HNS_BLD_DIR) -lhns $(LDLIBS)
 
-aresfuzz.exe: $(FUZZOBJS)
-	$(LD) $(LDFLAGS) -o $@ $^  -L$(ARES_BLD_DIR) -lcares $(LDLIBS)
+hnsfuzz.exe: $(FUZZOBJS)
+	$(LD) $(LDFLAGS) -o $@ $^  -L$(HNS_BLD_DIR) -lhns $(LDLIBS)
 
-aresfuzzname.exe: $(FUZZNAMEOBJS)
-	$(LD) $(LDFLAGS) -o $@ $^  -L$(ARES_BLD_DIR) -lcares $(LDLIBS)
+hnsfuzzname.exe: $(FUZZNAMEOBJS)
+	$(LD) $(LDFLAGS) -o $@ $^  -L$(HNS_BLD_DIR) -lhns $(LDLIBS)
 
 dnsdump.exe: $(DNSDUMPOBJS)
-	$(LD) $(LDFLAGS) -o $@ $^  -L$(ARES_BLD_DIR) -lcares $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $^  -L$(HNS_BLD_DIR) -lhns $(LDLIBS)
 
 $(OBJS): $(TESTHEADERS)
 
@@ -50,12 +50,12 @@ $(OBJS): $(TESTHEADERS)
 gmock-gtest-all.o: $(GMOCK_DIR)/gmock-gtest-all.cc
 	$(CXX) -I$(GMOCK_DIR) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
-test: arestest.exe
-	./arestest.exe
-vtest: arestest.exe
-	./arestest.exe -v
+test: hnstest.exe
+	./hnstest.exe
+vtest: hnstest.exe
+	./hnstest.exe -v
 
 clean:
-	$(RM) $(OBJS) gmock-gtest-all.o arestest.exe aresfuzz.exe aresfuzzname.exe dnsdump.exe
+	$(RM) $(OBJS) gmock-gtest-all.o hnstest.exe hnsfuzz.exe hnsfuzzname.exe dnsdump.exe
 
 

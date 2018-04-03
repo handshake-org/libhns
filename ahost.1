@@ -1,8 +1,8 @@
-.TH AHOST "1" "April 2011" "c-ares utilities"
+.TH AHOST "1" "April 2011" "hns utilities"
 .SH NAME
-ahost \- print the A or AAAA record associated with a hostname or IP address
+hhost \- print the A or AAAA record associated with a hostname or IP address
 .SH SYNOPSIS
-.B ahost
+.B hhost
 [\fIOPTION\fR]... \fIHOST\fR...
 .SH DESCRIPTION
 .PP
@@ -11,7 +11,7 @@ ahost \- print the A or AAAA record associated with a hostname or IP address
 Look up the DNS A or AAAA record associated with HOST (a hostname or an
 IP address).
 .PP
-This utility comes with the \fBc\-ares\fR asynchronous resolver library.
+This utility comes with the \fBc\-hns\fR asynchronous resolver library.
 .SH OPTIONS
 .TP
 \fB\-d\fR
@@ -34,13 +34,13 @@ Specify the \fIdomain\fP to search instead of using the default values from
 for DNS configuration; it has no effect on other platforms (such as Win32
 or Android).
 .SH "REPORTING BUGS"
-Report bugs to the c-ares mailing list:
+Report bugs to the hns mailing list:
 \fBhttp://cool.haxx.se/mailman/listinfo/c-ares\fR
 .SH "SEE ALSO"
 .PP
-acountry(1), adig(1).
+hcountry(1), hdig(1).
 .SH COPYRIGHT
-This utility is based on code/ideas contained in sofware written by Greg Hudson (ares)
+This utility is based on code/ideas contained in sofware written by Greg Hudson (hns)
 carrying the following notice:
 .br
 Copyright 1998 by the Massachusetts Institute of Technology.

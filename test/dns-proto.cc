@@ -1,16 +1,16 @@
 #include "dns-proto.h"
 
-// Include ares internal file for DNS protocol details
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_dns.h"
+// Include hns internal file for DNS protocol details
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_dns.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <sstream>
 
-namespace ares {
+namespace hns {
 
 std::string HexDump(std::vector<byte> data) {
   std::stringstream ss;
@@ -32,31 +32,31 @@ std::string HexDump(const char *data, int len) {
 
 std::string StatusToString(int status) {
   switch (status) {
-  case ARES_SUCCESS: return "ARES_SUCCESS";
-  case ARES_ENODATA: return "ARES_ENODATA";
-  case ARES_EFORMERR: return "ARES_EFORMERR";
-  case ARES_ESERVFAIL: return "ARES_ESERVFAIL";
-  case ARES_ENOTFOUND: return "ARES_ENOTFOUND";
-  case ARES_ENOTIMP: return "ARES_ENOTIMP";
-  case ARES_EREFUSED: return "ARES_EREFUSED";
-  case ARES_EBADQUERY: return "ARES_EBADQUERY";
-  case ARES_EBADNAME: return "ARES_EBADNAME";
-  case ARES_EBADFAMILY: return "ARES_EBADFAMILY";
-  case ARES_EBADRESP: return "ARES_EBADRESP";
-  case ARES_ECONNREFUSED: return "ARES_ECONNREFUSED";
-  case ARES_ETIMEOUT: return "ARES_ETIMEOUT";
-  case ARES_EOF: return "ARES_EOF";
-  case ARES_EFILE: return "ARES_EFILE";
-  case ARES_ENOMEM: return "ARES_ENOMEM";
-  case ARES_EDESTRUCTION: return "ARES_EDESTRUCTION";
-  case ARES_EBADSTR: return "ARES_EBADSTR";
-  case ARES_EBADFLAGS: return "ARES_EBADFLAGS";
-  case ARES_ENONAME: return "ARES_ENONAME";
-  case ARES_EBADHINTS: return "ARES_EBADHINTS";
-  case ARES_ENOTINITIALIZED: return "ARES_ENOTINITIALIZED";
-  case ARES_ELOADIPHLPAPI: return "ARES_ELOADIPHLPAPI";
-  case ARES_EADDRGETNETWORKPARAMS: return "ARES_EADDRGETNETWORKPARAMS";
-  case ARES_ECANCELLED: return "ARES_ECANCELLED";
+  case HNS_SUCCESS: return "HNS_SUCCESS";
+  case HNS_ENODATA: return "HNS_ENODATA";
+  case HNS_EFORMERR: return "HNS_EFORMERR";
+  case HNS_ESERVFAIL: return "HNS_ESERVFAIL";
+  case HNS_ENOTFOUND: return "HNS_ENOTFOUND";
+  case HNS_ENOTIMP: return "HNS_ENOTIMP";
+  case HNS_EREFUSED: return "HNS_EREFUSED";
+  case HNS_EBADQUERY: return "HNS_EBADQUERY";
+  case HNS_EBADNAME: return "HNS_EBADNAME";
+  case HNS_EBADFAMILY: return "HNS_EBADFAMILY";
+  case HNS_EBADRESP: return "HNS_EBADRESP";
+  case HNS_ECONNREFUSED: return "HNS_ECONNREFUSED";
+  case HNS_ETIMEOUT: return "HNS_ETIMEOUT";
+  case HNS_EOF: return "HNS_EOF";
+  case HNS_EFILE: return "HNS_EFILE";
+  case HNS_ENOMEM: return "HNS_ENOMEM";
+  case HNS_EDESTRUCTION: return "HNS_EDESTRUCTION";
+  case HNS_EBADSTR: return "HNS_EBADSTR";
+  case HNS_EBADFLAGS: return "HNS_EBADFLAGS";
+  case HNS_ENONAME: return "HNS_ENONAME";
+  case HNS_EBADHINTS: return "HNS_EBADHINTS";
+  case HNS_ENOTINITIALIZED: return "HNS_ENOTINITIALIZED";
+  case HNS_ELOADIPHLPAPI: return "HNS_ELOADIPHLPAPI";
+  case HNS_EADDRGETNETWORKPARAMS: return "HNS_EADDRGETNETWORKPARAMS";
+  case HNS_ECANCELLED: return "HNS_ECANCELLED";
   default: return "UNKNOWN";
   }
 }
@@ -236,9 +236,9 @@ std::string QuestionToString(const std::vector<byte>& packet,
 
   char *name = nullptr;
   long enclen;
-  int rc = ares_expand_name(*data, packet.data(), packet.size(), &name, &enclen);
-  if (rc != ARES_SUCCESS) {
-    ss << "(error from ares_expand_name)";
+  int rc = hns_expand_name(*data, packet.data(), packet.size(), &name, &enclen);
+  if (rc != HNS_SUCCESS) {
+    ss << "(error from hns_expand_name)";
     return ss.str();
   }
   if (enclen > *len) {
@@ -248,7 +248,7 @@ std::string QuestionToString(const std::vector<byte>& packet,
   *len -= enclen;
   *data += enclen;
   ss << "'" << name << "' ";
-  ares_free_string(name);
+  hns_free_string(name);
   if (*len < NS_QFIXEDSZ) {
     ss << "(too short, len left " << *len << ")";
     return ss.str();
@@ -272,9 +272,9 @@ std::string RRToString(const std::vector<byte>& packet,
 
   char *name = nullptr;
   long enclen;
-  int rc = ares_expand_name(*data, packet.data(), packet.size(), &name, &enclen);
-  if (rc != ARES_SUCCESS) {
-    ss << "(error from ares_expand_name)";
+  int rc = hns_expand_name(*data, packet.data(), packet.size(), &name, &enclen);
+  if (rc != HNS_SUCCESS) {
+    ss << "(error from hns_expand_name)";
     return ss.str();
   }
   if (enclen > *len) {
@@ -284,7 +284,7 @@ std::string RRToString(const std::vector<byte>& packet,
   *len -= enclen;
   *data += enclen;
   ss << "'" << name << "' ";
-  ares_free_string(name);
+  hns_free_string(name);
   name = nullptr;
 
   if (*len < NS_RRFIXEDSZ) {
@@ -330,24 +330,24 @@ std::string RRToString(const std::vector<byte>& packet,
     case ns_t_cname:
     case ns_t_ns:
     case ns_t_ptr: {
-      int rc = ares_expand_name(*data, packet.data(), packet.size(), &name, &enclen);
-      if (rc != ARES_SUCCESS) {
-        ss << "(error from ares_expand_name)";
+      int rc = hns_expand_name(*data, packet.data(), packet.size(), &name, &enclen);
+      if (rc != HNS_SUCCESS) {
+        ss << "(error from hns_expand_name)";
         break;
       }
       ss << " '" << name << "'";
-      ares_free_string(name);
+      hns_free_string(name);
       break;
     }
     case ns_t_mx:
       if (rdatalen > 2) {
-        int rc = ares_expand_name(*data + 2, packet.data(), packet.size(), &name, &enclen);
-        if (rc != ARES_SUCCESS) {
-          ss << "(error from ares_expand_name)";
+        int rc = hns_expand_name(*data + 2, packet.data(), packet.size(), &name, &enclen);
+        if (rc != HNS_SUCCESS) {
+          ss << "(error from hns_expand_name)";
           break;
         }
         ss << " " << DNS__16BIT(*data) << " '" << name << "'";
-        ares_free_string(name);
+        hns_free_string(name);
       } else {
         ss << "(RR too short)";
       }
@@ -359,13 +359,13 @@ std::string RRToString(const std::vector<byte>& packet,
         unsigned long weight = DNS__16BIT(p + 2);
         unsigned long port = DNS__16BIT(p + 4);
         p += 6;
-        int rc = ares_expand_name(p, packet.data(), packet.size(), &name, &enclen);
-        if (rc != ARES_SUCCESS) {
-          ss << "(error from ares_expand_name)";
+        int rc = hns_expand_name(p, packet.data(), packet.size(), &name, &enclen);
+        if (rc != HNS_SUCCESS) {
+          ss << "(error from hns_expand_name)";
           break;
         }
         ss << prio << " " << weight << " " << port << " '" << name << "'";
-        ares_free_string(name);
+        hns_free_string(name);
       } else {
         ss << "(RR too short)";
       }
@@ -373,21 +373,21 @@ std::string RRToString(const std::vector<byte>& packet,
     }
     case ns_t_soa: {
       const byte* p = *data;
-      int rc = ares_expand_name(p, packet.data(), packet.size(), &name, &enclen);
-      if (rc != ARES_SUCCESS) {
-        ss << "(error from ares_expand_name)";
+      int rc = hns_expand_name(p, packet.data(), packet.size(), &name, &enclen);
+      if (rc != HNS_SUCCESS) {
+        ss << "(error from hns_expand_name)";
         break;
       }
       ss << " '" << name << "'";
-      ares_free_string(name);
+      hns_free_string(name);
       p += enclen;
-      rc = ares_expand_name(p, packet.data(), packet.size(), &name, &enclen);
-      if (rc != ARES_SUCCESS) {
-        ss << "(error from ares_expand_name)";
+      rc = hns_expand_name(p, packet.data(), packet.size(), &name, &enclen);
+      if (rc != HNS_SUCCESS) {
+        ss << "(error from hns_expand_name)";
         break;
       }
       ss << " '" << name << "'";
-      ares_free_string(name);
+      hns_free_string(name);
       p += enclen;
       if ((p + 20) <= (*data + rdatalen)) {
         unsigned long serial = DNS__32BIT(p);
@@ -424,13 +424,13 @@ std::string RRToString(const std::vector<byte>& packet,
         ss << " '" << regexp << "'";
         p += len;
 
-        int rc = ares_expand_name(p, packet.data(), packet.size(), &name, &enclen);
-        if (rc != ARES_SUCCESS) {
-          ss << "(error from ares_expand_name)";
+        int rc = hns_expand_name(p, packet.data(), packet.size(), &name, &enclen);
+        if (rc != HNS_SUCCESS) {
+          ss << "(error from hns_expand_name)";
           break;
         }
         ss << " '" << name << "'";
-        ares_free_string(name);
+        hns_free_string(name);
       } else {
         ss << "(RR too short)";
       }
@@ -678,4 +678,4 @@ std::vector<byte> DNSPacket::data() const {
   return data;
 }
 
-}  // namespace ares
+}  // namespace hns

@@ -1,13 +1,13 @@
 // -*- mode: c++ -*-
-#ifndef ARES_TEST_H
-#define ARES_TEST_H
+#ifndef HNS_TEST_H
+#define HNS_TEST_H
 
 #include "dns-proto.h"
-// Include ares internal file for DNS protocol constants
+// Include hns internal file for DNS protocol constants
 #include "nameser.h"
 
-#include "ares_setup.h"
-#include "ares.h"
+#include "hns_setup.h"
+#include "hns.h"
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
@@ -28,7 +28,7 @@
 #include <utility>
 #include <vector>
 
-namespace ares {
+namespace hns {
 
 typedef unsigned char byte;
 
@@ -48,9 +48,9 @@ extern const std::vector<std::pair<int, bool>> ipv6_family_both_modes;
 extern std::vector<int> families;
 extern std::vector<std::pair<int, bool>> families_modes;
 
-// Process all pending work on ares-owned file descriptors, plus
+// Process all pending work on hns-owned file descriptors, plus
 // optionally the given set-of-FDs + work function.
-void ProcessWork(ares_channel channel,
+void ProcessWork(hns_channel channel,
                  std::function<std::set<int>()> get_extrafds,
                  std::function<void(int)> process_extra);
 std::set<int> NoExtraFDs();
@@ -60,14 +60,14 @@ std::set<int> NoExtraFDs();
 class LibraryTest : public ::testing::Test {
  public:
   LibraryTest() {
-    EXPECT_EQ(ARES_SUCCESS,
-              ares_library_init_mem(ARES_LIB_INIT_ALL,
+    EXPECT_EQ(HNS_SUCCESS,
+              hns_library_init_mem(HNS_LIB_INIT_ALL,
                                     &LibraryTest::amalloc,
                                     &LibraryTest::afree,
                                     &LibraryTest::arealloc));
   }
   ~LibraryTest() {
-    ares_library_cleanup();
+    hns_library_cleanup();
     ClearFails();
   }
   // Set the n-th malloc call (of any size) from the library to fail.
@@ -91,20 +91,20 @@ class LibraryTest : public ::testing::Test {
 class DefaultChannelTest : public LibraryTest {
  public:
   DefaultChannelTest() : channel_(nullptr) {
-    EXPECT_EQ(ARES_SUCCESS, ares_init(&channel_));
+    EXPECT_EQ(HNS_SUCCESS, hns_init(&channel_));
     EXPECT_NE(nullptr, channel_);
   }
 
   ~DefaultChannelTest() {
-    ares_destroy(channel_);
+    hns_destroy(channel_);
     channel_ = nullptr;
   }
 
-  // Process all pending work on ares-owned file descriptors.
+  // Process all pending work on hns-owned file descriptors.
   void Process();
 
  protected:
-  ares_channel channel_;
+  hns_channel channel_;
 };
 
 // Test fixture that uses a default channel with the specified lookup mode.
@@ -113,24 +113,24 @@ class DefaultChannelModeTest
       public ::testing::WithParamInterface<std::string> {
  public:
   DefaultChannelModeTest() : channel_(nullptr) {
-    struct ares_options opts = {0};
+    struct hns_options opts = {0};
     opts.lookups = strdup(GetParam().c_str());
-    int optmask = ARES_OPT_LOOKUPS;
-    EXPECT_EQ(ARES_SUCCESS, ares_init_options(&channel_, &opts, optmask));
+    int optmask = HNS_OPT_LOOKUPS;
+    EXPECT_EQ(HNS_SUCCESS, hns_init_options(&channel_, &opts, optmask));
     EXPECT_NE(nullptr, channel_);
     free(opts.lookups);
   }
 
   ~DefaultChannelModeTest() {
-    ares_destroy(channel_);
+    hns_destroy(channel_);
     channel_ = nullptr;
   }
 
-  // Process all pending work on ares-owned file descriptors.
+  // Process all pending work on hns-owned file descriptors.
   void Process();
 
  protected:
-  ares_channel channel_;
+  hns_channel channel_;
 };
 
 // Mock DNS server to allow responses to be scripted by tests.
@@ -175,10 +175,10 @@ class MockServer {
 // Test fixture that uses a mock DNS server.
 class MockChannelOptsTest : public LibraryTest {
  public:
-  MockChannelOptsTest(int count, int family, bool force_tcp, struct ares_options* givenopts, int optmask);
+  MockChannelOptsTest(int count, int family, bool force_tcp, struct hns_options* givenopts, int optmask);
   ~MockChannelOptsTest();
 
-  // Process all pending work on ares-owned and mock-server-owned file descriptors.
+  // Process all pending work on hns-owned and mock-server-owned file descriptors.
   void Process();
 
  protected:
@@ -194,7 +194,7 @@ class MockChannelOptsTest : public LibraryTest {
   NiceMockServers servers_;
   // Convenience reference to first server.
   NiceMockServer& server_;
-  ares_channel channel_;
+  hns_channel channel_;
 };
 
 class MockChannelTest
@@ -230,7 +230,7 @@ ACTION_P2(SetReplyQID, mockserver, qid) {
 }
 // gMock action to cancel a channel.
 ACTION_P2(CancelChannel, mockserver, channel) {
-  ares_cancel(channel);
+  hns_cancel(channel);
 }
 
 // C++ wrapper for struct hostent.
@@ -244,7 +244,7 @@ struct HostEnt {
 };
 std::ostream& operator<<(std::ostream& os, const HostEnt& result);
 
-// Structure that describes the result of an ares_host_callback invocation.
+// Structure that describes the result of an hns_host_callback invocation.
 struct HostResult {
   // Whether the callback has been invoked.
   bool done_;
@@ -256,7 +256,7 @@ struct HostResult {
 };
 std::ostream& operator<<(std::ostream& os, const HostResult& result);
 
-// Structure that describes the result of an ares_callback invocation.
+// Structure that describes the result of an hns_callback invocation.
 struct SearchResult {
   // Whether the callback has been invoked.
   bool done_;
@@ -267,7 +267,7 @@ struct SearchResult {
 };
 std::ostream& operator<<(std::ostream& os, const SearchResult& result);
 
-// Structure that describes the result of an ares_nameinfo_callback invocation.
+// Structure that describes the result of an hns_nameinfo_callback invocation.
 struct NameInfoResult {
   // Whether the callback has been invoked.
   bool done_;
@@ -279,7 +279,7 @@ struct NameInfoResult {
 };
 std::ostream& operator<<(std::ostream& os, const NameInfoResult& result);
 
-// Standard implementation of ares callbacks that fill out the corresponding
+// Standard implementation of hns callbacks that fill out the corresponding
 // structures.
 void HostCallback(void *data, int status, int timeouts,
                   struct hostent *hostent);
@@ -289,7 +289,7 @@ void NameInfoCallback(void *data, int status, int timeouts,
                       char *node, char *service);
 
 // Retrieve the name servers used by a channel.
-std::vector<std::string> GetNameServers(ares_channel channel);
+std::vector<std::string> GetNameServers(hns_channel channel);
 
 
 // RAII class to temporarily create a directory of a given name.
@@ -351,7 +351,7 @@ class EnvValue {
 
 #ifdef HAVE_CONTAINER
 // Linux-specific functionality for running code in a container, implemented
-// in ares-test-ns.cc
+// in hns-test-ns.cc
 typedef std::function<int(void)> VoidToIntFn;
 typedef std::vector<std::pair<std::string, std::string>> NameContentList;
 
@@ -393,12 +393,12 @@ int RunInContainer(ContainerFilesystem* fs, const std::string& hostname,
  */
 class VirtualizeIO {
 public:
-  VirtualizeIO(ares_channel);
+  VirtualizeIO(hns_channel);
   ~VirtualizeIO();
 
-  static const ares_socket_functions default_functions;
+  static const hns_socket_functions default_functions;
 private:
-  ares_channel channel_;
+  hns_channel channel_;
 };
 
 /*
@@ -430,6 +430,6 @@ private:
 
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns
 
 #endif

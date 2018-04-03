@@ -59,9 +59,9 @@ removethis(){
 # Ensure that buildconf runs from the subdirectory where configure.ac lives
 #
 if test ! -f configure.ac ||
-  test ! -f ares_init.c ||
-  test ! -f m4/cares-functions.m4; then
-  echo "Can not run buildconf from outside of c-ares source subdirectory!"
+  test ! -f hns_init.c ||
+  test ! -f m4/hns-functions.m4; then
+  echo "Can not run buildconf from outside of hns source subdirectory!"
   echo "Change to the subdirectory where buildconf is found, and try again."
   exit 1
 fi
@@ -149,9 +149,9 @@ for fname in .deps \
     Makefile.in \
     aclocal.m4 \
     aclocal.m4.bak \
-    ares_build.h \
-    ares_config.h \
-    ares_config.h.in \
+    hns_build.h \
+    hns_config.h \
+    hns_config.h.in \
     autom4te.cache \
     compile \
     config.guess \
@@ -161,7 +161,7 @@ for fname in .deps \
     config.sub \
     configure \
     depcomp \
-    libcares.pc \
+    libhns.pc \
     libtool \
     libtool.m4 \
     libtool.m4.tmp \

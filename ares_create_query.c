@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -28,9 +28,9 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_dns.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_dns.h"
+#include "hns_private.h"
 
 #ifndef T_OPT
 #  define T_OPT  41 /* EDNS0 option (meta-RR) */
@@ -84,7 +84,7 @@
  * be thought of as the root domain).
  */
 
-int ares_create_query(const char *name, int dnsclass, int type,
+int hns_create_query(const char *name, int dnsclass, int type,
                       unsigned short id, int rd, unsigned char **bufp,
                       int *buflenp, int max_udp_size)
 {
@@ -104,9 +104,9 @@ int ares_create_query(const char *name, int dnsclass, int type,
    */
   len = strlen(name) + 2 + HFIXEDSZ + QFIXEDSZ +
     (max_udp_size ? EDNSFIXEDSZ : 0);
-  buf = ares_malloc(len);
+  buf = hns_malloc(len);
   if (!buf)
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
 
   /* Set up the header. */
   q = buf;
@@ -134,8 +134,8 @@ int ares_create_query(const char *name, int dnsclass, int type,
   while (*name)
     {
       if (*name == '.') {
-        ares_free (buf);
-        return ARES_EBADNAME;
+        hns_free (buf);
+        return HNS_EBADNAME;
       }
 
       /* Count the number of bytes in this label. */
@@ -147,8 +147,8 @@ int ares_create_query(const char *name, int dnsclass, int type,
           len++;
         }
       if (len > MAXLABEL) {
-        ares_free (buf);
-        return ARES_EBADNAME;
+        hns_free (buf);
+        return HNS_EBADNAME;
       }
 
       /* Encode the length and copy the data. */
@@ -190,13 +190,13 @@ int ares_create_query(const char *name, int dnsclass, int type,
    * to 255 octets or less."). */
   if (buflen > (MAXCDNAME + HFIXEDSZ + QFIXEDSZ +
                 (max_udp_size ? EDNSFIXEDSZ : 0))) {
-    ares_free (buf);
-    return ARES_EBADNAME;
+    hns_free (buf);
+    return HNS_EBADNAME;
   }
 
   /* we know this fits in an int at this point */
   *buflenp = (int) buflen;
   *bufp = buf;
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }

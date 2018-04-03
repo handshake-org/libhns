@@ -4,7 +4,7 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_NUM_H
-#define ARES_SECP256K1_NUM_H
+#ifndef HNS_SECP256K1_NUM_H
+#define HNS_SECP256K1_NUM_H
 
-#endif /* ARES_SECP256K1_NUM_H */
+#endif /* HNS_SECP256K1_NUM_H */

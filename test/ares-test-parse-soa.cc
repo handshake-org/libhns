@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseSoaReplyOK) {
@@ -16,8 +16,8 @@ TEST_F(LibraryTest, ParseSoaReplyOK) {
                              1, 2, 3, 4, 5));
   std::vector<byte> data = pkt.data();
 
-  struct ares_soa_reply* soa = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_soa_reply(data.data(), data.size(), &soa));
+  struct hns_soa_reply* soa = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_soa_reply(data.data(), data.size(), &soa));
   ASSERT_NE(nullptr, soa);
   EXPECT_EQ("soa1.example.com", std::string(soa->nsname));
   EXPECT_EQ("fred.example.com", std::string(soa->hostmaster));
@@ -26,7 +26,7 @@ TEST_F(LibraryTest, ParseSoaReplyOK) {
   EXPECT_EQ(3, soa->retry);
   EXPECT_EQ(4, soa->expire);
   EXPECT_EQ(5, soa->minttl);
-  ares_free_data(soa);
+  hns_free_data(soa);
 }
 
 TEST_F(LibraryTest, ParseSoaReplyErrors) {
@@ -37,12 +37,12 @@ TEST_F(LibraryTest, ParseSoaReplyErrors) {
                              "soa1.example.com", "fred.example.com",
                              1, 2, 3, 4, 5));
   std::vector<byte> data;
-  struct ares_soa_reply* soa = nullptr;
+  struct hns_soa_reply* soa = nullptr;
 
   // No question.
   pkt.questions_.clear();
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_soa_reply(data.data(), data.size(), &soa));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_soa_reply(data.data(), data.size(), &soa));
   pkt.add_question(new DNSQuestion("example.com", ns_t_soa));
 
 #ifdef DISABLED
@@ -50,7 +50,7 @@ TEST_F(LibraryTest, ParseSoaReplyErrors) {
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("Axample.com", ns_t_soa));
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_soa_reply(data.data(), data.size(), &soa));
+  EXPECT_EQ(HNS_ENODATA, hns_parse_soa_reply(data.data(), data.size(), &soa));
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("example.com", ns_t_soa));
 #endif
@@ -58,7 +58,7 @@ TEST_F(LibraryTest, ParseSoaReplyErrors) {
   // Two questions
   pkt.add_question(new DNSQuestion("example.com", ns_t_soa));
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_soa_reply(data.data(), data.size(), &soa));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_soa_reply(data.data(), data.size(), &soa));
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("example.com", ns_t_soa));
 
@@ -66,7 +66,7 @@ TEST_F(LibraryTest, ParseSoaReplyErrors) {
   pkt.answers_.clear();
   pkt.add_answer(new DNSMxRR("example.com", 100, 100, "mx1.example.com"));
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_soa_reply(data.data(), data.size(), &soa));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_soa_reply(data.data(), data.size(), &soa));
   pkt.answers_.clear();
   pkt.add_answer(new DNSSoaRR("example.com", 100,
                              "soa1.example.com", "fred.example.com",
@@ -75,7 +75,7 @@ TEST_F(LibraryTest, ParseSoaReplyErrors) {
   // No answer.
   pkt.answers_.clear();
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_soa_reply(data.data(), data.size(), &soa));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_soa_reply(data.data(), data.size(), &soa));
   pkt.add_answer(new DNSSoaRR("example.com", 100,
                              "soa1.example.com", "fred.example.com",
                              1, 2, 3, 4, 5));
@@ -83,7 +83,7 @@ TEST_F(LibraryTest, ParseSoaReplyErrors) {
   // Truncated packets.
   data = pkt.data();
   for (size_t len = 1; len < data.size(); len++) {
-    EXPECT_EQ(ARES_EBADRESP, ares_parse_soa_reply(data.data(), len, &soa));
+    EXPECT_EQ(HNS_EBADRESP, hns_parse_soa_reply(data.data(), len, &soa));
   }
 }
 
@@ -95,14 +95,14 @@ TEST_F(LibraryTest, ParseSoaReplyAllocFail) {
                              "soa1.example.com", "fred.example.com",
                              1, 2, 3, 4, 5));
   std::vector<byte> data = pkt.data();
-  struct ares_soa_reply* soa = nullptr;
+  struct hns_soa_reply* soa = nullptr;
 
   for (int ii = 1; ii <= 5; ii++) {
     ClearFails();
     SetAllocFail(ii);
-    EXPECT_EQ(ARES_ENOMEM, ares_parse_soa_reply(data.data(), data.size(), &soa)) << ii;
+    EXPECT_EQ(HNS_ENOMEM, hns_parse_soa_reply(data.data(), data.size(), &soa)) << ii;
   }
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

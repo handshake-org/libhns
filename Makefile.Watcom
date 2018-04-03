@@ -1,5 +1,5 @@
 #
-#  Watcom / OpenWatcom / Win32 makefile for cares.
+#  Watcom / OpenWatcom / Win32 makefile for hns.
 #  Quick hack by Guenter; comments to: /dev/nul
 #
 
@@ -13,10 +13,10 @@ SYS_LIBS = $(%watcom)\lib386\nt;$(%watcom)\lib386
 !ifdef %libname
 LIBNAME = $(%libname)
 !else
-LIBNAME	= cares
+LIBNAME	= hns
 !endif
 TARGETS = $(LIBNAME).dll $(LIBNAME)_imp.lib $(LIBNAME).lib
-DEMOS   = adig.exe ahost.exe acountry.exe
+DEMOS   = hdig.exe hhost.exe hcountry.exe
 
 CC = wcc386
 LD = wlink
@@ -39,7 +39,7 @@ RD = rmdir /q /s 2>NUL
 CP = copy
 
 CFLAGS = -3r -mf -hc -zff -zgf -zq -zm -zc -s -fr=con -w2 -fpi -oilrtfm &
-         -wcd=201 -bt=nt -d+ -dWIN32 -dCARES_BUILDING_LIBRARY           &
+         -wcd=201 -bt=nt -d+ -dWIN32 -dHNS_BUILDING_LIBRARY           &
          -dNTDDI_VERSION=0x05010000 -I. $(SYS_INCL)
 
 LFLAGS = option quiet, map, caseexact, eliminate
@@ -84,11 +84,11 @@ OBJS_STAT  = $+ $(OBJS) $-
 OBJ_DIR    = $(OBJ_BASE)\dyn
 OBJS_DYN   = $+ $(OBJS) $-
 
-ARESBUILDH = ares_build.h
-RESOURCE   = $(OBJ_BASE)\dyn\cares.res
+HNSBUILDH = hns_build.h
+RESOURCE   = $(OBJ_BASE)\dyn\hns.res
 
-all: $(ARESBUILDH) $(OBJ_BASE) $(TARGETS) $(DEMOS) .SYMBOLIC
-	@echo Welcome to cares
+all: $(HNSBUILDH) $(OBJ_BASE) $(TARGETS) $(DEMOS) .SYMBOLIC
+	@echo Welcome to hns
 
 $(OBJ_BASE):
 	-$(MD) $^@
@@ -96,7 +96,7 @@ $(OBJ_BASE):
 	-$(MD) $^@\dyn
 	-$(MD) $^@\demos
 
-$(ARESBUILDH): .EXISTSONLY
+$(HNSBUILDH): .EXISTSONLY
 	$(CP) $^@.dist $^@
 
 $(LIBNAME).dll: $(OBJS_DYN) $(RESOURCE) $(LINK_ARG)
@@ -105,14 +105,14 @@ $(LIBNAME).dll: $(OBJS_DYN) $(RESOURCE) $(LINK_ARG)
 $(LIBNAME).lib: $(OBJS_STAT) $(LIB_ARG)
 	$(AR) -q -b -c $^@ @$]@
 
-adig.exe: $(OBJ_BASE)\demos\adig.obj $(OBJ_BASE)\demos\ares_getopt.obj $(LIBNAME).lib
-	$(LD) name $^@ system nt $(LFLAGS) file { $(OBJ_BASE)\demos\ares_getopt.obj $[@ } library $]@, ws2_32.lib
+hdig.exe: $(OBJ_BASE)\demos\hdig.obj $(OBJ_BASE)\demos\hns_getopt.obj $(LIBNAME).lib
+	$(LD) name $^@ system nt $(LFLAGS) file { $(OBJ_BASE)\demos\hns_getopt.obj $[@ } library $]@, ws2_32.lib
 
-ahost.exe: $(OBJ_BASE)\demos\ahost.obj $(OBJ_BASE)\demos\ares_getopt.obj $(LIBNAME).lib
-	$(LD) name $^@ system nt $(LFLAGS) file { $(OBJ_BASE)\demos\ares_getopt.obj $[@ } library $]@, ws2_32.lib
+hhost.exe: $(OBJ_BASE)\demos\hhost.obj $(OBJ_BASE)\demos\hns_getopt.obj $(LIBNAME).lib
+	$(LD) name $^@ system nt $(LFLAGS) file { $(OBJ_BASE)\demos\hns_getopt.obj $[@ } library $]@, ws2_32.lib
 
-acountry.exe: $(OBJ_BASE)\demos\acountry.obj $(OBJ_BASE)\demos\ares_getopt.obj $(LIBNAME).lib
-	$(LD) name $^@ system nt $(LFLAGS) file { $(OBJ_BASE)\demos\ares_getopt.obj $[@ } library $]@, ws2_32.lib
+hcountry.exe: $(OBJ_BASE)\demos\hcountry.obj $(OBJ_BASE)\demos\hns_getopt.obj $(LIBNAME).lib
+	$(LD) name $^@ system nt $(LFLAGS) file { $(OBJ_BASE)\demos\hns_getopt.obj $[@ } library $]@, ws2_32.lib
 
 clean: .SYMBOLIC
 	-$(RM) $(OBJS_STAT)
@@ -128,7 +128,7 @@ vclean realclean: clean .SYMBOLIC
 	-$(RD) $(OBJ_BASE)
 
 .ERASE
-$(RESOURCE): cares.rc .AUTODEPEND
+$(RESOURCE): hns.rc .AUTODEPEND
 	$(RC) $(DEBUG) -q -r -zm -I..\include $(SYS_INCL) $[@ -fo=$^@
 
 .ERASE
@@ -137,11 +137,11 @@ $(RESOURCE): cares.rc .AUTODEPEND
 
 .ERASE
 .c{$(OBJ_BASE)\stat}.obj:
-	$(CC) $(CFLAGS) -DCARES_STATICLIB $[@ -fo=$^@
+	$(CC) $(CFLAGS) -DHNS_STATICLIB $[@ -fo=$^@
 
 .ERASE
 .c{$(OBJ_BASE)\demos}.obj:
-	$(CC) $(CFLAGS) -DCARES_STATICLIB $[@ -fo=$^@
+	$(CC) $(CFLAGS) -DHNS_STATICLIB $[@ -fo=$^@
 
 $(LINK_ARG): $(__MAKEFILES__)
 	%create $^@

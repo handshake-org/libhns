@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_WRITEV_H
-#define HEADER_CARES_WRITEV_H
+#ifndef HEADER_HNS_WRITEV_H
+#define HEADER_HNS_WRITEV_H
 
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
@@ -17,8 +17,8 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares.h"
+#include "hns_setup.h"
+#include "hns.h"
 
 #ifndef HAVE_WRITEV
 
@@ -29,8 +29,8 @@ struct iovec
   size_t iov_len;  /* Length of data.  */
 };
 
-extern ares_ssize_t ares_writev(ares_socket_t s, const struct iovec *iov, int iovcnt);
+extern hns_ssize_t hns_writev(hns_socket_t s, const struct iovec *iov, int iovcnt);
 
 #endif
 
-#endif /* HEADER_CARES_WRITEV_H */
+#endif /* HEADER_HNS_WRITEV_H */

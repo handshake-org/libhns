@@ -5,8 +5,8 @@
  **********************************************************************/
 
 
-#ifndef ARES_SECP256K1_ECDSA_IMPL_H
-#define ARES_SECP256K1_ECDSA_IMPL_H
+#ifndef HNS_SECP256K1_ECDSA_IMPL_H
+#define HNS_SECP256K1_ECDSA_IMPL_H
 
 #include "scalar.h"
 #include "field.h"
@@ -28,7 +28,7 @@
  *  sage: '%x' % (EllipticCurve ([F (a), F (b)]).order())
  *   'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
  */
-static const ares_secp256k1_fe ares_secp256k1_ecdsa_const_order_as_fe = ARES_SECP256K1_FE_CONST(
+static const hns_secp256k1_fe hns_secp256k1_ecdsa_const_order_as_fe = HNS_SECP256K1_FE_CONST(
     0xFFFFFFFFUL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, 0xFFFFFFFEUL,
     0xBAAEDCE6UL, 0xAF48A03BUL, 0xBFD25E8CUL, 0xD0364141UL
 );
@@ -42,11 +42,11 @@ static const ares_secp256k1_fe ares_secp256k1_ecdsa_const_order_as_fe = ARES_SEC
  *  sage: '%x' % (p - EllipticCurve ([F (a), F (b)]).order())
  *   '14551231950b75fc4402da1722fc9baee'
  */
-static const ares_secp256k1_fe ares_secp256k1_ecdsa_const_p_minus_order = ARES_SECP256K1_FE_CONST(
+static const hns_secp256k1_fe hns_secp256k1_ecdsa_const_p_minus_order = HNS_SECP256K1_FE_CONST(
     0, 0, 0, 1, 0x45512319UL, 0x50B75FC4UL, 0x402DA172UL, 0x2FC9BAEEUL
 );
 
-static int ares_secp256k1_der_read_len(const unsigned char **sigp, const unsigned char *sigend) {
+static int hns_secp256k1_der_read_len(const unsigned char **sigp, const unsigned char *sigend) {
     int lenleft, b1;
     size_t ret = 0;
     if (*sigp >= sigend) {
@@ -96,7 +96,7 @@ static int ares_secp256k1_der_read_len(const unsigned char **sigp, const unsigne
     return ret;
 }
 
-static int ares_secp256k1_der_parse_integer(ares_secp256k1_scalar *r, const unsigned char **sig, const unsigned char *sigend) {
+static int hns_secp256k1_der_parse_integer(hns_secp256k1_scalar *r, const unsigned char **sig, const unsigned char *sigend) {
     int overflow = 0;
     unsigned char ra[32] = {0};
     int rlen;
@@ -106,7 +106,7 @@ static int ares_secp256k1_der_parse_integer(ares_secp256k1_scalar *r, const unsi
         return 0;
     }
     (*sig)++;
-    rlen = ares_secp256k1_der_read_len(sig, sigend);
+    rlen = hns_secp256k1_der_read_len(sig, sigend);
     if (rlen <= 0 || (*sig) + rlen > sigend) {
         /* Exceeds bounds or not at least length 1 (X.690-0207 8.3.1).  */
         return 0;
@@ -133,23 +133,23 @@ static int ares_secp256k1_der_parse_integer(ares_secp256k1_scalar *r, const unsi
     }
     if (!overflow) {
         memcpy(ra + 32 - rlen, *sig, rlen);
-        ares_secp256k1_scalar_set_b32(r, ra, &overflow);
+        hns_secp256k1_scalar_set_b32(r, ra, &overflow);
     }
     if (overflow) {
-        ares_secp256k1_scalar_set_int(r, 0);
+        hns_secp256k1_scalar_set_int(r, 0);
     }
     (*sig) += rlen;
     return 1;
 }
 
-static int ares_secp256k1_ecdsa_sig_parse(ares_secp256k1_scalar *rr, ares_secp256k1_scalar *rs, const unsigned char *sig, size_t size) {
+static int hns_secp256k1_ecdsa_sig_parse(hns_secp256k1_scalar *rr, hns_secp256k1_scalar *rs, const unsigned char *sig, size_t size) {
     const unsigned char *sigend = sig + size;
     int rlen;
     if (sig == sigend || *(sig++) != 0x30) {
         /* The encoding doesn't start with a constructed sequence (X.690-0207 8.9.1). */
         return 0;
     }
-    rlen = ares_secp256k1_der_read_len(&sig, sigend);
+    rlen = hns_secp256k1_der_read_len(&sig, sigend);
     if (rlen < 0 || sig + rlen > sigend) {
         /* Tuple exceeds bounds */
         return 0;
@@ -159,10 +159,10 @@ static int ares_secp256k1_ecdsa_sig_parse(ares_secp256k1_scalar *rr, ares_secp25
         return 0;
     }
 
-    if (!ares_secp256k1_der_parse_integer(rr, &sig, sigend)) {
+    if (!hns_secp256k1_der_parse_integer(rr, &sig, sigend)) {
         return 0;
     }
-    if (!ares_secp256k1_der_parse_integer(rs, &sig, sigend)) {
+    if (!hns_secp256k1_der_parse_integer(rs, &sig, sigend)) {
         return 0;
     }
 
@@ -174,12 +174,12 @@ static int ares_secp256k1_ecdsa_sig_parse(ares_secp256k1_scalar *rr, ares_secp25
     return 1;
 }
 
-static int ares_secp256k1_ecdsa_sig_serialize(unsigned char *sig, size_t *size, const ares_secp256k1_scalar* ar, const ares_secp256k1_scalar* as) {
+static int hns_secp256k1_ecdsa_sig_serialize(unsigned char *sig, size_t *size, const hns_secp256k1_scalar* ar, const hns_secp256k1_scalar* as) {
     unsigned char r[33] = {0}, s[33] = {0};
     unsigned char *rp = r, *sp = s;
     size_t lenR = 33, lenS = 33;
-    ares_secp256k1_scalar_get_b32(&r[1], ar);
-    ares_secp256k1_scalar_get_b32(&s[1], as);
+    hns_secp256k1_scalar_get_b32(&r[1], ar);
+    hns_secp256k1_scalar_get_b32(&s[1], as);
     while (lenR > 1 && rp[0] == 0 && rp[1] < 0x80) { lenR--; rp++; }
     while (lenS > 1 && sp[0] == 0 && sp[1] < 0x80) { lenS--; sp++; }
     if (*size < 6+lenS+lenR) {
@@ -198,42 +198,42 @@ static int ares_secp256k1_ecdsa_sig_serialize(unsigned char *sig, size_t *size, 
     return 1;
 }
 
-static int ares_secp256k1_ecdsa_sig_verify(const ares_secp256k1_ecmult_context *ctx, const ares_secp256k1_scalar *sigr, const ares_secp256k1_scalar *sigs, const ares_secp256k1_ge *pubkey, const ares_secp256k1_scalar *message) {
+static int hns_secp256k1_ecdsa_sig_verify(const hns_secp256k1_ecmult_context *ctx, const hns_secp256k1_scalar *sigr, const hns_secp256k1_scalar *sigs, const hns_secp256k1_ge *pubkey, const hns_secp256k1_scalar *message) {
     unsigned char c[32];
-    ares_secp256k1_scalar sn, u1, u2;
+    hns_secp256k1_scalar sn, u1, u2;
 #if !defined(EXHAUSTIVE_TEST_ORDER)
-    ares_secp256k1_fe xr;
+    hns_secp256k1_fe xr;
 #endif
-    ares_secp256k1_gej pubkeyj;
-    ares_secp256k1_gej pr;
+    hns_secp256k1_gej pubkeyj;
+    hns_secp256k1_gej pr;
 
-    if (ares_secp256k1_scalar_is_zero(sigr) || ares_secp256k1_scalar_is_zero(sigs)) {
+    if (hns_secp256k1_scalar_is_zero(sigr) || hns_secp256k1_scalar_is_zero(sigs)) {
         return 0;
     }
 
-    ares_secp256k1_scalar_inverse_var(&sn, sigs);
-    ares_secp256k1_scalar_mul(&u1, &sn, message);
-    ares_secp256k1_scalar_mul(&u2, &sn, sigr);
-    ares_secp256k1_gej_set_ge(&pubkeyj, pubkey);
-    ares_secp256k1_ecmult(ctx, &pr, &pubkeyj, &u2, &u1);
-    if (ares_secp256k1_gej_is_infinity(&pr)) {
+    hns_secp256k1_scalar_inverse_var(&sn, sigs);
+    hns_secp256k1_scalar_mul(&u1, &sn, message);
+    hns_secp256k1_scalar_mul(&u2, &sn, sigr);
+    hns_secp256k1_gej_set_ge(&pubkeyj, pubkey);
+    hns_secp256k1_ecmult(ctx, &pr, &pubkeyj, &u2, &u1);
+    if (hns_secp256k1_gej_is_infinity(&pr)) {
         return 0;
     }
 
 #if defined(EXHAUSTIVE_TEST_ORDER)
 {
-    ares_secp256k1_scalar computed_r;
-    ares_secp256k1_ge pr_ge;
-    ares_secp256k1_ge_set_gej(&pr_ge, &pr);
-    ares_secp256k1_fe_normalize(&pr_ge.x);
+    hns_secp256k1_scalar computed_r;
+    hns_secp256k1_ge pr_ge;
+    hns_secp256k1_ge_set_gej(&pr_ge, &pr);
+    hns_secp256k1_fe_normalize(&pr_ge.x);
 
-    ares_secp256k1_fe_get_b32(c, &pr_ge.x);
-    ares_secp256k1_scalar_set_b32(&computed_r, c, NULL);
-    return ares_secp256k1_scalar_eq(sigr, &computed_r);
+    hns_secp256k1_fe_get_b32(c, &pr_ge.x);
+    hns_secp256k1_scalar_set_b32(&computed_r, c, NULL);
+    return hns_secp256k1_scalar_eq(sigr, &computed_r);
 }
 #else
-    ares_secp256k1_scalar_get_b32(c, sigr);
-    ares_secp256k1_fe_set_b32(&xr, c);
+    hns_secp256k1_scalar_get_b32(c, sigr);
+    hns_secp256k1_fe_set_b32(&xr, c);
 
     /** We now have the recomputed R point in pr, and its claimed x coordinate (modulo n)
      *  in xr. Naively, we would extract the x coordinate from pr (requiring a inversion modulo p),
@@ -249,18 +249,18 @@ static int ares_secp256k1_ecdsa_sig_verify(const ares_secp256k1_ecmult_context *
      *    <=> (xr * pr.z^2 mod p == pr.x) || (xr + n < p && (xr + n) * pr.z^2 mod p == pr.x)
      *
      *  Thus, we can avoid the inversion, but we have to check both cases separately.
-     *  ares_secp256k1_gej_eq_x implements the (xr * pr.z^2 mod p == pr.x) test.
+     *  hns_secp256k1_gej_eq_x implements the (xr * pr.z^2 mod p == pr.x) test.
      */
-    if (ares_secp256k1_gej_eq_x_var(&xr, &pr)) {
+    if (hns_secp256k1_gej_eq_x_var(&xr, &pr)) {
         /* xr * pr.z^2 mod p == pr.x, so the signature is valid. */
         return 1;
     }
-    if (ares_secp256k1_fe_cmp_var(&xr, &ares_secp256k1_ecdsa_const_p_minus_order) >= 0) {
+    if (hns_secp256k1_fe_cmp_var(&xr, &hns_secp256k1_ecdsa_const_p_minus_order) >= 0) {
         /* xr + n >= p, so we can skip testing the second case. */
         return 0;
     }
-    ares_secp256k1_fe_add(&xr, &ares_secp256k1_ecdsa_const_order_as_fe);
-    if (ares_secp256k1_gej_eq_x_var(&xr, &pr)) {
+    hns_secp256k1_fe_add(&xr, &hns_secp256k1_ecdsa_const_order_as_fe);
+    if (hns_secp256k1_gej_eq_x_var(&xr, &pr)) {
         /* (xr + n) * pr.z^2 mod p == pr.x, so the signature is valid. */
         return 1;
     }
@@ -268,41 +268,41 @@ static int ares_secp256k1_ecdsa_sig_verify(const ares_secp256k1_ecmult_context *
 #endif
 }
 
-static int ares_secp256k1_ecdsa_sig_sign(const ares_secp256k1_ecmult_gen_context *ctx, ares_secp256k1_scalar *sigr, ares_secp256k1_scalar *sigs, const ares_secp256k1_scalar *seckey, const ares_secp256k1_scalar *message, const ares_secp256k1_scalar *nonce, int *recid) {
+static int hns_secp256k1_ecdsa_sig_sign(const hns_secp256k1_ecmult_gen_context *ctx, hns_secp256k1_scalar *sigr, hns_secp256k1_scalar *sigs, const hns_secp256k1_scalar *seckey, const hns_secp256k1_scalar *message, const hns_secp256k1_scalar *nonce, int *recid) {
     unsigned char b[32];
-    ares_secp256k1_gej rp;
-    ares_secp256k1_ge r;
-    ares_secp256k1_scalar n;
+    hns_secp256k1_gej rp;
+    hns_secp256k1_ge r;
+    hns_secp256k1_scalar n;
     int overflow = 0;
 
-    ares_secp256k1_ecmult_gen(ctx, &rp, nonce);
-    ares_secp256k1_ge_set_gej(&r, &rp);
-    ares_secp256k1_fe_normalize(&r.x);
-    ares_secp256k1_fe_normalize(&r.y);
-    ares_secp256k1_fe_get_b32(b, &r.x);
-    ares_secp256k1_scalar_set_b32(sigr, b, &overflow);
+    hns_secp256k1_ecmult_gen(ctx, &rp, nonce);
+    hns_secp256k1_ge_set_gej(&r, &rp);
+    hns_secp256k1_fe_normalize(&r.x);
+    hns_secp256k1_fe_normalize(&r.y);
+    hns_secp256k1_fe_get_b32(b, &r.x);
+    hns_secp256k1_scalar_set_b32(sigr, b, &overflow);
     /* These two conditions should be checked before calling */
-    VERIFY_CHECK(!ares_secp256k1_scalar_is_zero(sigr));
+    VERIFY_CHECK(!hns_secp256k1_scalar_is_zero(sigr));
     VERIFY_CHECK(overflow == 0);
 
     if (recid) {
         /* The overflow condition is cryptographically unreachable as hitting it requires finding the discrete log
          * of some P where P.x >= order, and only 1 in about 2^127 points meet this criteria.
          */
-        *recid = (overflow ? 2 : 0) | (ares_secp256k1_fe_is_odd(&r.y) ? 1 : 0);
+        *recid = (overflow ? 2 : 0) | (hns_secp256k1_fe_is_odd(&r.y) ? 1 : 0);
     }
-    ares_secp256k1_scalar_mul(&n, sigr, seckey);
-    ares_secp256k1_scalar_add(&n, &n, message);
-    ares_secp256k1_scalar_inverse(sigs, nonce);
-    ares_secp256k1_scalar_mul(sigs, sigs, &n);
-    ares_secp256k1_scalar_clear(&n);
-    ares_secp256k1_gej_clear(&rp);
-    ares_secp256k1_ge_clear(&r);
-    if (ares_secp256k1_scalar_is_zero(sigs)) {
+    hns_secp256k1_scalar_mul(&n, sigr, seckey);
+    hns_secp256k1_scalar_add(&n, &n, message);
+    hns_secp256k1_scalar_inverse(sigs, nonce);
+    hns_secp256k1_scalar_mul(sigs, sigs, &n);
+    hns_secp256k1_scalar_clear(&n);
+    hns_secp256k1_gej_clear(&rp);
+    hns_secp256k1_ge_clear(&r);
+    if (hns_secp256k1_scalar_is_zero(sigs)) {
         return 0;
     }
-    if (ares_secp256k1_scalar_is_high(sigs)) {
-        ares_secp256k1_scalar_negate(sigs, sigs);
+    if (hns_secp256k1_scalar_is_high(sigs)) {
+        hns_secp256k1_scalar_negate(sigs, sigs);
         if (recid) {
             *recid ^= 1;
         }
@@ -310,4 +310,4 @@ static int ares_secp256k1_ecdsa_sig_sign(const ares_secp256k1_ecmult_gen_context
     return 1;
 }
 
-#endif /* ARES_SECP256K1_ECDSA_IMPL_H */
+#endif /* HNS_SECP256K1_ECDSA_IMPL_H */

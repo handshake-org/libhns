@@ -1,11 +1,11 @@
 
-#include "ares_setup.h"
-#include "ares.h"
+#include "hns_setup.h"
+#include "hns.h"
 
-const char *ares_version(int *version)
+const char *hns_version(int *version)
 {
   if(version)
-    *version = ARES_VERSION;
+    *version = HNS_VERSION;
 
-  return ARES_VERSION_STR;
+  return HNS_VERSION_STR;
 }

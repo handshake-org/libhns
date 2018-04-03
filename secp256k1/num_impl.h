@@ -4,13 +4,13 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_NUM_IMPL_H
-#define ARES_SECP256K1_NUM_IMPL_H
+#ifndef HNS_SECP256K1_NUM_IMPL_H
+#define HNS_SECP256K1_NUM_IMPL_H
 
 #if defined HAVE_CONFIG_H
-#include "ares_config.h"
+#include "hns_config.h"
 #endif
 
 #include "num.h"
 
-#endif /* ARES_SECP256K1_NUM_IMPL_H */
+#endif /* HNS_SECP256K1_NUM_IMPL_H */

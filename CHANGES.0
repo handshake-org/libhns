@@ -1,4 +1,4 @@
-  Changelog for the c-ares project
+  Changelog for the hns project
 
 Version 1.7.5 (August 16, 2011)
 
@@ -6,37 +6,37 @@ Fixed:
 
  o detection of semicolon comments in resolv.conf
  o avoid using system's inet_net_pton affected by the WLB-2008080064 advisory
- o replacement ares_inet_net_pton affected by the WLB-2008080064 advisory
- o replacement ares_inet_ntop affected by potential out of bounds write
+ o replacement hns_inet_net_pton affected by the WLB-2008080064 advisory
+ o replacement hns_inet_ntop affected by potential out of bounds write
  o added install target to Makefile.msvc
  o only fall back to AF_INET searches when looking for AF_UNSPEC addresses
- o fixed ares_parse_*_reply memory leaks
- o Use correct sizeof in ares_getnameinfo()
+ o fixed hns_parse_*_reply memory leaks
+ o Use correct sizeof in hns_getnameinfo()
  o IPv6-on-windows: find DNS servers correctly
- o man pages: docs for the c-ares utility programs
+ o man pages: docs for the hns utility programs
  o getservbyport replacement for Win CE
  o config_sortlist: (win32) missing else
  o advance_tcp_send_queue: avoid NULL ptr dereference
  o configure: fix a bashism
- o ares_expand_name: Fix encoded length for indirect root
+ o hns_expand_name: Fix encoded length for indirect root
 
 Version 1.7.4 (December 9, 2010)
 
 Changed:
 
  o local-bind: Support binding to local interface/IPs, see
-   ares_set_local_ip4, ares_set_local_ip6, ares_set_local_dev
+   hns_set_local_ip4, hns_set_local_ip6, hns_set_local_dev
 
 Fixed:
 
- o memory leak in ares_getnameinfo
- o add missing break that caused get_ares_servers to fail
- o ares_parse_a_reply: fix CNAME response parsing
+ o memory leak in hns_getnameinfo
+ o add missing break that caused get_hns_servers to fail
+ o hns_parse_a_reply: fix CNAME response parsing
  o init_by_options: don't copy an empty sortlist
  o Replaced uint32_t with unsigned int to fix broken builds
    on a couple of platforms
  o Fix lookup with HOSTALIASES set
- o adig: fix NAPTR parsing
+ o hdig: fix NAPTR parsing
  o compiler warning cleanups
 
 Version 1.7.3 (June 11, 2010)
@@ -50,11 +50,11 @@ Version 1.7.2 (June 10, 2010)
 
 Changed:
 
- o Added ares_parse_mx_reply()
+ o Added hns_parse_mx_reply()
 
 Fixed:
 
- o ares_init: Last, not first instance of domain or search should win
+ o hns_init: Last, not first instance of domain or search should win
  o improve alternative definition of bool
  o fix VS2010 compiler warnings
 
@@ -65,7 +65,7 @@ Version 1.7.1 (Mar 23, 2010)
 - Use the last instance of domain/search, not the first one
 
 * March 23, 2010 (Daniel Stenberg)
-- We switched from CVS to git. See http://github.com/bagder/c-ares
+- We switched from CVS to git. See http://github.com/bagder/hns
 
 * March 5, 2010 (Daniel Stenberg)
 - Daniel Johnson provided fixes for building with the clang compiler.
@@ -74,26 +74,26 @@ Version 1.7.1 (Mar 23, 2010)
 - Added IPv6 name servers support. Implementation has been based on code,
   comments and feedback provided November and December of 2008 by Daniel
   Stenberg, Gregor Jasny, Phil Blundell and myself, December 2009 by Cedric
-  Bail, and February 2010 by Jakub Hrozek on the c-ares mailing list. On
+  Bail, and February 2010 by Jakub Hrozek on the hns mailing list. On
   March I reviewed all that, selected the best of each, and adjusted or
   extended parts of it to make the best fit.
 
   The external and visible result of all this is that two new functions are
-  added to the external API, ares_get_servers() and ares_set_servers(), which
+  added to the external API, hns_get_servers() and hns_set_servers(), which
   becomes now the preferred way of getting and setting name servers for any
-  ares channel as these support both IPv4 and IPv6 name servers.
+  hns channel as these support both IPv4 and IPv6 name servers.
 
-  In order to not break ABI compatibility, ares_init_options() with option
-  mask ARES_OPT_SERVERS and ares_save_options() may still be used in code
+  In order to not break ABI compatibility, hns_init_options() with option
+  mask HNS_OPT_SERVERS and hns_save_options() may still be used in code
   which is intended to run on IPv4-only stacks. But remember that these
   functions do not support IPv6 name servers. This implies that if the user
   is capable of defining or providing an IPv6 name server, and the app is
-  using ares_init_options() or ares_save_options() at some point to handle
+  using hns_init_options() or hns_save_options() at some point to handle
   the name servers, the app will likely lose IPv6 name servers.
 
 * January 28, 2010 (Daniel Stenberg)
-- Tommie Gannert pointed out a silly bug in ares_process_fd() since it didn't
-  check for broken connections like ares_process() did. Based on that, I
+- Tommie Gannert pointed out a silly bug in hns_process_fd() since it didn't
+  check for broken connections like hns_process() did. Based on that, I
   merged the two functions into a single generic one with two front-ends.
 
 * December 29, 2009 (Yang Tse)
@@ -111,67 +111,67 @@ Version 1.7.1 (Mar 23, 2010)
 Version 1.7.0 (Nov 30, 2009)
 
 * November 26, 2009 (Yang Tse)
-- Larry Lansing fixed ares_parse_srv_reply to properly parse replies
+- Larry Lansing fixed hns_parse_srv_reply to properly parse replies
   which might contain non-SRV answers, skipping over potential non-SRV
   ones such as CNAMEs.
 
 * November 23, 2009 (Yang Tse)
-- Changed naming convention for c-ares libraries built with MSVC, details
+- Changed naming convention for hns libraries built with MSVC, details
   and build instructions provided in README.msvc file.
 
 * November 22, 2009 (Yang Tse)
 - Jakub Hrozek fixed more function prototypes in man pages to sync them
-  with the ones declared in ares.h
+  with the ones declared in hns.h
 
-- Jakub Hrozek renamed addrttl and addr6ttl structs to ares_addrttl and
-  ares_addr6ttl in order to prevent name space pollution, along with
+- Jakub Hrozek renamed addrttl and addr6ttl structs to hns_addrttl and
+  hns_addr6ttl in order to prevent name space pollution, along with
   necessary changes to code base and man pages.This change does not break
   ABI, there is no need to recompile existing applications. But existing
   applications using these structs with the old name will need source code
-  adjustments when recompiled using c-ares 1.7.0.
+  adjustments when recompiled using hns 1.7.0.
 
 * November 21, 2009 (Yang Tse)
 - Added manifest stuff to Makefile.msvc.
 
 * November 20, 2009 (Yang Tse)
 - Fixed several function prototypes in man pages that were out of sync
-  with the ones declared in ares.h.  Added ares_free_data() along with
-  man page.  Updated ares_parse_srv_reply() and ares_parse_txt_reply()
+  with the ones declared in hns.h.  Added hns_free_data() along with
+  man page.  Updated hns_parse_srv_reply() and hns_parse_txt_reply()
   with changes from Jakub Hrozek making these now return linked lists
-  instead of arrays, and merging the ares_free_data() adjustments.
+  instead of arrays, and merging the hns_free_data() adjustments.
 
 * November 10, 2009 (Yang Tse)
 - Updated MSVC 6.0 project files to match settings from Makefile.msvc.
 
 * November 9, 2009 (Yang Tse)
-- Makefile.msvc is now the reference method to build c-ares and sample
+- Makefile.msvc is now the reference method to build hns and sample
   programs with any MSVC compiler or MS Visual Studio version.  If no
-  option or target are specified it builds dynamic and static c-ares
+  option or target are specified it builds dynamic and static hns
   libraries in debug and release flavours and also builds all sample
-  programs using each of the different c-ares libraries.
+  programs using each of the different hns libraries.
 
 * November 2, 2009 (Yang Tse)
-- Renamed c-ares setup.h to ares_setup.h
+- Renamed hns setup.h to hns_setup.h
 
 * October 31, 2009 (Yang Tse)
 - Symbol hiding configure options are named now --enable-symbol-hiding
   and --disable-symbol-hiding in an attempt to make them less ambiguous.
 
 * October 30, 2009 (Yang Tse)
-- Many fixes for ares_parse_txt_reply()
+- Many fixes for hns_parse_txt_reply()
 
 * October 29, 2009 (Daniel Stenberg)
-- Jakub Hrozek added ares_parse_txt_reply() for TXT parsing
+- Jakub Hrozek added hns_parse_txt_reply() for TXT parsing
 
 * October 29, 2009 (Yang Tse)
 - Updated MSVC 6.0 workspace and project files that allows building
-  dynamic and static c-ares libraries in debug and release flavours.
+  dynamic and static hns libraries in debug and release flavours.
   Additionally each of the three sample programs is built against
-  each of the four possible c-ares libraries, generating all this
+  each of the four possible hns libraries, generating all this
   a total number of 12 executables and 4 libraries.
 
 * October 28, 2009 (Yang Tse)
-- Initial step towards the ability to reduce c-ares exported symbols
+- Initial step towards the ability to reduce hns exported symbols
   when built as a shared library based on the 'visibility' attribute
   for GNUC and Intel compilers and based on __global for Sun compilers,
   taking also in account __declspec function decoration for Win32 and
@@ -182,10 +182,10 @@ Version 1.7.0 (Nov 30, 2009)
 
 * October 23, 2009 (Yang Tse)
 - John Engelhart noticed an unreleased problem relative to a duplicate
-  ARES_ECANCELLED error code value and missing error code description.
+  HNS_ECANCELLED error code value and missing error code description.
 
 * October 7, 2009 (Yang Tse)
-- Overhauled ares__get_hostent() Fixing out of bounds memory overwrite
+- Overhauled hns__get_hostent() Fixing out of bounds memory overwrite
   triggered with malformed /etc/hosts file. Improving parsing of /etc/hosts
   file. Validating requested address family. Ensuring that failures always
   return a NULL pointer. Adjusting header inclusions.
@@ -198,22 +198,22 @@ Version 1.7.0 (Nov 30, 2009)
   make errno available as a preprocessor macro.
 
 * September 7, 2009 (Yang Tse)
-- Add T_SRV portability check to ares_parse_srv_reply.c
+- Add T_SRV portability check to hns_parse_srv_reply.c
 
 * 4 Sep 2009 (Daniel Stenberg)
-- Jakub Hrozek added ares_parse_srv_reply() for SRV parsing
+- Jakub Hrozek added hns_parse_srv_reply() for SRV parsing
 
 * 3 Aug 2009 (Daniel Stenberg)
 - Joshua Kwan fixed the init routine to fill in the defaults for stuff that
-  fails to get inited by other means. This fixes a case of when the c-ares
+  fails to get inited by other means. This fixes a case of when the hns
   init fails when internet access is fone.
 
 - Timo Teras changed the reason code used in the resolve callback done when
-  ares_cancel() is used, to be ARES_ECANCELLED instead of ARES_ETIMEOUT to
+  hns_cancel() is used, to be HNS_ECANCELLED instead of HNS_ETIMEOUT to
   better allow the callback to know what's happening.
 
 * 14 Jul 2009 (Guenter Knauf)
-- renamed generated config.h to ares_config.h to avoid any future clashes
+- renamed generated config.h to hns_config.h to avoid any future clashes
   with config.h from other projects.
 
 * June 20 2009 (Yang Tse)
@@ -243,11 +243,11 @@ Version 1.7.0 (Nov 30, 2009)
 * May 26 2009 (Yang Tse)
 - Added --enable-curldebug configure option to enable and disable building
   with the low-level curl debug memory tracking 'feature' to allow decoupled
-  setting from --enable-debug, allowing again to build c-ares independently
+  setting from --enable-debug, allowing again to build hns independently
   out of the CVS tree.
 
-  For the c-ares library option --enable-debug enables debug build features
-  which are _not_ related with memory tracking. For the c-ares library when
+  For the hns library option --enable-debug enables debug build features
+  which are _not_ related with memory tracking. For the hns library when
   --enable-debug is given it does not enable the memory tracking feature. If
   you wish to enable the curl debug memory tracking you must use configure
   option --enable-curldebug explicitily to do so.
@@ -256,38 +256,38 @@ Version 1.7.0 (Nov 30, 2009)
   which is only compiled for debug enabled builds. And symbol CURLDEBUG is
   used to differentiate code which is _only_ used for memory tracking.
 
-  Make ares_init(), ares_dup() and ares_init_options() fail returning
-  ARES_ENOTINITIALIZED if library initialization has not been performed
-  calling ares_library_init().
+  Make hns_init(), hns_dup() and hns_init_options() fail returning
+  HNS_ENOTINITIALIZED if library initialization has not been performed
+  calling hns_library_init().
 
 * May 20 2009 (Yang Tse)
-- Added ares_library_init() and ares_library_cleanup() man pages.
+- Added hns_library_init() and hns_library_cleanup() man pages.
 
 * May 19 2009 (Yang Tse)
-- Introduced ares_library_init() and ares_library_cleanup() functions.
+- Introduced hns_library_init() and hns_library_cleanup() functions.
 
   This is an API and ABI break for Win32/64 systems. Non-Win32/64 build targets
-  using c-ares 1.7.0 can still survive without calling these functions. Read all
-  the details on ares_library_init(3) and ares_library_cleanup(3) man pages that
+  using hns 1.7.0 can still survive without calling these functions. Read all
+  the details on hns_library_init(3) and hns_library_cleanup(3) man pages that
   are included.
 
-  curl/libcurl 7.19.5 is fully compatible with c-ares 1.7.0 on all systems.
+  curl/libcurl 7.19.5 is fully compatible with hns 1.7.0 on all systems.
 
-  In order to use c-ares 1.7.0 with curl/libcurl on Win32/64 systems it is
+  In order to use hns 1.7.0 with curl/libcurl on Win32/64 systems it is
   required that curl/libcurl is 7.19.5 or newer. In other words, it is not
-  possible on Win32/64 to use c-ares 1.7.0 with a curl/libcurl version less
+  possible on Win32/64 to use hns 1.7.0 with a curl/libcurl version less
   than 7.19.5
 
 * May 11 2009 (Daniel Stenberg)
-- Gregor Jasny made c-ares link with libtool 's -export-symbols-regex option to
-  only expose functions starting with ares_.
+- Gregor Jasny made hns link with libtool 's -export-symbols-regex option to
+  only expose functions starting with hns_.
 
 * May 7 2009 (Yang Tse)
 - Fix an m4 overquoting triggering a spurious 'AS_TR_CPP' symbol definition
   attempt in generated config.h
 
 * May 2 2009 (Yang Tse)
-- Use a build-time configured ares_socklen_t data type instead of socklen_t.
+- Use a build-time configured hns_socklen_t data type instead of socklen_t.
 
 * April 21 2009 (Yang Tse)
 - Moved potential inclusion of system's malloc.h and memory.h header files to
@@ -295,7 +295,7 @@ Version 1.7.0 (Nov 30, 2009)
   NEED_MALLOC_H and NEED_MEMORY_H respectively.
 
 * March 11 2009 (Yang Tse)
-- Japheth Cleaver fixed acountry.c replacing u_long with unsigned long.
+- Japheth Cleaver fixed hcountry.c replacing u_long with unsigned long.
 
 * February 20 2009 (Yang Tse)
 - Do not halt compilation when using VS2008 to build a Windows 2000 target.
@@ -305,23 +305,23 @@ Version 1.7.0 (Nov 30, 2009)
   go on and ask for A records anyway.
 
 * January 31 2009 (Daniel Stenberg)
-- ares_gethostbyname() now accepts 'AF_UNSPEC' as a family for resolving
+- hns_gethostbyname() now accepts 'AF_UNSPEC' as a family for resolving
   either AF_INET6 or AF_INET. It works by accepting any of the looksups in the
   hosts file, and it resolves the AAAA field with a fallback to A.
 
 * January 14 2009 (Daniel Stenberg)
-- ares.h no longer uses the HAVE_STRUCT_IN6_ADDR define check, but instead it
-  now declares the private struct ares_in6_addr for all systems instead of
+- hns.h no longer uses the HAVE_STRUCT_IN6_ADDR define check, but instead it
+  now declares the private struct hns_in6_addr for all systems instead of
   relying on one possibly not present in the system.
 
 * January 13 2009 (Phil Blundell)
-- ares__send_query() now varies the retry timeout pseudo-randomly to avoid
+- hns__send_query() now varies the retry timeout pseudo-randomly to avoid
   packet storms when several queries were started at the same time.
 
 * January 11 2009 (Daniel Stenberg)
-- Phil Blundell added the internal function ares__expand_name_for_response()
-  that is now used by the ares_parse_*_reply() functions instead of the
-  ares_expand_name() simply to easier return ARES_EBADRESP for the cases where
+- Phil Blundell added the internal function hns__expand_name_for_response()
+  that is now used by the hns_parse_*_reply() functions instead of the
+  hns_expand_name() simply to easier return HNS_EBADRESP for the cases where
   the name expansion fails as in responses that really isn't expected.
 
 Version 1.6.0 (Dec 9, 2008)
@@ -332,56 +332,56 @@ Version 1.6.0 (Dec 9, 2008)
 
 * Dec 4 2008 (Daniel Stenberg)
 
-  Gregor Jasny provided the patch that introduces ares_set_socket_callback(),
-  and I edited it to also get duped by ares_dup().
+  Gregor Jasny provided the patch that introduces hns_set_socket_callback(),
+  and I edited it to also get duped by hns_dup().
 
 * Dec 3 2008 (Daniel Stenberg)
 
   API changes:
 
-  I made sure the public ares_config struct looks like before and yet it
-  supports the ROTATE option thanks to c-ares now storing the "optmask"
+  I made sure the public hns_config struct looks like before and yet it
+  supports the ROTATE option thanks to hns now storing the "optmask"
   internally. Thus we should be ABI compatible with the past release(s)
   now. My efforts mentioned below should not break backwards ABI compliance.
 
   Here's how I suggest we proceed with the API:
 
-  ares_init() will be primary "channel creator" function.
+  hns_init() will be primary "channel creator" function.
 
-  ares_init_options() will continue to work exactly like now and before. For
+  hns_init_options() will continue to work exactly like now and before. For
   starters, it will be the (only) way to set the existing options.
 
-  ares_save_options() will continue to work like today, but will ONLY save
-  options that you can set today (including ARES_OPT_ROTATE actually) but new
+  hns_save_options() will continue to work like today, but will ONLY save
+  options that you can set today (including HNS_OPT_ROTATE actually) but new
   options that we add may not be saved with this.
 
   Instead we introduce:
 
-  ares_dup() that instead can make a new channel and clone the config used
+  hns_dup() that instead can make a new channel and clone the config used
   from an existing channel. It will then clone all config options, including
   future new things we add.
 
-  ares_set_*() style functions that set (new) config options. As a start we
+  hns_set_*() style functions that set (new) config options. As a start we
   simply add these for new functionality, but over time we can also introduce
-  them for existing "struct ares_options" so that we can eventually deprecate
-  the two ares_*_options() functions.
+  them for existing "struct hns_options" so that we can eventually deprecate
+  the two hns_*_options() functions.
 
-  ares_get_*() style functions for extracting info from a channel handle that
-  should be used instead of ares_save_options().
+  hns_get_*() style functions for extracting info from a channel handle that
+  should be used instead of hns_save_options().
 
 * Nov 26 2008 (Yang Tse)
 - Brad Spencer provided changes to allow buildconf to work on OS X.
 
-- Gerald Combs fixed a bug in ares_parse_ptr_reply() which would cause a
+- Gerald Combs fixed a bug in hns_parse_ptr_reply() which would cause a
   buffer to shrink instead of expand if a reply contained 8 or more records.
 
 * Nov 25 2008 (Yang Tse)
 - In preparation for the upcomming IPv6 nameservers patch, the internal
-  ares_addr union is now changed into an internal struct which also holds
+  hns_addr union is now changed into an internal struct which also holds
   the address family.
 
 * Nov 19 2008 (Daniel Stenberg)
-- Brad Spencer brought the new function ares_gethostbyname_file() which simply
+- Brad Spencer brought the new function hns_gethostbyname_file() which simply
   resolves a host name from the given file, using the regular hosts syntax.
 
 * Nov 1 2008 (Daniel Stenberg)
@@ -392,13 +392,13 @@ Version 1.6.0 (Dec 9, 2008)
   has the effect of spreading the query load among all listed servers, rather
   than having all clients try the first listed server first every time.
 
-  You can enable it with ARES_OPT_ROTATE
+  You can enable it with HNS_OPT_ROTATE
 
 * Oct 21 2008 (Yang Tse)
   Charles Hardin added handling of EINPROGRESS for UDP connects.
 
 * Oct 18 2008 (Daniel Stenberg)
-  Charles Hardin made adig support a regular numerical dotted IP address for the
+  Charles Hardin made hdig support a regular numerical dotted IP address for the
   -s option as well.
 
 * Oct 7 2008 (Yang Tse)
@@ -414,17 +414,17 @@ Version 1.6.0 (Dec 9, 2008)
   system that lacks arpa/nameser.h or arpa/nameser_compat.h header files.
 
 * Sep 16 2008 (Yang Tse)
-- Code reorganization to allow internal/private use of ares_writev to any
+- Code reorganization to allow internal/private use of hns_writev to any
   system that lacks the writev function.
 
 * Sep 15 2008 (Yang Tse)
-- Code reorganization to allow internal/private use of ares_strcasecmp to any
+- Code reorganization to allow internal/private use of hns_strcasecmp to any
   system that lacks the strcasecmp function.
 
 - Improve configure detection of some string functions.
 
 * Sep 11 2008 (Yang Tse)
-- Code reorganization to allow internal/private use of ares_strdup to any
+- Code reorganization to allow internal/private use of hns_strdup to any
   system that lacks the strdup function.
 
 Version 1.5.3 (Aug 29, 2008)
@@ -442,7 +442,7 @@ Version 1.5.3 (Aug 29, 2008)
   is unaffected.
 
 - Fix by George Neill:
-  Fixed compilation of acountry sample application failure on some systems.
+  Fixed compilation of hcountry sample application failure on some systems.
 
 * Aug 4 2008 (Daniel Stenberg)
 - Fix by Tofu Linden:
@@ -450,13 +450,13 @@ Version 1.5.3 (Aug 29, 2008)
   The symptom:
   * Users (usually, but not always) on 2-Wire routers and the Comcast service
   and a wired connection to their router would find that the second and
-  subsequent DNS lookups from fresh processes using c-ares to resolve the same
+  subsequent DNS lookups from fresh processes using hns to resolve the same
   address would cause the process to never see a reply (it keeps polling for
   around 1m15s before giving up).
 
   The repro:
   * On such a machine (and yeah, it took us a lot of QA to find the systems
-  that reproduce such a specific problem!), do 'ahost www.secondlife.com',
+  that reproduce such a specific problem!), do 'hhost www.secondlife.com',
   then do it again.  The first process's lookup will work, subsequent lookups
   will time-out and fail.
 
@@ -464,9 +464,9 @@ Version 1.5.3 (Aug 29, 2008)
   * init_id_key() was calling randomize_key() *before* it initialized
   key->state, meaning that the randomness generated by randomize_key() is
   immediately overwritten with deterministic values. (/dev/urandom was also
-  being read incorrectly in the c-ares version we were using, but this was
+  being read incorrectly in the hns version we were using, but this was
   fixed in a later version.)
-  * This makes the stream of generated query-IDs from any new c-ares process
+  * This makes the stream of generated query-IDs from any new hns process
   be an identical and predictable sequence of IDs.
   * This makes the 2-Wire's default built-in DNS server detect these queries
   as probable-duplicates and (erroneously) not respond at all.
@@ -478,7 +478,7 @@ Version 1.5.3 (Aug 29, 2008)
   version of AC_AIX defines _ALL_SOURCE and other four preprocessor symbols
   no matter if the system is AIX or not. To keep the traditional behaviour,
   and an uniform one across autoconf versions AC_AIX is replaced with our
-  own internal macro CARES_CHECK_AIX_ALL_SOURCE.
+  own internal macro HNS_CHECK_AIX_ALL_SOURCE.
 
 * Aug 1 2008 (Yang Tse)
 - Configure process now checks if the preprocessor _REENTRANT symbol is already
@@ -515,11 +515,11 @@ Version 1.5.3 (Aug 29, 2008)
   curl_off_t, it is no longer needed.
 
 * Jul 3 2008 (Daniel Stenberg)
-- Phil Blundell: If you ask ares_gethostbyname() to do an AF_INET6 lookup and
+- Phil Blundell: If you ask hns_gethostbyname() to do an AF_INET6 lookup and
   the target host has only A records, it automatically falls back to an
   AF_INET lookup and gives you the A results.  However, if the target host has
   a CNAME record, this behaviour is defeated since the original query does
-  return some data even though ares_parse_aaa_reply() doesn't consider it
+  return some data even though hns_parse_aaa_reply() doesn't consider it
   relevant. Here's a small patch to make it behave the same with and without
   the CNAME.
 
@@ -529,7 +529,7 @@ Version 1.5.3 (Aug 29, 2008)
 * Jun 30 2008 (Daniel Stenberg)
 
 - As was pointed out to me by Andreas Schuldei, the MAXHOSTNAMELEN define is
-  not posix or anything and thus c-ares failed to build on hurd (and possibly
+  not posix or anything and thus hns failed to build on hurd (and possibly
   elsewhere). The define was also somewhat artificially used in the windows
   port. Now, I instead rewrote the use of gethostbyname to enlarge the host
   name buffer in case of need and totally avoid the use of the MAXHOSTNAMELEN
@@ -541,27 +541,27 @@ Version 1.5.3 (Aug 29, 2008)
 
 * Jun 9 2008 (Yang Tse)
 
-- Make libcares.pc generated file for pkg-config include information relative
-  to the libraries needed for the static linking of c-ares.
+- Make libhns.pc generated file for pkg-config include information relative
+  to the libraries needed for the static linking of hns.
 
 * May 30 2008 (Yang Tse)
 
-- Brad House fixed a missing header file inclusion in adig sample program.
+- Brad House fixed a missing header file inclusion in hdig sample program.
 
 Version 1.5.2 (May 29, 2008)
 
 * May 13 2008 (Daniel Stenberg)
 
 - Introducing millisecond resolution support for the timeout option. See
-  ares_init_options()'s ARES_OPT_TIMEOUTMS.
+  hns_init_options()'s HNS_OPT_TIMEOUTMS.
 
 * May 9 2008 (Yang Tse)
 
-- Use monotonic time source if available, for private function ares__tvnow()
+- Use monotonic time source if available, for private function hns__tvnow()
 
 * May 7 2008 (Daniel Stenberg)
 
-- Sebastian made c-ares able to return all PTR-records when doing reverse
+- Sebastian made hns able to return all PTR-records when doing reverse
   lookups. It is not common practice to have multiple PTR-Records for a single
   IP, but its perfectly legal and some sites have those.
 
@@ -578,14 +578,14 @@ Version 1.5.2 (May 29, 2008)
 
 - Eino Tuominen improved the code when a file is used to seed the randomizer.
 
-- Alexey Simak made adig support NAPTR records
+- Alexey Simak made hdig support NAPTR records
 
 - Alexey Simak fixed the VC dsp file by adding the missing source file
-  ares_expand_string.c
+  hns_expand_string.c
 
 * December 11 2007 (Gisle Vanem)
 
-- Added another sample application; acountry.c which converts an
+- Added another sample application; hcountry.c which converts an
   IPv4-address(es) and/or host-name(s) to country-name and country-code.
   This uses the service of the DNSBL at countries.nerd.dk.
 
@@ -595,20 +595,20 @@ Version 1.5.2 (May 29, 2008)
   /dev/urandom when built cross-compiled as then the script cannot check for
   it.
 
-- Erik Kline cleaned up ares_gethostbyaddr.c:next_lookup() somewhat
+- Erik Kline cleaned up hns_gethostbyaddr.c:next_lookup() somewhat
 
 Version 1.5.1 (Nov 21, 2007)
 
 * November 21 2007 (Daniel Stenberg)
 
-- Robin Cornelius pointed out that ares_llist.h was missing in the release
+- Robin Cornelius pointed out that hns_llist.h was missing in the release
   archive for 1.5.0
 
 Version 1.5.0 (Nov 21, 2007)
 
 * October 2 2007 (Daniel Stenberg)
 
-- ares_strerror() segfaulted if the input error number was out of the currently
+- hns_strerror() segfaulted if the input error number was out of the currently
   supported range.
 
 - Yang Tse: Avoid a segfault when generating a DNS "Transaction ID" in
@@ -628,8 +628,8 @@ Version 1.5.0 (Nov 21, 2007)
   the execution of a query, and updated documentation accordingly. (Patch from
   the Google tree.)
 
-- Support a few more socket options: ARES_OPT_SOCK_SNDBUF and
-  ARES_OPT_SOCK_RCVBUF
+- Support a few more socket options: HNS_OPT_SOCK_SNDBUF and
+  HNS_OPT_SOCK_RCVBUF
 
 - Always register for TCP events even if there are no outstanding queries, as
   the other side could always close the connection, which is a valid event
@@ -642,27 +642,27 @@ Version 1.5.0 (Nov 21, 2007)
   if it fails and the socket is closed the following code doesn't try to use
   the file descriptor.
 
-- Steinar H. Gunderson modified c-ares to now also do to DNS retries even when
+- Steinar H. Gunderson modified hns to now also do to DNS retries even when
   TCP is used since there are several edge cases where it still makes sense.
 
-- Brad House provided a fix for ares_save_options():
+- Brad House provided a fix for hns_save_options():
 
-  Apparently I overlooked something with the ares_save_options() where it
+  Apparently I overlooked something with the hns_save_options() where it
   would try to do a malloc(0) when no options of that type needed to be saved.
   On most platforms, this was fine because malloc(0) doesn't actually return
-  NULL, but on AIX it does, so ares_save_options would return ARES_ENOMEM.
+  NULL, but on AIX it does, so hns_save_options would return HNS_ENOMEM.
 
 * July 14 2007 (Daniel Stenberg)
 
 - Vlad Dinulescu fixed two outstanding valgrind reports:
 
-  1. In ares_query.c , in find_query_by_id we compare q->qid (which is a short
+  1. In hns_query.c , in find_query_by_id we compare q->qid (which is a short
   int variable) with qid, which is declared as an int variable.  Moreover,
   DNS_HEADER_SET_QID is used to set the value of qid, but DNS_HEADER_SET_QID
   sets only the first two bytes of qid. I think that qid should be declared as
   "unsigned short" in this function.
 
-  2. The same problem occurs in ares_process.c, process_answer() .  query->qid
+  2. The same problem occurs in hns_process.c, process_answer() .  query->qid
   (an unsigned short integer variable) is compared with id, which is an
   integer variable. Moreover, id is initialized from DNS_HEADER_QID which sets
   only the first two bytes of id. I think that the id variable should be
@@ -675,11 +675,11 @@ Version 1.5.0 (Nov 21, 2007)
   initialised correctly. And it does that because query->qid is set from
   DNS_HEADER_QID(qbuf); Valgrind says that qbuf has unitialised bytes. And
   qbuf has uninitialised bytes because of channel->next_id . And next_id is
-  set by ares_init.c:ares__generate_new_id() . I found that putting short r=0
+  set by hns_init.c:hns__generate_new_id() . I found that putting short r=0
   in this function (instead of short r) makes all Valgrind warnings go away.
-  I have studied ares__rc4() too, and this is the offending line:
+  I have studied hns__rc4() too, and this is the offending line:
 
-        buffer_ptr[counter] ^= state[xorIndex];   (ares_query.c:62)
+        buffer_ptr[counter] ^= state[xorIndex];   (hns_query.c:62)
 
   This is what triggers Valgrind.. buffer_ptr is unitialised in this function,
   and by applying ^= on it, it remains unitialised.
@@ -704,7 +704,7 @@ Version 1.4.0 (June 8, 2007)
 - Brad House fixed VS2005 compiler warnings due to time_t being 64bit.
   He also made recent Microsoft compilers use _strdup() instead of strdup().
 
-- Brad House's man pages for ares_save_options() and ares_destroy_options()
+- Brad House's man pages for hns_save_options() and hns_destroy_options()
   were added.
 
 - Ashish Sharma provided a patch for supporting multiple entries in the
@@ -715,12 +715,12 @@ Version 1.4.0 (June 8, 2007)
 
 - Shmulik Regev brought cryptographically secure transaction IDs:
 
-  The c-ares library implementation uses a DNS "Transaction ID" field that is
+  The hns library implementation uses a DNS "Transaction ID" field that is
   seeded with a pseudo random number (based on gettimeofday) which is
   incremented (++) between consecutive calls and is therefore rather
   predictable. In general, predictability of DNS Transaction ID is a well
   known security problem (e.g.
-  http://bak.spc.org/dms/archive/dns_id_attack.txt) and makes a c-ares based
+  http://bak.spc.org/dms/archive/dns_id_attack.txt) and makes a hns based
   implementation vulnerable to DNS poisoning. Credit goes to Amit Klein
   (Trusteer) for identifying this problem.
 
@@ -729,7 +729,7 @@ Version 1.4.0 (June 8, 2007)
   which is used with an RC4 stream to generate the cryptographically secure
   transaction IDs.
 
-  Note that the key generation code (in ares_init:randomize_key) has two
+  Note that the key generation code (in hns_init:randomize_key) has two
   versions, the Windows specific one uses a cryptographically safe function
   provided (but undocumented :) by the operating system (described at
   http://blogs.msdn.com/michael_howard/archive/2005/01/14/353379.aspx).  The
@@ -737,32 +737,32 @@ Version 1.4.0 (June 8, 2007)
   function. Surely a better way to generate random keys exists for other
   platforms.
 
-  The patch can be tested by using the adig utility and using the '-s' option.
+  The patch can be tested by using the hdig utility and using the '-s' option.
 
-- Brad House added ares_save_options() and ares_destroy_options() that can be
-  used to keep options for later re-usal when ares_init_options() is used.
+- Brad House added hns_save_options() and hns_destroy_options() that can be
+  used to keep options for later re-usal when hns_init_options() is used.
 
-  Problem: Calling ares_init() for each lookup can be unnecessarily resource
+  Problem: Calling hns_init() for each lookup can be unnecessarily resource
          intensive.  On windows, it must LoadLibrary() or search the registry
-         on each call to ares_init().  On unix, it must read and parse
+         on each call to hns_init().  On unix, it must read and parse
          multiple files to obtain the necessary configuration information.  In
          a single-threaded environment, it would make sense to only
-         ares_init() once, but in a heavily multi-threaded environment, it is
-         undesirable to ares_init() and ares_destroy() for each thread created
+         hns_init() once, but in a heavily multi-threaded environment, it is
+         undesirable to hns_init() and hns_destroy() for each thread created
          and track that.
 
-  Solution: Create ares_save_options() and ares_destroy_options() functions to
+  Solution: Create hns_save_options() and hns_destroy_options() functions to
          retrieve and free options obtained from an initialized channel.  The
-         options populated can be used to pass back into ares_init_options(),
+         options populated can be used to pass back into hns_init_options(),
          it should populate all needed fields and not retrieve any information
          from the system.  Probably wise to destroy the cache every minute or
          so to prevent the data from becoming stale.
 
-- Daniel S added ares_process_fd() to allow applications to ask for processing
+- Daniel S added hns_process_fd() to allow applications to ask for processing
   on specific sockets and thus avoiding select() and associated
   functions/macros.  This function will be used by upcoming libcurl releases
-  for this very reason. It also made me export the ares_socket_t type in the
-  public ares.h header file, since ares_process_fd() uses that type for two of
+  for this very reason. It also made me export the hns_socket_t type in the
+  public hns.h header file, since hns_process_fd() uses that type for two of
   the arguments.
 
 * May 25 2007
@@ -772,12 +772,12 @@ Version 1.4.0 (June 8, 2007)
 
 * April 16 2007
 
-- Yang Tse: Provide ares_getopt() command-line parser function as a source
-  code helper function, not belonging to the actual c-ares library.
+- Yang Tse: Provide hns_getopt() command-line parser function as a source
+  code helper function, not belonging to the actual hns library.
 
 * February 19 2007
 
-- Vlad Dinulescu added ares_parse_ns_reply().
+- Vlad Dinulescu added hns_parse_ns_reply().
 
 * February 13 2007
 
@@ -787,7 +787,7 @@ Version 1.4.0 (June 8, 2007)
 
 * November 22 2006
 
-- Install ares_dns.h too
+- Install hns_dns.h too
 
 - Michael Wallner fixed this problem: When I set domains in the options
   struct, and there are domain/search entries in /etc/resolv.conf, the domains
@@ -797,7 +797,7 @@ Version 1.4.0 (June 8, 2007)
 
 - Yang Tse removed a couple of potential zero size memory allocations.
 
-- Andreas Rieke fixed the line endings in the areslib.dsp file that I (Daniel)
+- Andreas Rieke fixed the line endings in the hnslib.dsp file that I (Daniel)
   broke in the 1.3.2 release. We should switch to a system where that file is
   auto-generated. We could rip some code for that from curl...
 
@@ -805,12 +805,12 @@ Version 1.3.2 (November 3, 2006)
 
 * October 12 2006
 
-- Prevent ares_getsock() to overflow if more than 16 sockets are used.
+- Prevent hns_getsock() to overflow if more than 16 sockets are used.
 
 * September 11 2006
 
 - Guilherme Balena Versiani: I noted a strange BUG in Win32 port
-  (ares_init.c/get_iphlpapi_dns_info() function): when I disable the network
+  (hns_init.c/get_iphlpapi_dns_info() function): when I disable the network
   by hand or disconnect the network cable in Windows 2000 or Windows XP, my
   application gets 127.0.0.1 as the only name server. The problem comes from
   'GetNetworkParams' function, that returns the empty string "" as the only
@@ -821,26 +821,26 @@ Version 1.3.2 (November 3, 2006)
 
 - Brad Spencer did
 
-  o made ares_version.h use extern "C" for c++ compilers
-  o fixed compiler warnings in ares_getnameinfo.c
+  o made hns_version.h use extern "C" for c++ compilers
+  o fixed compiler warnings in hns_getnameinfo.c
   o fixed a buffer position init for TCP reads
 
 * August 3 2006
 
-- Ravi Pratap fixed ares_getsock() to actually return the proper bitmap and
+- Ravi Pratap fixed hns_getsock() to actually return the proper bitmap and
   not always zero!
 
 Version 1.3.1 (June 24, 2006)
 
 * July 23, 2006
 
-- Gisle Vanem added getopt() to the ahost program. Currently accepts
-  only [-t {a|aaaa}] to specify address family in ares_gethostbyname().
+- Gisle Vanem added getopt() to the hhost program. Currently accepts
+  only [-t {a|aaaa}] to specify address family in hns_gethostbyname().
 
 * June 19, 2006
 
 - (wahern) Removed "big endian" DNS section and RR data integer parser
-  macros from ares_dns.h, which break c-ares on my Sparc64. Bit-wise
+  macros from hns_dns.h, which break hns on my Sparc64. Bit-wise
   operations in C operate on logical values. And in any event the octets are
   already in big-endian (aka network) byte order so they're being reversed
   (thus the source of the breakage).
@@ -851,7 +851,7 @@ Version 1.3.1 (June 24, 2006)
   from area_process.c.
 
   TODO: Handle one last EAGAIN for a UDP socket send(2) in
-  ares__send_query().
+  hns__send_query().
 
 * May 10, 2006
 
@@ -862,9 +862,9 @@ Version 1.3.1 (June 24, 2006)
 
 * May 3, 2006
 
-- Nick Mathewson added the ARES_OPT_SOCK_STATE_CB option that when set makes
-  c-ares call a callback on socket state changes. A better way than the
-  ares_getsock() to get full control over the socket state.
+- Nick Mathewson added the HNS_OPT_SOCK_STATE_CB option that when set makes
+  hns call a callback on socket state changes. A better way than the
+  hns_getsock() to get full control over the socket state.
 
 * January 9, 2006
 
@@ -877,13 +877,13 @@ Version 1.3.1 (June 24, 2006)
 
 * January 5, 2006
 
-- James Bursa fixed c-ares to find the hosts file on RISC OS, and made it
+- James Bursa fixed hns to find the hosts file on RISC OS, and made it
   build with newer gcc versions that no longer defines "riscos".
 
 * December 22
 
-- Daniel Stenberg added ares_getsock() that extracts the set of sockets to
-  wait for action on. Similar to ares_fds() but not restricted to using
+- Daniel Stenberg added hns_getsock() that extracts the set of sockets to
+  wait for action on. Similar to hns_fds() but not restricted to using
   select() for the waiting.
 
 * November 25
@@ -892,9 +892,9 @@ Version 1.3.1 (June 24, 2006)
 
 * September 18
 
-- Added constants that will be used by ares_getaddrinfo
+- Added constants that will be used by hns_getaddrinfo
 
-- Made ares_getnameinfo use the reentrant getservbyport (getservbyport_r) if it
+- Made hns_getnameinfo use the reentrant getservbyport (getservbyport_r) if it
   is available to ensure it works properly in a threaded environment.
 
 * September 10
@@ -926,16 +926,16 @@ Version 1.3.0 (August 29, 2005)
 
   I'm not quite sure how this was happening, but I've been seeing PTR queries
   which seem to return empty responses. At least, they were empty when calling
-  ares_expand_name() on the record. Here's a patch which guarantees to
+  hns_expand_name() on the record. Here's a patch which guarantees to
   NUL-terminate the expanded name. The old behavior failed to NUL-terminate if
   len was 0, and this was causing strlen() to run past the end of the buffer
-  after calling ares_expand_name() and getting ARES_SUCCESS as the return
+  after calling hns_expand_name() and getting HNS_SUCCESS as the return
   value. If q is not greater than *s then it's equal and *s is always
   allocated with at least one byte.
 
 * May 16
 
-- Added ares_getnameinfo which mimics the getnameinfo API (another feature
+- Added hns_getnameinfo which mimics the getnameinfo API (another feature
   that could use testing).
 
 * May 14
@@ -950,12 +950,12 @@ Version 1.3.0 (August 29, 2005)
 
 * April 8
 
-- Added preliminary IPv6 support to ares_gethostbyname. Currently, sortlist
+- Added preliminary IPv6 support to hns_gethostbyname. Currently, sortlist
   does not work with IPv6. Also provided an implementation of bitncmp from
   BIND for systems that do not supply this function. This will be used to add
   IPv6 support to sortlist.
 
-- Made ares_gethostbyaddr support IPv6 by specifying AF_INET6 as the family.
+- Made hns_gethostbyaddr support IPv6 by specifying AF_INET6 as the family.
   The function can lookup IPv6 addresses both from files (/etc/hosts) and
   DNS lookups.
 
@@ -971,16 +971,16 @@ Version 1.3.0 (August 29, 2005)
 
 * March 11, 2005
 
-- Dominick Meglio added ares_parse_aaaa_reply.c and did various
+- Dominick Meglio added hns_parse_aaaa_reply.c and did various
   adjustments. The first little steps towards IPv6 support!
 
 * November 7
 
-- Fixed the VC project and makefile to use ares_cancel and ares_version
+- Fixed the VC project and makefile to use hns_cancel and hns_version
 
 * October 24
 
-- The released ares_version.h from 1.2.1 says 1.2.0 due to a maketgz flaw.
+- The released hns_version.h from 1.2.1 says 1.2.0 due to a maketgz flaw.
   This is now fixed.
 
 Version 1.2.1 (October 20, 2004)
@@ -989,20 +989,20 @@ Version 1.2.1 (October 20, 2004)
 
 - Henrik Stoerner fix: got a report that Tru64 Unix (the unix from Digital
   when they made Alpha's) uses /etc/svc.conf for the purpose fixed below for
-  other OSes. He made c-ares check for and understand it if present.
+  other OSes. He made hns check for and understand it if present.
 
-- Now c-ares will use local host name lookup _before_ DNS resolving by default
+- Now hns will use local host name lookup _before_ DNS resolving by default
   if nothing else is told.
 
 * September 26
 
-- Henrik Stoerner: found out that c-ares does not look at the /etc/host.conf
+- Henrik Stoerner: found out that hns does not look at the /etc/host.conf
   file to determine the sequence in which to search /etc/hosts and DNS.  So on
   systems where this order is defined by /etc/host.conf instead of a "lookup"
-  entry in /etc/resolv.conf, c-ares will always default to looking in DNS
+  entry in /etc/resolv.conf, hns will always default to looking in DNS
   first, and /etc/hosts second.
 
-  c-ares now looks at
+  hns now looks at
 
   1) resolv.conf (for the "lookup" line);
   2) nsswitch.fon (for the "hosts:" line);
@@ -1010,7 +1010,7 @@ Version 1.2.1 (October 20, 2004)
 
   First match wins.
 
-- Dominick Meglio patched: C-ares on Windows assumed that the HOSTS file is
+- Dominick Meglio patched: C-hns on Windows assumed that the HOSTS file is
   located in a static location. It assumed
   C:\Windows\System32\Drivers\Etc. This is a poor assumption to make. In fact,
   the location of the HOSTS file can be changed via a registry setting.
@@ -1019,7 +1019,7 @@ Version 1.2.1 (October 20, 2004)
   file:
   http://www.microsoft.com/technet/itsolutions/network/deploy/depovg/tcpip2k.mspx
 
-  The patch will make c-ares correctly consult the registry for the location
+  The patch will make hns correctly consult the registry for the location
   of this file.
 
 * August 29
@@ -1028,11 +1028,11 @@ Version 1.2.1 (October 20, 2004)
 
 * August 20
 
-- Gisle Vanem made c-ares build and work with his Watt-32 TCP/IP stack.
+- Gisle Vanem made hns build and work with his Watt-32 TCP/IP stack.
 
 * August 13
 
-- Harshal Pradhan made a minor syntax change in ares_init.c to make it build
+- Harshal Pradhan made a minor syntax change in hns_init.c to make it build
   fine with MSVC 7.1
 
 * July 24
@@ -1049,7 +1049,7 @@ Version 1.2.1 (October 20, 2004)
   The next problem was that 'server->tcp_buffer_pos' had a random value at
   entry to 1st recv() (luckily causing Winsock to return ENOBUFS).
 
-  I've also added a ares_writev() for Windows to streamline the code a bit
+  I've also added a hns_writev() for Windows to streamline the code a bit
   more.
 
 * July 20
@@ -1060,10 +1060,10 @@ Version 1.2.1 (October 20, 2004)
 - Made configure create config.h, and all source files now include setup.h that
   might include the proper config.h (or a handicrafted alternative).
 
-- Switched to 'ares_socket_t' type for sockets in ares, since Windows don't
+- Switched to 'hns_socket_t' type for sockets in hns, since Windows don't
   use 'int' for that.
 
-- automake-ified and libool-ified c-ares. Now it builds libcares as a shared
+- automake-ified and libool-ified hns. Now it builds libhns as a shared
   lib on most platforms if wanted. (This bloated the size of the release
   archive with another 200K!)
 
@@ -1078,11 +1078,11 @@ Version 1.2.1 (October 20, 2004)
   archives?
 
 * July 3
-- Günter Knauf made c-ares build and run on Novell Netware.
+- Günter Knauf made hns build and run on Novell Netware.
 
 * July 1
 - Gisle Vanem provided Makefile.dj to build with djgpp, added a few more djgpp
-  fixes and made ares not use 'errno' to provide further info on Windows.
+  fixes and made hns not use 'errno' to provide further info on Windows.
 
 * June 30
 - Gisle Vanem made it build with djgpp and run fine with the Watt-32 stack.
@@ -1098,7 +1098,7 @@ Version 1.2.1 (October 20, 2004)
   wrong to use the DHCPNAMESERVER setting in registry.
 
   In the case of no global DHCP-assigned or fixed servers, but DNS server(s)
-  per adapter, one has to query the adapter branches.  But how can c-ares know
+  per adapter, one has to query the adapter branches.  But how can hns know
   which adapter is valid for use? AFAICS it can't. There could be one adapter
   that is down (e.g. a VPN adapter).
 
@@ -1123,14 +1123,14 @@ Version 1.2.0 (April 13, 2004)
   site.
 
 * April 1, 2004
-- Dirk Manske provided a new function that is now named ares_cancel(). It is
-  used to cancel/cleanup a resolve/request made using ares functions on the
-  given ares channel. It does not destroy/kill the ares channel itself.
+- Dirk Manske provided a new function that is now named hns_cancel(). It is
+  used to cancel/cleanup a resolve/request made using hns functions on the
+  given hns channel. It does not destroy/kill the hns channel itself.
 
 - Dominick Meglio cleaned up the formatting in several man pages.
 
 * March 30, 2004
-- Dominick Meglio's new ares_expand_string. A helper function when decoding
+- Dominick Meglio's new hns_expand_string. A helper function when decoding
   incoming DNS packages.
 
 - Daniel Stenberg modified the Makefile.in to use a for loop for the man page
@@ -1148,32 +1148,32 @@ Version 1.1.0 (March 11, 2004)
   script). Added acinclude.m4 to the tarball.
 
 * February 23, 2004
-- Removed ares_free_errmem(), the function, the file and the man page. It was
+- Removed hns_free_errmem(), the function, the file and the man page. It was
   not used and it did nothing.
 
 - Fixed a lot of code that wasn't "64bit clean" and thus caused a lot of
   compiler warnings on picky compilers.
 
 * February 22, 2004
-- Dominick Meglio made ares init support multiple name servers in the
+- Dominick Meglio made hns init support multiple name servers in the
   NameServer key on Windows.
 
 * February 16, 2004
-- Modified ares_private.h to include libcurl's memory debug header if
-  CURLDEBUG is set. This makes all the ares-functions supervised properly by
+- Modified hns_private.h to include libcurl's memory debug header if
+  CURLDEBUG is set. This makes all the hns-functions supervised properly by
   the curl test suite. This also forced me to add inclusion of the
-  ares_private.h header in a few more files that are using some kind of
+  hns_private.h header in a few more files that are using some kind of
   memory-related resources.
 
-- Made the makefile only build ahost and adig if 'make demos' is used.
+- Made the makefile only build hhost and hdig if 'make demos' is used.
 
 * February 10, 2004
-- Dirk Manske made ares_version.h installed with 'make install'
+- Dirk Manske made hns_version.h installed with 'make install'
 
 * February 4, 2004
-- ares_free_errmem() is subject for removal, it is simply present for future
+- hns_free_errmem() is subject for removal, it is simply present for future
   purposes, and since we removed the extra parameter in strerror() it won't
-  be used by c-ares!
+  be used by hns!
 - configure --enable-debug now enables picky compiler options if gcc is used
 - fixed several compiler warnings --enable-debug showed and Joerg Mueller-Tolk
   reported
@@ -1181,13 +1181,13 @@ Version 1.1.0 (March 11, 2004)
 Version 1.0.0 (February 3, 2004)
 
 * February 3, 2004
-- now we produce the libcares.a library instead of the previous libares.a
+- now we produce the libhns.a library instead of the previous libhns.a
   since we are no longer compatible
 
 * February 2, 2004
 
-- ares_strerror() has one argument less. This is the first official
-  modification of the existing provided ares API.
+- hns_strerror() has one argument less. This is the first official
+  modification of the existing provided hns API.
 
 * January 29, 2004
 
@@ -1195,13 +1195,13 @@ Version 1.0.0 (February 3, 2004)
 
 * January 4, 2004
 
-- Dominick Meglio made the private gettimeofday() become ares_gettimeofday()
+- Dominick Meglio made the private gettimeofday() become hns_gettimeofday()
   instead in order to not pollute the name space and risk colliding with
   other libraries' versions of this function.
 
 * October 24, 2003. Daniel Stenberg
 
-  Added ares_version().
+  Added hns_version().
 
 Version 1.0-pre1 (8 October 2003)
 
@@ -1215,4 +1215,4 @@ Version 1.0-pre1 (8 October 2003)
 
 - liren at vivisimo.com made the initial windows port
 
-* Imported the sources from ares 1.1.1
+* Imported the sources from hns 1.1.1

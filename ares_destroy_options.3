@@ -13,22 +13,22 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_DESTROY_OPTIONS 3 "1 June 2007"
+.TH HNS_DESTROY_OPTIONS 3 "1 June 2007"
 .SH NAME
-ares_destroy_options \- Destroy options initialized with ares_save_options
+hns_destroy_options \- Destroy options initialized with hns_save_options
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B void ares_destroy_options(struct ares_options *\fIoptions\fP)
+.B void hns_destroy_options(struct hns_options *\fIoptions\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_destroy_options(3)\fP function destroys the options struct
+The \fBhns_destroy_options(3)\fP function destroys the options struct
 identified by \Ioptions\fP, freeing all memory allocated by
-\fBares_save_options(3)\fP.
+\fBhns_save_options(3)\fP.
 .SH SEE ALSO
-.BR ares_save_options (3),
-.BR ares_init_options (3)
+.BR hns_save_options (3),
+.BR hns_init_options (3)
 .SH AUTHOR
 Brad House
 .br

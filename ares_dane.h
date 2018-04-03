@@ -15,17 +15,17 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_private.h"
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_private.h"
 
 int
-ares_dane_verify(
-  struct ares_dane_reply *dane_reply,
+hns_dane_verify(
+  struct hns_dane_reply *dane_reply,
   unsigned char *cert,
   size_t cert_len
 );
 
 int
-ares_parse_dane_reply (const unsigned char *abuf, int alen,
-                      struct ares_dane_reply **dane_out, int expect);
+hns_parse_dane_reply (const unsigned char *abuf, int alen,
+                      struct hns_dane_reply **dane_out, int expect);

@@ -4,8 +4,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_ECMULT_CONST_IMPL_H
-#define ARES_SECP256K1_ECMULT_CONST_IMPL_H
+#ifndef HNS_SECP256K1_ECMULT_CONST_IMPL_H
+#define HNS_SECP256K1_ECMULT_CONST_IMPL_H
 
 #include "scalar.h"
 #include "group.h"
@@ -17,21 +17,21 @@
     int m; \
     int abs_n = (n) * (((n) > 0) * 2 - 1); \
     int idx_n = abs_n / 2; \
-    ares_secp256k1_fe neg_y; \
+    hns_secp256k1_fe neg_y; \
     VERIFY_CHECK(((n) & 1) == 1); \
     VERIFY_CHECK((n) >= -((1 << ((w)-1)) - 1)); \
     VERIFY_CHECK((n) <=  ((1 << ((w)-1)) - 1)); \
-    VERIFY_SETUP(ares_secp256k1_fe_clear(&(r)->x)); \
-    VERIFY_SETUP(ares_secp256k1_fe_clear(&(r)->y)); \
+    VERIFY_SETUP(hns_secp256k1_fe_clear(&(r)->x)); \
+    VERIFY_SETUP(hns_secp256k1_fe_clear(&(r)->y)); \
     for (m = 0; m < ECMULT_TABLE_SIZE(w); m++) { \
         /* This loop is used to avoid secret data in array indices. See
          * the comment in ecmult_gen_impl.h for rationale. */ \
-        ares_secp256k1_fe_cmov(&(r)->x, &(pre)[m].x, m == idx_n); \
-        ares_secp256k1_fe_cmov(&(r)->y, &(pre)[m].y, m == idx_n); \
+        hns_secp256k1_fe_cmov(&(r)->x, &(pre)[m].x, m == idx_n); \
+        hns_secp256k1_fe_cmov(&(r)->y, &(pre)[m].y, m == idx_n); \
     } \
     (r)->infinity = 0; \
-    ares_secp256k1_fe_negate(&neg_y, &(r)->y, 1); \
-    ares_secp256k1_fe_cmov(&(r)->y, &neg_y, (n) != abs_n); \
+    hns_secp256k1_fe_negate(&neg_y, &(r)->y, 1); \
+    hns_secp256k1_fe_cmov(&(r)->y, &neg_y, (n) != abs_n); \
 } while(0)
 
 
@@ -48,7 +48,7 @@
  *
  *  Numbers reference steps of `Algorithm SPA-resistant Width-w NAF with Odd Scalar` on pp. 335
  */
-static int ares_secp256k1_wnaf_const(int *wnaf, ares_secp256k1_scalar s, int w) {
+static int hns_secp256k1_wnaf_const(int *wnaf, hns_secp256k1_scalar s, int w) {
     int global_sign;
     int skew = 0;
     int word = 0;
@@ -59,7 +59,7 @@ static int ares_secp256k1_wnaf_const(int *wnaf, ares_secp256k1_scalar s, int w) 
 
     int flip;
     int bit;
-    ares_secp256k1_scalar neg_s;
+    hns_secp256k1_scalar neg_s;
     int not_neg_one;
     /* Note that we cannot handle even numbers by negating them to be odd, as is
      * done in other implementations, since if our scalars were specified to have
@@ -70,30 +70,30 @@ static int ares_secp256k1_wnaf_const(int *wnaf, ares_secp256k1_scalar s, int w) 
      * this, and having the caller compensate after doing the multiplication. */
 
     /* Negative numbers will be negated to keep their bit representation below the maximum width */
-    flip = ares_secp256k1_scalar_is_high(&s);
+    flip = hns_secp256k1_scalar_is_high(&s);
     /* We add 1 to even numbers, 2 to odd ones, noting that negation flips parity */
-    bit = flip ^ !ares_secp256k1_scalar_is_even(&s);
+    bit = flip ^ !hns_secp256k1_scalar_is_even(&s);
     /* We check for negative one, since adding 2 to it will cause an overflow */
-    ares_secp256k1_scalar_negate(&neg_s, &s);
-    not_neg_one = !ares_secp256k1_scalar_is_one(&neg_s);
-    ares_secp256k1_scalar_cadd_bit(&s, bit, not_neg_one);
+    hns_secp256k1_scalar_negate(&neg_s, &s);
+    not_neg_one = !hns_secp256k1_scalar_is_one(&neg_s);
+    hns_secp256k1_scalar_cadd_bit(&s, bit, not_neg_one);
     /* If we had negative one, flip == 1, s.d[0] == 0, bit == 1, so caller expects
      * that we added two to it and flipped it. In fact for -1 these operations are
      * identical. We only flipped, but since skewing is required (in the sense that
      * the skew must be 1 or 2, never zero) and flipping is not, we need to change
      * our flags to claim that we only skewed. */
-    global_sign = ares_secp256k1_scalar_cond_negate(&s, flip);
+    global_sign = hns_secp256k1_scalar_cond_negate(&s, flip);
     global_sign *= not_neg_one * 2 - 1;
     skew = 1 << bit;
 
     /* 4 */
-    u_last = ares_secp256k1_scalar_shr_int(&s, w);
+    u_last = hns_secp256k1_scalar_shr_int(&s, w);
     while (word * w < WNAF_BITS) {
         int sign;
         int even;
 
         /* 4.1 4.4 */
-        u = ares_secp256k1_scalar_shr_int(&s, w);
+        u = hns_secp256k1_scalar_shr_int(&s, w);
         /* 4.2 */
         even = ((u & 1) == 0);
         sign = 2 * (u_last > 0) - 1;
@@ -107,37 +107,37 @@ static int ares_secp256k1_wnaf_const(int *wnaf, ares_secp256k1_scalar s, int w) 
     }
     wnaf[word] = u * global_sign;
 
-    VERIFY_CHECK(ares_secp256k1_scalar_is_zero(&s));
+    VERIFY_CHECK(hns_secp256k1_scalar_is_zero(&s));
     VERIFY_CHECK(word == WNAF_SIZE(w));
     return skew;
 }
 
 
-static void ares_secp256k1_ecmult_const(ares_secp256k1_gej *r, const ares_secp256k1_ge *a, const ares_secp256k1_scalar *scalar) {
-    ares_secp256k1_ge pre_a[ECMULT_TABLE_SIZE(WINDOW_A)];
-    ares_secp256k1_ge tmpa;
-    ares_secp256k1_fe Z;
+static void hns_secp256k1_ecmult_const(hns_secp256k1_gej *r, const hns_secp256k1_ge *a, const hns_secp256k1_scalar *scalar) {
+    hns_secp256k1_ge pre_a[ECMULT_TABLE_SIZE(WINDOW_A)];
+    hns_secp256k1_ge tmpa;
+    hns_secp256k1_fe Z;
 
     int skew_1;
     int wnaf_1[1 + WNAF_SIZE(WINDOW_A - 1)];
 #ifdef USE_ENDOMORPHISM
-    ares_secp256k1_ge pre_a_lam[ECMULT_TABLE_SIZE(WINDOW_A)];
+    hns_secp256k1_ge pre_a_lam[ECMULT_TABLE_SIZE(WINDOW_A)];
     int wnaf_lam[1 + WNAF_SIZE(WINDOW_A - 1)];
     int skew_lam;
-    ares_secp256k1_scalar q_1, q_lam;
+    hns_secp256k1_scalar q_1, q_lam;
 #endif
 
     int i;
-    ares_secp256k1_scalar sc = *scalar;
+    hns_secp256k1_scalar sc = *scalar;
 
     /* build wnaf representation for q. */
 #ifdef USE_ENDOMORPHISM
     /* split q into q_1 and q_lam (where q = q_1 + q_lam*lambda, and q_1 and q_lam are ~128 bit) */
-    ares_secp256k1_scalar_split_lambda(&q_1, &q_lam, &sc);
-    skew_1   = ares_secp256k1_wnaf_const(wnaf_1,   q_1,   WINDOW_A - 1);
-    skew_lam = ares_secp256k1_wnaf_const(wnaf_lam, q_lam, WINDOW_A - 1);
+    hns_secp256k1_scalar_split_lambda(&q_1, &q_lam, &sc);
+    skew_1   = hns_secp256k1_wnaf_const(wnaf_1,   q_1,   WINDOW_A - 1);
+    skew_lam = hns_secp256k1_wnaf_const(wnaf_lam, q_lam, WINDOW_A - 1);
 #else
-    skew_1   = ares_secp256k1_wnaf_const(wnaf_1, sc, WINDOW_A - 1);
+    skew_1   = hns_secp256k1_wnaf_const(wnaf_1, sc, WINDOW_A - 1);
 #endif
 
     /* Calculate odd multiples of a.
@@ -146,14 +146,14 @@ static void ares_secp256k1_ecmult_const(ares_secp256k1_gej *r, const ares_secp25
      * that the Z coordinate was 1, use affine addition formulae, and correct
      * the Z coordinate of the result once at the end.
      */
-    ares_secp256k1_gej_set_ge(r, a);
-    ares_secp256k1_ecmult_odd_multiples_table_globalz_windowa(pre_a, &Z, r);
+    hns_secp256k1_gej_set_ge(r, a);
+    hns_secp256k1_ecmult_odd_multiples_table_globalz_windowa(pre_a, &Z, r);
     for (i = 0; i < ECMULT_TABLE_SIZE(WINDOW_A); i++) {
-        ares_secp256k1_fe_normalize_weak(&pre_a[i].y);
+        hns_secp256k1_fe_normalize_weak(&pre_a[i].y);
     }
 #ifdef USE_ENDOMORPHISM
     for (i = 0; i < ECMULT_TABLE_SIZE(WINDOW_A); i++) {
-        ares_secp256k1_ge_mul_lambda(&pre_a_lam[i], &pre_a[i]);
+        hns_secp256k1_ge_mul_lambda(&pre_a_lam[i], &pre_a[i]);
     }
 #endif
 
@@ -163,71 +163,71 @@ static void ares_secp256k1_ecmult_const(ares_secp256k1_gej *r, const ares_secp25
     i = wnaf_1[WNAF_SIZE(WINDOW_A - 1)];
     VERIFY_CHECK(i != 0);
     ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a, i, WINDOW_A);
-    ares_secp256k1_gej_set_ge(r, &tmpa);
+    hns_secp256k1_gej_set_ge(r, &tmpa);
 #ifdef USE_ENDOMORPHISM
     i = wnaf_lam[WNAF_SIZE(WINDOW_A - 1)];
     VERIFY_CHECK(i != 0);
     ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a_lam, i, WINDOW_A);
-    ares_secp256k1_gej_add_ge(r, r, &tmpa);
+    hns_secp256k1_gej_add_ge(r, r, &tmpa);
 #endif
     /* remaining loop iterations */
     for (i = WNAF_SIZE(WINDOW_A - 1) - 1; i >= 0; i--) {
         int n;
         int j;
         for (j = 0; j < WINDOW_A - 1; ++j) {
-            ares_secp256k1_gej_double_nonzero(r, r, NULL);
+            hns_secp256k1_gej_double_nonzero(r, r, NULL);
         }
 
         n = wnaf_1[i];
         ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a, n, WINDOW_A);
         VERIFY_CHECK(n != 0);
-        ares_secp256k1_gej_add_ge(r, r, &tmpa);
+        hns_secp256k1_gej_add_ge(r, r, &tmpa);
 #ifdef USE_ENDOMORPHISM
         n = wnaf_lam[i];
         ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a_lam, n, WINDOW_A);
         VERIFY_CHECK(n != 0);
-        ares_secp256k1_gej_add_ge(r, r, &tmpa);
+        hns_secp256k1_gej_add_ge(r, r, &tmpa);
 #endif
     }
 
-    ares_secp256k1_fe_mul(&r->z, &r->z, &Z);
+    hns_secp256k1_fe_mul(&r->z, &r->z, &Z);
 
     {
         /* Correct for wNAF skew */
-        ares_secp256k1_ge correction = *a;
-        ares_secp256k1_ge_storage correction_1_stor;
+        hns_secp256k1_ge correction = *a;
+        hns_secp256k1_ge_storage correction_1_stor;
 #ifdef USE_ENDOMORPHISM
-        ares_secp256k1_ge_storage correction_lam_stor;
+        hns_secp256k1_ge_storage correction_lam_stor;
 #endif
-        ares_secp256k1_ge_storage a2_stor;
-        ares_secp256k1_gej tmpj;
-        ares_secp256k1_gej_set_ge(&tmpj, &correction);
-        ares_secp256k1_gej_double_var(&tmpj, &tmpj, NULL);
-        ares_secp256k1_ge_set_gej(&correction, &tmpj);
-        ares_secp256k1_ge_to_storage(&correction_1_stor, a);
+        hns_secp256k1_ge_storage a2_stor;
+        hns_secp256k1_gej tmpj;
+        hns_secp256k1_gej_set_ge(&tmpj, &correction);
+        hns_secp256k1_gej_double_var(&tmpj, &tmpj, NULL);
+        hns_secp256k1_ge_set_gej(&correction, &tmpj);
+        hns_secp256k1_ge_to_storage(&correction_1_stor, a);
 #ifdef USE_ENDOMORPHISM
-        ares_secp256k1_ge_to_storage(&correction_lam_stor, a);
+        hns_secp256k1_ge_to_storage(&correction_lam_stor, a);
 #endif
-        ares_secp256k1_ge_to_storage(&a2_stor, &correction);
+        hns_secp256k1_ge_to_storage(&a2_stor, &correction);
 
         /* For odd numbers this is 2a (so replace it), for even ones a (so no-op) */
-        ares_secp256k1_ge_storage_cmov(&correction_1_stor, &a2_stor, skew_1 == 2);
+        hns_secp256k1_ge_storage_cmov(&correction_1_stor, &a2_stor, skew_1 == 2);
 #ifdef USE_ENDOMORPHISM
-        ares_secp256k1_ge_storage_cmov(&correction_lam_stor, &a2_stor, skew_lam == 2);
+        hns_secp256k1_ge_storage_cmov(&correction_lam_stor, &a2_stor, skew_lam == 2);
 #endif
 
         /* Apply the correction */
-        ares_secp256k1_ge_from_storage(&correction, &correction_1_stor);
-        ares_secp256k1_ge_neg(&correction, &correction);
-        ares_secp256k1_gej_add_ge(r, r, &correction);
+        hns_secp256k1_ge_from_storage(&correction, &correction_1_stor);
+        hns_secp256k1_ge_neg(&correction, &correction);
+        hns_secp256k1_gej_add_ge(r, r, &correction);
 
 #ifdef USE_ENDOMORPHISM
-        ares_secp256k1_ge_from_storage(&correction, &correction_lam_stor);
-        ares_secp256k1_ge_neg(&correction, &correction);
-        ares_secp256k1_ge_mul_lambda(&correction, &correction);
-        ares_secp256k1_gej_add_ge(r, r, &correction);
+        hns_secp256k1_ge_from_storage(&correction, &correction_lam_stor);
+        hns_secp256k1_ge_neg(&correction, &correction);
+        hns_secp256k1_ge_mul_lambda(&correction, &correction);
+        hns_secp256k1_gej_add_ge(r, r, &correction);
 #endif
     }
 }
 
-#endif /* ARES_SECP256K1_ECMULT_CONST_IMPL_H */
+#endif /* HNS_SECP256K1_ECMULT_CONST_IMPL_H */

@@ -13,14 +13,14 @@
  * without express or implied warranty.
  */
 
-#ifndef __ARES_ANDROID_H__
-#define __ARES_ANDROID_H__
+#ifndef __HNS_ANDROID_H__
+#define __HNS_ANDROID_H__
 
 #if defined(ANDROID) || defined(__ANDROID__)
 
-char **ares_get_android_server_list(size_t max_servers, size_t *num_servers);
-void ares_library_cleanup_android(void);
+char **hns_get_android_server_list(size_t max_servers, size_t *num_servers);
+void hns_library_cleanup_android(void);
 
 #endif
 
-#endif /* __ARES_ANDROID_H__ */
+#endif /* __HNS_ANDROID_H__ */

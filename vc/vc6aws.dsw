@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "cares"=".\cares\vc6cares.dsp" - Package Owner=<4>
+Project: "hns"=".\hns\vc6hns.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "acountry"=".\acountry\vc6acountry.dsp" - Package Owner=<4>
+Project: "hcountry"=".\hcountry\vc6hcountry.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -24,13 +24,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name cares
+    Project_Dep_Name hns
     End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "adig"=".\adig\vc6adig.dsp" - Package Owner=<4>
+Project: "hdig"=".\hdig\vc6hdig.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -39,13 +39,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name cares
+    Project_Dep_Name hns
     End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "ahost"=".\ahost\vc6ahost.dsp" - Package Owner=<4>
+Project: "hhost"=".\hhost\vc6hhost.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -54,7 +54,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name cares
+    Project_Dep_Name hns
     End Project Dependency
 }}}
 

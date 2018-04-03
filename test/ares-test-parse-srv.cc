@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseSrvReplyOK) {
@@ -15,8 +15,8 @@ TEST_F(LibraryTest, ParseSrvReplyOK) {
     .add_answer(new DNSSrvRR("example.com", 100, 11, 21, 31, "srv2.example.com"));
   std::vector<byte> data = pkt.data();
 
-  struct ares_srv_reply* srv = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  struct hns_srv_reply* srv = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_srv_reply(data.data(), data.size(), &srv));
   ASSERT_NE(nullptr, srv);
 
   EXPECT_EQ("srv.example.com", std::string(srv->host));
@@ -24,7 +24,7 @@ TEST_F(LibraryTest, ParseSrvReplyOK) {
   EXPECT_EQ(20, srv->weight);
   EXPECT_EQ(30, srv->port);
 
-  struct ares_srv_reply* srv2 = srv->next;
+  struct hns_srv_reply* srv2 = srv->next;
   ASSERT_NE(nullptr, srv2);
   EXPECT_EQ("srv2.example.com", std::string(srv2->host));
   EXPECT_EQ(11, srv2->priority);
@@ -32,7 +32,7 @@ TEST_F(LibraryTest, ParseSrvReplyOK) {
   EXPECT_EQ(31, srv2->port);
   EXPECT_EQ(nullptr, srv2->next);
 
-  ares_free_data(srv);
+  hns_free_data(srv);
 }
 
 TEST_F(LibraryTest, ParseSrvReplySingle) {
@@ -49,8 +49,8 @@ TEST_F(LibraryTest, ParseSrvReplySingle) {
     .add_additional(new DNSARR("else5.where.com", 42, {172,19,0,2}));
   std::vector<byte> data = pkt.data();
 
-  struct ares_srv_reply* srv = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  struct hns_srv_reply* srv = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_srv_reply(data.data(), data.size(), &srv));
   ASSERT_NE(nullptr, srv);
 
   EXPECT_EQ("example.abc.def.com", std::string(srv->host));
@@ -59,7 +59,7 @@ TEST_F(LibraryTest, ParseSrvReplySingle) {
   EXPECT_EQ(8160, srv->port);
   EXPECT_EQ(nullptr, srv->next);
 
-  ares_free_data(srv);
+  hns_free_data(srv);
 }
 
 TEST_F(LibraryTest, ParseSrvReplyMalformed) {
@@ -88,8 +88,8 @@ TEST_F(LibraryTest, ParseSrvReplyMalformed) {
     0x02, 0x03, 0x04, 0x05,
   };
 
-  struct ares_srv_reply* srv = nullptr;
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  struct hns_srv_reply* srv = nullptr;
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_srv_reply(data.data(), data.size(), &srv));
   ASSERT_EQ(nullptr, srv);
 }
 
@@ -111,10 +111,10 @@ TEST_F(LibraryTest, ParseSrvReplyMultiple) {
     .add_additional(new DNSARR("n3.example.com", 300, {172,19,0,3}));
   std::vector<byte> data = pkt.data();
 
-  struct ares_srv_reply* srv0 = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_srv_reply(data.data(), data.size(), &srv0));
+  struct hns_srv_reply* srv0 = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_srv_reply(data.data(), data.size(), &srv0));
   ASSERT_NE(nullptr, srv0);
-  struct ares_srv_reply* srv = srv0;
+  struct hns_srv_reply* srv = srv0;
 
   EXPECT_EQ("a1.srv.example.com", std::string(srv->host));
   EXPECT_EQ(0, srv->priority);
@@ -136,7 +136,7 @@ TEST_F(LibraryTest, ParseSrvReplyMultiple) {
   EXPECT_EQ(5678, srv->port);
   EXPECT_EQ(nullptr, srv->next);
 
-  ares_free_data(srv0);
+  hns_free_data(srv0);
 }
 
 TEST_F(LibraryTest, ParseSrvReplyCname) {
@@ -154,8 +154,8 @@ TEST_F(LibraryTest, ParseSrvReplyCname) {
     .add_additional(new DNSARR("else3.where.com", 42, {172,19,0,3}));
   std::vector<byte> data = pkt.data();
 
-  struct ares_srv_reply* srv = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  struct hns_srv_reply* srv = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_srv_reply(data.data(), data.size(), &srv));
   ASSERT_NE(nullptr, srv);
 
   EXPECT_EQ("srv.abc.def.com", std::string(srv->host));
@@ -164,7 +164,7 @@ TEST_F(LibraryTest, ParseSrvReplyCname) {
   EXPECT_EQ(1234, srv->port);
   EXPECT_EQ(nullptr, srv->next);
 
-  ares_free_data(srv);
+  hns_free_data(srv);
 }
 
 TEST_F(LibraryTest, ParseSrvReplyCnameMultiple) {
@@ -186,10 +186,10 @@ TEST_F(LibraryTest, ParseSrvReplyCnameMultiple) {
     .add_additional(new DNSARR("n3.example.com", 300, {172,19,0,3}));
   std::vector<byte> data = pkt.data();
 
-  struct ares_srv_reply* srv0 = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_srv_reply(data.data(), data.size(), &srv0));
+  struct hns_srv_reply* srv0 = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_srv_reply(data.data(), data.size(), &srv0));
   ASSERT_NE(nullptr, srv0);
-  struct ares_srv_reply* srv = srv0;
+  struct hns_srv_reply* srv = srv0;
 
   EXPECT_EQ("a1.srv.example.com", std::string(srv->host));
   EXPECT_EQ(0, srv->priority);
@@ -211,7 +211,7 @@ TEST_F(LibraryTest, ParseSrvReplyCnameMultiple) {
   EXPECT_EQ(5678, srv->port);
   EXPECT_EQ(nullptr, srv->next);
 
-  ares_free_data(srv0);
+  hns_free_data(srv0);
 }
 
 TEST_F(LibraryTest, ParseSrvReplyErrors) {
@@ -220,12 +220,12 @@ TEST_F(LibraryTest, ParseSrvReplyErrors) {
     .add_question(new DNSQuestion("example.abc.def.com", ns_t_srv))
     .add_answer(new DNSSrvRR("example.abc.def.com", 180, 0, 10, 8160, "example.abc.def.com"));
   std::vector<byte> data;
-  struct ares_srv_reply* srv = nullptr;
+  struct hns_srv_reply* srv = nullptr;
 
   // No question.
   pkt.questions_.clear();
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_srv_reply(data.data(), data.size(), &srv));
   pkt.add_question(new DNSQuestion("example.abc.def.com", ns_t_srv));
 
 #ifdef DISABLED
@@ -233,7 +233,7 @@ TEST_F(LibraryTest, ParseSrvReplyErrors) {
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("Axample.com", ns_t_srv));
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  EXPECT_EQ(HNS_ENODATA, hns_parse_srv_reply(data.data(), data.size(), &srv));
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("example.com", ns_t_srv));
 #endif
@@ -241,7 +241,7 @@ TEST_F(LibraryTest, ParseSrvReplyErrors) {
   // Two questions.
   pkt.add_question(new DNSQuestion("example.abc.def.com", ns_t_srv));
   data = pkt.data();
-  EXPECT_EQ(ARES_EBADRESP, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  EXPECT_EQ(HNS_EBADRESP, hns_parse_srv_reply(data.data(), data.size(), &srv));
   pkt.questions_.clear();
   pkt.add_question(new DNSQuestion("64.48.32.16.in-addr.arpa", ns_t_ptr));
 
@@ -249,7 +249,7 @@ TEST_F(LibraryTest, ParseSrvReplyErrors) {
   pkt.answers_.clear();
   pkt.add_answer(new DNSMxRR("example.com", 100, 100, "mx1.example.com"));
   data = pkt.data();
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_srv_reply(data.data(), data.size(), &srv));
   EXPECT_EQ(nullptr, srv);
   pkt.answers_.clear();
   pkt.add_answer(new DNSSrvRR("example.abc.def.com", 180, 0, 10, 8160, "example.abc.def.com"));
@@ -257,14 +257,14 @@ TEST_F(LibraryTest, ParseSrvReplyErrors) {
   // No answer.
   pkt.answers_.clear();
   data = pkt.data();
-  EXPECT_EQ(ARES_ENODATA, ares_parse_srv_reply(data.data(), data.size(), &srv));
+  EXPECT_EQ(HNS_ENODATA, hns_parse_srv_reply(data.data(), data.size(), &srv));
   pkt.add_answer(new DNSSrvRR("example.abc.def.com", 180, 0, 10, 8160, "example.abc.def.com"));
 
   // Truncated packets.
   data = pkt.data();
   for (size_t len = 1; len < data.size(); len++) {
-    int rc = ares_parse_srv_reply(data.data(), len, &srv);
-    EXPECT_TRUE(rc == ARES_EBADRESP || rc == ARES_EBADNAME);
+    int rc = hns_parse_srv_reply(data.data(), len, &srv);
+    EXPECT_TRUE(rc == HNS_EBADRESP || rc == HNS_EBADNAME);
   }
 }
 
@@ -275,14 +275,14 @@ TEST_F(LibraryTest, ParseSrvReplyAllocFail) {
     .add_answer(new DNSCnameRR("example.com", 300, "c.example.com"))
     .add_answer(new DNSSrvRR("example.abc.def.com", 180, 0, 10, 8160, "example.abc.def.com"));
   std::vector<byte> data = pkt.data();
-  struct ares_srv_reply* srv = nullptr;
+  struct hns_srv_reply* srv = nullptr;
 
   for (int ii = 1; ii <= 5; ii++) {
     ClearFails();
     SetAllocFail(ii);
-    EXPECT_EQ(ARES_ENOMEM, ares_parse_srv_reply(data.data(), data.size(), &srv)) << ii;
+    EXPECT_EQ(HNS_ENOMEM, hns_parse_srv_reply(data.data(), data.size(), &srv)) << ii;
   }
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

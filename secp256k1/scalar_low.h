@@ -4,12 +4,12 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_SCALAR_REPR_H
-#define ARES_SECP256K1_SCALAR_REPR_H
+#ifndef HNS_SECP256K1_SCALAR_REPR_H
+#define HNS_SECP256K1_SCALAR_REPR_H
 
 #include <stdint.h>
 
 /** A scalar modulo the group order of the secp256k1 curve. */
-typedef uint32_t ares_secp256k1_scalar;
+typedef uint32_t hns_secp256k1_scalar;
 
-#endif /* ARES_SECP256K1_SCALAR_REPR_H */
+#endif /* HNS_SECP256K1_SCALAR_REPR_H */

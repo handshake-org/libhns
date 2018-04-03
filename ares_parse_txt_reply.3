@@ -13,25 +13,25 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_PARSE_TXT_REPLY 3 "27 October 2009"
+.TH HNS_PARSE_TXT_REPLY 3 "27 October 2009"
 .SH NAME
-ares_parse_txt_reply \- Parse a reply to a DNS query of type TXT
+hns_parse_txt_reply \- Parse a reply to a DNS query of type TXT
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_parse_txt_reply(const unsigned char* \fIabuf\fP, int \fIalen\fP,
-.B                         struct ares_txt_reply **\fItxt_out\fP);
+.B int hns_parse_txt_reply(const unsigned char* \fIabuf\fP, int \fIalen\fP,
+.B                         struct hns_txt_reply **\fItxt_out\fP);
 .PP
-.B int ares_parse_txt_reply_ext(const unsigned char* \fIabuf\fP, int \fIalen\fP,
-.B                              struct ares_txt_ext **\fItxt_out\fP);
+.B int hns_parse_txt_reply_ext(const unsigned char* \fIabuf\fP, int \fIalen\fP,
+.B                              struct hns_txt_ext **\fItxt_out\fP);
 .fi
 .SH DESCRIPTION
 The
-.BR "ares_parse_txt_reply" " (" "ares_parse_txt_reply_ext" ")"
+.BR "hns_parse_txt_reply" " (" "hns_parse_txt_reply_ext" ")"
 function parses the response to a query of type TXT into a
 linked list (one element per sub-string) of
-.IR "struct ares_txt_reply" " (" "struct ares_txt_ext" ")"
+.IR "struct hns_txt_reply" " (" "struct hns_txt_ext" ")"
 The parameters
 .I abuf
 and
@@ -42,16 +42,16 @@ memory and a pointer to it stored into the variable pointed to by
 It is the caller's responsibility to free the resulting
 .IR txt_out
 structure when it is no longer needed using the function
-.B ares_free_data
+.B hns_free_data
 .PP
 The structure 
-.I ares_txt_reply
+.I hns_txt_reply
 contains the following fields:
 .sp
 .in +4n
 .nf
-struct ares_txt_reply {
-  struct ares_txt_reply  *next;
+struct hns_txt_reply {
+  struct hns_txt_reply  *next;
   unsigned int  length;
   unsigned char *txt;
 };
@@ -59,13 +59,13 @@ struct ares_txt_reply {
 .in
 .PP
 The structure
-.I ares_txt_ext
+.I hns_txt_ext
 contains the following fields:
 .sp
 .in +4n
 .nf
-struct ares_txt_ext {
-  struct ares_txt_ext  *next;
+struct hns_txt_ext {
+  struct hns_txt_ext  *next;
   unsigned int  length;
   unsigned char *txt;
   unsigned char record_start;
@@ -76,10 +76,10 @@ struct ares_txt_ext {
 The
 .I record_start
 field in
-.I struct ares_txt_ext
+.I struct hns_txt_ext
 is 1 if this structure is a start of a TXT record, and 0 if the structure is a
 continuation of a previous record. The linked list of the
-.I struct ares_txt_ext
+.I struct hns_txt_ext
 will have at least one item with
 .I record_start
 equal to 1, and may have some items with
@@ -87,7 +87,7 @@ equal to 1, and may have some items with
 equal to 0 between them.
 .PP
 These sequences of
-.I struct ares_txt_ext
+.I struct hns_txt_ext
 (starting from the item with
 .I record_start
 equal to 1, and ending right before the record start item) may be treated as
@@ -95,25 +95,25 @@ either components of a single TXT record or as a multi-parted TXT record,
 depending on particular use case.
 .PP
 .SH RETURN VALUES
-.BR "ares_parse_txt_reply" " (" "ares_parse_txt_reply_ext" ")"
+.BR "hns_parse_txt_reply" " (" "hns_parse_txt_reply_ext" ")"
 can return any of the following values:
 .TP 15
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 The response was successfully parsed.
 .TP 15
-.B ARES_EBADRESP
+.B HNS_EBADRESP
 The response was malformatted.
 .TP 15
-.B ARES_ENODATA
+.B HNS_ENODATA
 The response did not contain an answer to the query.
 .TP 15
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .SH AVAILABILITY
-This function was first introduced in c-ares version 1.7.0.
+This function was first introduced in hns version 1.7.0.
 .SH SEE ALSO
-.BR ares_query (3)
-.BR ares_free_data (3)
+.BR hns_query (3)
+.BR hns_free_data (3)
 .SH AUTHOR
 Written by Jakub Hrozek <jhrozek@redhat.com>, on behalf of Red Hat, Inc http://www.redhat.com
 .PP

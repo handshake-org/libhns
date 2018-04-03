@@ -1,7 +1,7 @@
-c-ares version 1.14.0
+hns version 1.14.0
 
 Changes:
- o android: Introduce new ares_library_init_android() call for Oreo support. [5]
+ o android: Introduce new hns_library_init_android() call for Oreo support. [5]
  
 Bug fixes:
 
@@ -9,7 +9,7 @@ Bug fixes:
  o win32: Preserve DNS server order returned by Windows when sorting and exclude
    DNS servers in legacy subnets. [2] [4]
  o win32: Support most recent Visual Studio 2017
- o gethostbyaddr should fail with ECANCELLED not ENOTFOUND when ares_cancel
+ o gethostbyaddr should fail with ECANCELLED not ENOTFOUND when hns_cancel
    is called. [3]
  o win32: Exclude legacy ipv6 subnets [4]
  o android: Applications compiled for Oreo can no longer use
@@ -17,7 +17,7 @@ Bug fixes:
    [5] [7]
  o win32: Force use of ANSI functions [6]
  o CMake minimum version is now 3.1
- o ares_gethostbyname.3: fix callback status values [8]
+ o hns_gethostbyname.3: fix callback status values [8]
  o docs: Document WSAStartup requirement [9]
  o Fix a typo in init_by_resolv_conf [10]
  o Android JNI code leaks local references in some cases [11]
@@ -33,15 +33,15 @@ Thanks go to these friendly people for their efforts and contributions:
 
 References to bug reports and discussions on issues:
 
- [1] = https://github.com/c-ares/c-ares/commit/18ea99
- [2] = https://github.com/c-ares/c-ares/issues/150
- [3] = https://github.com/c-ares/c-ares/pull/138
- [4] = https://github.com/c-ares/c-ares/pull/144
- [5] = https://github.com/c-ares/c-ares/pull/148
- [6] = https://github.com/c-ares/c-ares/pull/142
- [7] = https://github.com/c-ares/c-ares/pull/175
- [8] = https://c-ares.haxx.se/mail/c-ares-archive-2011-06/0012.shtml
- [9] = https://github.com/c-ares/c-ares/pull/180
- [10] = https://github.com/c-ares/c-ares/pull/160
- [11] = https://github.com/c-ares/c-ares/pull/175
- [12] = https://github.com/c-ares/c-ares/pull/142
+ [1] = https://github.com/hns/hns/commit/18ea99
+ [2] = https://github.com/hns/hns/issues/150
+ [3] = https://github.com/hns/hns/pull/138
+ [4] = https://github.com/hns/hns/pull/144
+ [5] = https://github.com/hns/hns/pull/148
+ [6] = https://github.com/hns/hns/pull/142
+ [7] = https://github.com/hns/hns/pull/175
+ [8] = https://c-ares.haxx.se/mail/hns-archive-2011-06/0012.shtml
+ [9] = https://github.com/hns/hns/pull/180
+ [10] = https://github.com/hns/hns/pull/160
+ [11] = https://github.com/hns/hns/pull/175
+ [12] = https://github.com/hns/hns/pull/142

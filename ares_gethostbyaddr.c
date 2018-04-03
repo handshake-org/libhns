@@ -13,7 +13,7 @@
  * this software for any purpose.  It is provided "as is"
  * without express or implied warranty.
  */
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -33,21 +33,21 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_inet_net_pton.h"
-#include "ares_platform.h"
-#include "ares_private.h"
-#include "ares_addr.h"
+#include "hns.h"
+#include "hns_inet_net_pton.h"
+#include "hns_platform.h"
+#include "hns_private.h"
+#include "hns_addr.h"
 
 #ifdef WATT32
 #undef WIN32
 #endif
 
 struct addr_query {
-  /* Arguments passed to ares_gethostbyaddr() */
-  ares_channel channel;
-  struct ares_addr addr;
-  ares_host_callback callback;
+  /* Arguments passed to hns_gethostbyaddr() */
+  hns_channel channel;
+  struct hns_addr addr;
+  hns_host_callback callback;
   void *arg;
 
   const char *remaining_lookups;
@@ -59,36 +59,36 @@ static void addr_callback(void *arg, int status, int timeouts,
                           unsigned char *abuf, int alen);
 static void end_aquery(struct addr_query *aquery, int status,
                        struct hostent *host);
-static int file_lookup(struct ares_addr *addr, struct hostent **host);
-static void ptr_rr_name(char *name, const struct ares_addr *addr);
+static int file_lookup(struct hns_addr *addr, struct hostent **host);
+static void ptr_rr_name(char *name, const struct hns_addr *addr);
 
-void ares_gethostbyaddr(ares_channel channel, const void *addr, int addrlen,
-                        int family, ares_host_callback callback, void *arg)
+void hns_gethostbyaddr(hns_channel channel, const void *addr, int addrlen,
+                        int family, hns_host_callback callback, void *arg)
 {
   struct addr_query *aquery;
 
   if (family != AF_INET && family != AF_INET6)
     {
-      callback(arg, ARES_ENOTIMP, 0, NULL);
+      callback(arg, HNS_ENOTIMP, 0, NULL);
       return;
     }
 
   if ((family == AF_INET && addrlen != sizeof(aquery->addr.addrV4)) ||
       (family == AF_INET6 && addrlen != sizeof(aquery->addr.addrV6)))
     {
-      callback(arg, ARES_ENOTIMP, 0, NULL);
+      callback(arg, HNS_ENOTIMP, 0, NULL);
       return;
     }
 
-  aquery = ares_malloc(sizeof(struct addr_query));
+  aquery = hns_malloc(sizeof(struct addr_query));
   if (!aquery)
     {
-      callback(arg, ARES_ENOMEM, 0, NULL);
+      callback(arg, HNS_ENOMEM, 0, NULL);
       return;
     }
 
   aquery->channel = channel;
-  ares_addr_init(&aquery->addr);
+  hns_addr_init(&aquery->addr);
   if (family == AF_INET)
     memcpy(&aquery->addr.addrV4, addr, sizeof(aquery->addr.addrV4));
   else
@@ -116,16 +116,16 @@ static void next_lookup(struct addr_query *aquery)
         case 'b':
           ptr_rr_name(name, &aquery->addr);
           aquery->remaining_lookups = p + 1;
-          ares_query(aquery->channel, name, C_IN, T_PTR, addr_callback,
+          hns_query(aquery->channel, name, C_IN, T_PTR, addr_callback,
                      aquery);
           return;
         case 'f':
           status = file_lookup(&aquery->addr, &host);
 
-          /* this status check below previously checked for !ARES_ENOTFOUND,
+          /* this status check below previously checked for !HNS_ENOTFOUND,
              but we should not assume that this single error code is the one
              that can occur, as that is in fact no longer the case */
-          if (status == ARES_SUCCESS)
+          if (status == HNS_SUCCESS)
             {
               end_aquery(aquery, status, host);
               return;
@@ -133,7 +133,7 @@ static void next_lookup(struct addr_query *aquery)
           break;
         }
     }
-  end_aquery(aquery, ARES_ENOTFOUND, NULL);
+  end_aquery(aquery, HNS_ENOTFOUND, NULL);
 }
 
 static void addr_callback(void *arg, int status, int timeouts,
@@ -144,23 +144,23 @@ static void addr_callback(void *arg, int status, int timeouts,
   size_t addrlen;
 
   aquery->timeouts += timeouts;
-  if (status == ARES_SUCCESS)
+  if (status == HNS_SUCCESS)
     {
       if (aquery->addr.family == AF_INET)
         {
           addrlen = sizeof(aquery->addr.addrV4);
-          status = ares_parse_ptr_reply(abuf, alen, &aquery->addr.addrV4,
+          status = hns_parse_ptr_reply(abuf, alen, &aquery->addr.addrV4,
                                         (int)addrlen, AF_INET, &host);
         }
       else
         {
           addrlen = sizeof(aquery->addr.addrV6);
-          status = ares_parse_ptr_reply(abuf, alen, &aquery->addr.addrV6,
+          status = hns_parse_ptr_reply(abuf, alen, &aquery->addr.addrV6,
                                         (int)addrlen, AF_INET6, &host);
         }
       end_aquery(aquery, status, host);
     }
-  else if (status == ARES_EDESTRUCTION || status == ARES_ECANCELLED)
+  else if (status == HNS_EDESTRUCTION || status == HNS_ECANCELLED)
     end_aquery(aquery, status, NULL);
   else
     next_lookup(aquery);
@@ -171,11 +171,11 @@ static void end_aquery(struct addr_query *aquery, int status,
 {
   aquery->callback(aquery->arg, status, aquery->timeouts, host);
   if (host)
-    ares_free_hostent(host);
-  ares_free(aquery);
+    hns_free_hostent(host);
+  hns_free(aquery);
 }
 
-static int file_lookup(struct ares_addr *addr, struct hostent **host)
+static int file_lookup(struct hns_addr *addr, struct hostent **host)
 {
   FILE *fp;
   int status;
@@ -187,7 +187,7 @@ static int file_lookup(struct ares_addr *addr, struct hostent **host)
 
   PATH_HOSTS[0] = '\0';
 
-  platform = ares__getplatform();
+  platform = hns__getplatform();
 
   if (platform == WIN_NT) {
     char tmp[MAX_PATH];
@@ -206,7 +206,7 @@ static int file_lookup(struct ares_addr *addr, struct hostent **host)
   else if (platform == WIN_9X)
     GetWindowsDirectoryA(PATH_HOSTS, MAX_PATH);
   else
-    return ARES_ENOTFOUND;
+    return HNS_ENOTFOUND;
 
   strcat(PATH_HOSTS, WIN_PATH_HOSTS);
 
@@ -215,7 +215,7 @@ static int file_lookup(struct ares_addr *addr, struct hostent **host)
   const char *PATH_HOSTS = _w32_GetHostsFile();
 
   if (!PATH_HOSTS)
-    return ARES_ENOTFOUND;
+    return HNS_ENOTFOUND;
 #endif
 
   fp = fopen(PATH_HOSTS, "r");
@@ -226,21 +226,21 @@ static int file_lookup(struct ares_addr *addr, struct hostent **host)
         {
         case ENOENT:
         case ESRCH:
-          return ARES_ENOTFOUND;
+          return HNS_ENOTFOUND;
         default:
           DEBUGF(fprintf(stderr, "fopen() failed with error: %d %s\n",
                          error, strerror(error)));
           DEBUGF(fprintf(stderr, "Error opening file: %s\n",
                          PATH_HOSTS));
           *host = NULL;
-          return ARES_EFILE;
+          return HNS_EFILE;
         }
     }
-  while ((status = ares__get_hostent(fp, addr->family, host)) == ARES_SUCCESS)
+  while ((status = hns__get_hostent(fp, addr->family, host)) == HNS_SUCCESS)
     {
       if (addr->family != (*host)->h_addrtype)
         {
-          ares_free_hostent(*host);
+          hns_free_hostent(*host);
           continue;
         }
       if (addr->family == AF_INET)
@@ -255,17 +255,17 @@ static int file_lookup(struct ares_addr *addr, struct hostent **host)
                      sizeof(addr->addrV6)) == 0)
             break;
         }
-      ares_free_hostent(*host);
+      hns_free_hostent(*host);
     }
   fclose(fp);
-  if (status == ARES_EOF)
-    status = ARES_ENOTFOUND;
-  if (status != ARES_SUCCESS)
+  if (status == HNS_EOF)
+    status = HNS_ENOTFOUND;
+  if (status != HNS_SUCCESS)
     *host = NULL;
   return status;
 }
 
-static void ptr_rr_name(char *name, const struct ares_addr *addr)
+static void ptr_rr_name(char *name, const struct hns_addr *addr)
 {
   if (addr->family == AF_INET)
     {

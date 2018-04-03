@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -12,32 +12,32 @@
 #include <arpa/inet.h>
 #endif
 
-#include "ares.h"
-#include "ares_inet_net_pton.h"
-#include "ares_private.h"
-#include "ares_base32.h"
-#include "ares_addr.h"
+#include "hns.h"
+#include "hns_inet_net_pton.h"
+#include "hns_private.h"
+#include "hns_base32.h"
+#include "hns_addr.h"
 
 #ifndef INET6_ADDRSTRLEN
 #define INET6_ADDRSTRLEN 65
 #endif
 
 void
-ares_addr_init(struct ares_addr *addr) {
+hns_addr_init(struct hns_addr *addr) {
   assert(addr);
-  memset(addr, 0, sizeof(struct ares_addr));
+  memset(addr, 0, sizeof(struct hns_addr));
   addr->family = AF_INET;
 }
 
 int
-ares_addr_from_string(
-  struct ares_addr *addr,
+hns_addr_from_string(
+  struct hns_addr *addr,
   const char *src,
   unsigned int port
 ) {
   char *s = (char *)src;
 
-  ares_addr_init(addr);
+  hns_addr_init(addr);
 
   if (!s)
     return 0;
@@ -54,10 +54,10 @@ ares_addr_from_string(
     memcpy(pubkey, s, pubkey_len);
     pubkey[pubkey_len] = '\0';
 
-    if (ares_base32_decode_size(pubkey) != 33)
+    if (hns_base32_decode_size(pubkey) != 33)
       return 0;
 
-    if (ares_base32_decode(pubkey, addr->key_, 0) == -1)
+    if (hns_base32_decode(pubkey, addr->key_, 0) == -1)
       return 0;
 
     addr->key = &addr->key_[0];
@@ -138,9 +138,9 @@ ares_addr_from_string(
   unsigned char sin_addr[16];
   unsigned int af;
 
-  if (ares_inet_pton(AF_INET, host, sin_addr) == 1) {
+  if (hns_inet_pton(AF_INET, host, sin_addr) == 1) {
     af = AF_INET;
-  } else if (ares_inet_pton(AF_INET6, host, sin_addr) == 1) {
+  } else if (hns_inet_pton(AF_INET6, host, sin_addr) == 1) {
     af = AF_INET6;
   } else {
     return 0;
@@ -160,8 +160,8 @@ ares_addr_from_string(
 }
 
 int
-ares_addr_to_string(
-  struct ares_addr *addr,
+hns_addr_to_string(
+  struct hns_addr *addr,
   char *dst,
   size_t dst_len,
   unsigned int fb
@@ -181,7 +181,7 @@ ares_addr_to_string(
 
   unsigned int port = ntohs(addr->udp_port);
 
-  if (ares_inet_ntop(af, ip, dst, dst_len) == 0)
+  if (hns_inet_ntop(af, ip, dst, dst_len) == 0)
     return 0;
 
   if (fb) {
@@ -195,8 +195,8 @@ ares_addr_to_string(
       port = fb;
 
     if (af == AF_INET6) {
-      assert(len + need < ARES_MAX_HOST);
-      char tmp[ARES_MAX_HOST];
+      assert(len + need < HNS_MAX_HOST);
+      char tmp[HNS_MAX_HOST];
       sprintf(tmp, "[%s]:%d", dst, port);
       strcpy(dst, tmp);
     } else {
@@ -208,31 +208,31 @@ ares_addr_to_string(
 }
 
 int
-ares_addr_to_full(
-  struct ares_addr *addr,
+hns_addr_to_full(
+  struct hns_addr *addr,
   char *dst,
   size_t dst_len,
   unsigned int fb
 ) {
-  if (!ares_addr_to_string(addr, dst, dst_len, fb))
+  if (!hns_addr_to_string(addr, dst, dst_len, fb))
     return 0;
 
   if (!addr->key)
     return 1;
 
   size_t len = strlen(dst);
-  size_t size = ares_base32_encode_size(addr->key, 33, 0);
+  size_t size = hns_base32_encode_size(addr->key, 33, 0);
 
   if (dst_len - len < size + 1)
     return 0;
 
   assert(size <= 54);
-  assert(len + (size - 1) + 1 < ARES_MAX_HOST);
+  assert(len + (size - 1) + 1 < HNS_MAX_HOST);
 
   char b32[54];
-  ares_base32_encode(addr->key, 33, b32, 0);
+  hns_base32_encode(addr->key, 33, b32, 0);
 
-  char tmp[ARES_MAX_HOST];
+  char tmp[HNS_MAX_HOST];
   sprintf(tmp, "%s@%s", b32, dst);
   strcpy(dst, tmp);
 

@@ -1,4 +1,4 @@
-c-ares release procedure - how to do a release
+hns release procedure - how to do a release
 ==============================================
 
 in the source code repo
@@ -6,13 +6,13 @@ in the source code repo
 
 - edit `RELEASE-NOTES` to be accurate
 
-- edit `Makefile.am`'s `CARES_VERSION_INFO`, and `CMakeLists.txt`'s
-  `CARES_LIB_VERSIONINFO` set to the same value to denote the current shared
+- edit `Makefile.am`'s `HNS_VERSION_INFO`, and `CMakeLists.txt`'s
+  `HNS_LIB_VERSIONINFO` set to the same value to denote the current shared
   object versioning.
 
 - make sure all relevant changes are committed on the master branch
 
-- tag the git repo in this style: `git tag -a cares-1_14_0` -a annotates the
+- tag the git repo in this style: `git tag -a hns-1_14_0` -a annotates the
   tag and we use underscores instead of dots in the version number.
 
 - run "./maketgz 1.14.0" to build the release tarball. It is important that
@@ -26,9 +26,9 @@ in the source code repo
 
 - upload the resulting files to https://c-ares.haxx.se/download/
 
-- update `ares_version.h` for the next version
+- update `hns_version.h` for the next version
 
-in the c-ares-www repo
+in the hns-www repo
 ----------------------
 
 - edit `index.t` (version number and date),
@@ -44,7 +44,7 @@ in the c-ares-www repo
 inform
 ------
 
-- send an email to the c-ares mailing list. Insert the RELEASE-NOTES into the
+- send an email to the hns mailing list. Insert the RELEASE-NOTES into the
   mail.
 
 celebrate

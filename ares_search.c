@@ -14,29 +14,29 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_STRINGS_H
 #  include <strings.h>
 #endif
 
-#include "ares.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_private.h"
 
 struct search_query {
-  /* Arguments passed to ares_search */
-  ares_channel channel;
+  /* Arguments passed to hns_search */
+  hns_channel channel;
   char *name;                   /* copied into an allocated buffer */
   int dnsclass;
   int type;
-  ares_callback callback;
+  hns_callback callback;
   void *arg;
 
   int status_as_is;             /* error status from trying as-is */
   int next_domain;              /* next search domain to try */
   int trying_as_is;             /* current query is for name as-is */
   int timeouts;                 /* number of timeouts we saw for this request */
-  int ever_got_nodata;          /* did we ever get ARES_ENODATA along the way? */
+  int ever_got_nodata;          /* did we ever get HNS_ENODATA along the way? */
 };
 
 static void search_callback(void *arg, int status, int timeouts,
@@ -44,10 +44,10 @@ static void search_callback(void *arg, int status, int timeouts,
 static void end_squery(struct search_query *squery, int status,
                        unsigned char *abuf, int alen);
 static int cat_domain(const char *name, const char *domain, char **s);
-STATIC_TESTABLE int single_domain(ares_channel channel, const char *name, char **s);
+STATIC_TESTABLE int single_domain(hns_channel channel, const char *name, char **s);
 
-void ares_search(ares_channel channel, const char *name, int dnsclass,
-                 int type, ares_callback callback, void *arg)
+void hns_search(hns_channel channel, const char *name, int dnsclass,
+                 int type, hns_callback callback, void *arg)
 {
   struct search_query *squery;
   char *s;
@@ -55,36 +55,36 @@ void ares_search(ares_channel channel, const char *name, int dnsclass,
   int status, ndots;
 
   /* If name only yields one domain to search, then we don't have
-   * to keep extra state, so just do an ares_query().
+   * to keep extra state, so just do an hns_query().
    */
   status = single_domain(channel, name, &s);
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     {
       callback(arg, status, 0, NULL, 0);
       return;
     }
   if (s)
     {
-      ares_query(channel, s, dnsclass, type, callback, arg);
-      ares_free(s);
+      hns_query(channel, s, dnsclass, type, callback, arg);
+      hns_free(s);
       return;
     }
 
   /* Allocate a search_query structure to hold the state necessary for
    * doing multiple lookups.
    */
-  squery = ares_malloc(sizeof(struct search_query));
+  squery = hns_malloc(sizeof(struct search_query));
   if (!squery)
     {
-      callback(arg, ARES_ENOMEM, 0, NULL, 0);
+      callback(arg, HNS_ENOMEM, 0, NULL, 0);
       return;
     }
   squery->channel = channel;
-  squery->name = ares_strdup(name);
+  squery->name = hns_strdup(name);
   if (!squery->name)
     {
-      ares_free(squery);
-      callback(arg, ARES_ENOMEM, 0, NULL, 0);
+      hns_free(squery);
+      callback(arg, HNS_ENOMEM, 0, NULL, 0);
       return;
     }
   squery->dnsclass = dnsclass;
@@ -112,7 +112,7 @@ void ares_search(ares_channel channel, const char *name, int dnsclass,
       /* Try the name as-is first. */
       squery->next_domain = 0;
       squery->trying_as_is = 1;
-      ares_query(channel, name, dnsclass, type, search_callback, squery);
+      hns_query(channel, name, dnsclass, type, search_callback, squery);
     }
   else
     {
@@ -120,16 +120,16 @@ void ares_search(ares_channel channel, const char *name, int dnsclass,
       squery->next_domain = 1;
       squery->trying_as_is = 0;
       status = cat_domain(name, channel->domains[0], &s);
-      if (status == ARES_SUCCESS)
+      if (status == HNS_SUCCESS)
         {
-          ares_query(channel, s, dnsclass, type, search_callback, squery);
-          ares_free(s);
+          hns_query(channel, s, dnsclass, type, search_callback, squery);
+          hns_free(s);
         }
       else
       {
         /* failed, free the malloc()ed memory */
-        ares_free(squery->name);
-        ares_free(squery);
+        hns_free(squery->name);
+        hns_free(squery);
         callback(arg, status, 0, NULL, 0);
       }
     }
@@ -139,14 +139,14 @@ static void search_callback(void *arg, int status, int timeouts,
                             unsigned char *abuf, int alen)
 {
   struct search_query *squery = (struct search_query *) arg;
-  ares_channel channel = squery->channel;
+  hns_channel channel = squery->channel;
   char *s;
 
   squery->timeouts += timeouts;
 
   /* Stop searching unless we got a non-fatal error. */
-  if (status != ARES_ENODATA && status != ARES_ESERVFAIL
-      && status != ARES_ENOTFOUND)
+  if (status != HNS_ENODATA && status != HNS_ESERVFAIL
+      && status != HNS_ENOTFOUND)
     end_squery(squery, status, abuf, alen);
   else
     {
@@ -155,13 +155,13 @@ static void search_callback(void *arg, int status, int timeouts,
         squery->status_as_is = status;
 
       /*
-       * If we ever get ARES_ENODATA along the way, record that; if the search
-       * should run to the very end and we got at least one ARES_ENODATA,
-       * then callers like ares_gethostbyname() may want to try a T_A search
+       * If we ever get HNS_ENODATA along the way, record that; if the search
+       * should run to the very end and we got at least one HNS_ENODATA,
+       * then callers like hns_gethostbyname() may want to try a T_A search
        * even if the last domain we queried for T_AAAA resource records
-       * returned ARES_ENOTFOUND.
+       * returned HNS_ENOTFOUND.
        */
-      if (status == ARES_ENODATA)
+      if (status == HNS_ENODATA)
         squery->ever_got_nodata = 1;
 
       if (squery->next_domain < channel->ndomains)
@@ -169,27 +169,27 @@ static void search_callback(void *arg, int status, int timeouts,
           /* Try the next domain. */
           status = cat_domain(squery->name,
                               channel->domains[squery->next_domain], &s);
-          if (status != ARES_SUCCESS)
+          if (status != HNS_SUCCESS)
             end_squery(squery, status, NULL, 0);
           else
             {
               squery->trying_as_is = 0;
               squery->next_domain++;
-              ares_query(channel, s, squery->dnsclass, squery->type,
+              hns_query(channel, s, squery->dnsclass, squery->type,
                          search_callback, squery);
-              ares_free(s);
+              hns_free(s);
             }
         }
       else if (squery->status_as_is == -1)
         {
           /* Try the name as-is at the end. */
           squery->trying_as_is = 1;
-          ares_query(channel, squery->name, squery->dnsclass, squery->type,
+          hns_query(channel, squery->name, squery->dnsclass, squery->type,
                      search_callback, squery);
         }
       else {
-        if (squery->status_as_is == ARES_ENOTFOUND && squery->ever_got_nodata) {
-          end_squery(squery, ARES_ENODATA, NULL, 0);
+        if (squery->status_as_is == HNS_ENOTFOUND && squery->ever_got_nodata) {
+          end_squery(squery, HNS_ENODATA, NULL, 0);
         }
         else
           end_squery(squery, squery->status_as_is, NULL, 0);
@@ -201,8 +201,8 @@ static void end_squery(struct search_query *squery, int status,
                        unsigned char *abuf, int alen)
 {
   squery->callback(squery->arg, status, squery->timeouts, abuf, alen);
-  ares_free(squery->name);
-  ares_free(squery);
+  hns_free(squery->name);
+  hns_free(squery);
 }
 
 /* Concatenate two domains. */
@@ -211,21 +211,21 @@ static int cat_domain(const char *name, const char *domain, char **s)
   size_t nlen = strlen(name);
   size_t dlen = strlen(domain);
 
-  *s = ares_malloc(nlen + 1 + dlen + 1);
+  *s = hns_malloc(nlen + 1 + dlen + 1);
   if (!*s)
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
   memcpy(*s, name, nlen);
   (*s)[nlen] = '.';
   memcpy(*s + nlen + 1, domain, dlen);
   (*s)[nlen + 1 + dlen] = 0;
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
 /* Determine if this name only yields one query.  If it does, set *s to
  * the string we should query, in an allocated buffer.  If not, set *s
  * to NULL.
  */
-STATIC_TESTABLE int single_domain(ares_channel channel, const char *name, char **s)
+STATIC_TESTABLE int single_domain(hns_channel channel, const char *name, char **s)
 {
   size_t len = strlen(name);
   const char *hostaliases;
@@ -241,11 +241,11 @@ STATIC_TESTABLE int single_domain(ares_channel channel, const char *name, char *
    */
   if ((len > 0) && (name[len - 1] == '.'))
     {
-      *s = ares_strdup(name);
-      return (*s) ? ARES_SUCCESS : ARES_ENOMEM;
+      *s = hns_strdup(name);
+      return (*s) ? HNS_SUCCESS : HNS_ENOMEM;
     }
 
-  if (!(channel->flags & ARES_FLAG_NOALIASES) && !strchr(name, '.'))
+  if (!(channel->flags & HNS_FLAG_NOALIASES) && !strchr(name, '.'))
     {
       /* The name might be a host alias. */
       hostaliases = getenv("HOSTALIASES");
@@ -254,8 +254,8 @@ STATIC_TESTABLE int single_domain(ares_channel channel, const char *name, char *
           fp = fopen(hostaliases, "r");
           if (fp)
             {
-              while ((status = ares__read_line(fp, &line, &linesize))
-                     == ARES_SUCCESS)
+              while ((status = hns__read_line(fp, &line, &linesize))
+                     == HNS_SUCCESS)
                 {
                   if (strncasecmp(line, name, len) != 0 ||
                       !ISSPACE(line[len]))
@@ -268,20 +268,20 @@ STATIC_TESTABLE int single_domain(ares_channel channel, const char *name, char *
                       q = p + 1;
                       while (*q && !ISSPACE(*q))
                         q++;
-                      *s = ares_malloc(q - p + 1);
+                      *s = hns_malloc(q - p + 1);
                       if (*s)
                         {
                           memcpy(*s, p, q - p);
                           (*s)[q - p] = 0;
                         }
-                      ares_free(line);
+                      hns_free(line);
                       fclose(fp);
-                      return (*s) ? ARES_SUCCESS : ARES_ENOMEM;
+                      return (*s) ? HNS_SUCCESS : HNS_ENOMEM;
                     }
                 }
-              ares_free(line);
+              hns_free(line);
               fclose(fp);
-              if (status != ARES_SUCCESS && status != ARES_EOF)
+              if (status != HNS_SUCCESS && status != HNS_EOF)
                 return status;
             }
           else
@@ -298,19 +298,19 @@ STATIC_TESTABLE int single_domain(ares_channel channel, const char *name, char *
                   DEBUGF(fprintf(stderr, "Error opening file: %s\n",
                                  hostaliases));
                   *s = NULL;
-                  return ARES_EFILE;
+                  return HNS_EFILE;
                 }
             }
         }
     }
 
-  if (channel->flags & ARES_FLAG_NOSEARCH || channel->ndomains == 0)
+  if (channel->flags & HNS_FLAG_NOSEARCH || channel->ndomains == 0)
     {
       /* No domain search to do; just try the name as-is. */
-      *s = ares_strdup(name);
-      return (*s) ? ARES_SUCCESS : ARES_ENOMEM;
+      *s = hns_strdup(name);
+      return (*s) ? HNS_SUCCESS : HNS_ENOMEM;
     }
 
   *s = NULL;
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }

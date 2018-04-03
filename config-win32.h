@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_CONFIG_WIN32_H
-#define HEADER_CARES_CONFIG_WIN32_H
+#ifndef HEADER_HNS_CONFIG_WIN32_H
+#define HEADER_HNS_CONFIG_WIN32_H
 
 /* Copyright (C) 2004 - 2011 by Daniel Stenberg et al
  *
@@ -15,7 +15,7 @@
  */
 
 /* ================================================================ */
-/*   c-ares/config-win32.h - Hand crafted config file for Windows   */
+/*   hns/config-win32.h - Hand crafted config file for Windows   */
 /* ================================================================ */
 
 /* ---------------------------------------------------------------- */
@@ -348,4 +348,4 @@
 #  define ENOSPC    ERROR_INVALID_PARAMETER
 #endif
 
-#endif /* HEADER_CARES_CONFIG_WIN32_H */
+#endif /* HEADER_HNS_CONFIG_WIN32_H */

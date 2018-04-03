@@ -9,8 +9,8 @@ ACLOCAL_AMFLAGS = -I m4
 #
 # When using the low-level hard-hacking memory leak tracking code from
 # libcurl the generated curl/curlbuild.h file must also be reachable.
-# Using the libcurl lowlevel code from within c-ares library is ugly and
-# only works when c-ares is built and linked with a similarly debug-build
+# Using the libcurl lowlevel code from within hns library is ugly and
+# only works when hns is built and linked with a similarly debug-build
 # libcurl, but we do this anyway for convenience.
 #
 # $(top_builddir)/../include/curl for generated curlbuild.h included from curl.h
@@ -18,8 +18,8 @@ ACLOCAL_AMFLAGS = -I m4
 # $(top_srcdir)/../include is for libcurl's external include files
 # $(top_builddir)/../lib is for libcurl's generated lib/curl_config.h file
 # $(top_srcdir)/../lib is for libcurl's lib/setup.h and other "private" files
-# $(top_builddir) is for c-ares's generated ares_config.h file
-# $(top_srcdir) is for c-ares's ares_setup.h and other "c-ares-private" files
+# $(top_builddir) is for hns's generated hns_config.h file
+# $(top_srcdir) is for hns's hns_setup.h and other "hns-private" files
 
 if CURLDEBUG
 AM_CPPFLAGS = -I$(top_builddir)/../include/curl \
@@ -35,42 +35,42 @@ AM_CPPFLAGS = -I$(top_builddir) \
               -I$(top_srcdir)/secp256k1
 endif
 
-lib_LTLIBRARIES = libcares.la
+lib_LTLIBRARIES = libhns.la
 
 man_MANS = $(MANPAGES)
 
-MSVCFILES = vc/vc6aws.dsw vc/acountry/vc6acountry.dsp vc/adig/vc6adig.dsp	\
- vc/ahost/vc6ahost.dsp vc/cares/vc6cares.dsp vc/cares/vc6cares.dsw		\
+MSVCFILES = vc/vc6aws.dsw vc/hcountry/vc6hcountry.dsp vc/hdig/vc6hdig.dsp	\
+ vc/hhost/vc6hhost.dsp vc/hns/vc6hns.dsp vc/hns/vc6hns.dsw		\
  msvc_ver.inc
 
 if CURLDEBUG
 PROGS =
 else
-PROGS = ahost adig acountry
+PROGS = hhost hdig hcountry
 endif
 
 noinst_PROGRAMS =$(PROGS)
 
-# adig and ahost are just sample programs and thus not mentioned with the
+# hdig and hhost are just sample programs and thus not mentioned with the
 # regular sources and headers
-EXTRA_DIST = AUTHORS CHANGES README.cares Makefile.inc Makefile.dj	   \
+EXTRA_DIST = AUTHORS CHANGES README.hns Makefile.inc Makefile.dj	   \
  Makefile.m32 Makefile.netware Makefile.msvc Makefile.Watcom $(man_MANS)   \
- config-win32.h RELEASE-NOTES libcares.pc.in buildconf get_ver.awk maketgz \
- TODO ares_build.h.in cares.rc README.msvc $(MSVCFILES)	   \
- $(CSOURCES) $(HHEADERS) config-dos.h acountry.1 adig.1 ahost.1 INSTALL.md	   \
- CMakeLists.txt ares_build.h.cmake ares_config.h.cmake c-ares-config.cmake.in \
- libcares.pc.cmake README.md LICENSE.md RELEASE-PROCEDURE.md
+ config-win32.h RELEASE-NOTES libhns.pc.in buildconf get_ver.awk maketgz \
+ TODO hns_build.h.in hns.rc README.msvc $(MSVCFILES)	   \
+ $(CSOURCES) $(HHEADERS) config-dos.h hcountry.1 hdig.1 hhost.1 INSTALL.md	   \
+ CMakeLists.txt hns_build.h.cmake hns_config.h.cmake hns-config.cmake.in \
+ libhns.pc.cmake README.md LICENSE.md RELEASE-PROCEDURE.md
 
 CLEANFILES = $(PDFPAGES) $(HTMLPAGES)
 
-DISTCLEANFILES = ares_build.h
+DISTCLEANFILES = hns_build.h
 
 DIST_SUBDIRS = test
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libcares.pc
+pkgconfig_DATA = libhns.pc
 
-CARES_VERSION_INFO = -version-info 4:0:2
+HNS_VERSION_INFO = -version-info 4:0:2
 # This flag accepts an argument of the form current[:revision[:age]]. So,
 # passing -version-info 3:12:1 sets current to 3, revision to 12, and age to
 # 1.
@@ -106,7 +106,7 @@ AM_LDFLAGS =
 #
 
 if USE_EXTERNAL_ASM
-COMMON_LIB = libcares_common.la
+COMMON_LIB = libhns_common.la
 noinst_LTLIBRARIES = $(COMMON_LIB)
 else
 COMMON_LIB =
@@ -114,84 +114,84 @@ endif
 
 if USE_EXTERNAL_ASM
 if USE_ASM_ARM
-libcares_common_la_SOURCES = src/asm/field_10x26_arm.s
+libhns_common_la_SOURCES = src/asm/field_10x26_arm.s
 endif
 endif
 
-libcares_la_LIBADD = $(COMMON_LIB)
+libhns_la_LIBADD = $(COMMON_LIB)
 
 #
 # /Secp256k1
 #
 
-libcares_la_LDFLAGS_EXTRA =
+libhns_la_LDFLAGS_EXTRA =
 
-if CARES_LT_SHLIB_USE_VERSION_INFO
-libcares_la_LDFLAGS_EXTRA += $(CARES_VERSION_INFO)
+if HNS_LT_SHLIB_USE_VERSION_INFO
+libhns_la_LDFLAGS_EXTRA += $(HNS_VERSION_INFO)
 endif
 
-if CARES_LT_SHLIB_USE_NO_UNDEFINED
-libcares_la_LDFLAGS_EXTRA += -no-undefined
+if HNS_LT_SHLIB_USE_NO_UNDEFINED
+libhns_la_LDFLAGS_EXTRA += -no-undefined
 endif
 
-if CARES_LT_SHLIB_USE_MIMPURE_TEXT
-libcares_la_LDFLAGS_EXTRA += -mimpure-text
+if HNS_LT_SHLIB_USE_MIMPURE_TEXT
+libhns_la_LDFLAGS_EXTRA += -mimpure-text
 endif
 
-libcares_la_LDFLAGS = $(AM_LDFLAGS) $(libcares_la_LDFLAGS_EXTRA)
+libhns_la_LDFLAGS = $(AM_LDFLAGS) $(libhns_la_LDFLAGS_EXTRA)
 
 # Add -Werror if defined
-CFLAGS += @CARES_CFLAG_EXTRAS@
+CFLAGS += @HNS_CFLAG_EXTRAS@
 
-if USE_CPPFLAG_CARES_STATICLIB
-AM_CPPFLAGS += $(CPPFLAG_CARES_STATICLIB)
+if USE_CPPFLAG_HNS_STATICLIB
+AM_CPPFLAGS += $(CPPFLAG_HNS_STATICLIB)
 endif
 
-libcares_la_CFLAGS_EXTRA =
+libhns_la_CFLAGS_EXTRA =
 
-libcares_la_CPPFLAGS_EXTRA = -DCARES_BUILDING_LIBRARY
+libhns_la_CPPFLAGS_EXTRA = -DHNS_BUILDING_LIBRARY
 
-if DOING_CARES_SYMBOL_HIDING
-libcares_la_CFLAGS_EXTRA += $(CFLAG_CARES_SYMBOL_HIDING)
-libcares_la_CPPFLAGS_EXTRA += -DCARES_SYMBOL_HIDING
+if DOING_HNS_SYMBOL_HIDING
+libhns_la_CFLAGS_EXTRA += $(CFLAG_HNS_SYMBOL_HIDING)
+libhns_la_CPPFLAGS_EXTRA += -DHNS_SYMBOL_HIDING
 endif
 
 @CODE_COVERAGE_RULES@
-libcares_la_LDFLAGS += $(CODE_COVERAGE_LDFLAGS)
-libcares_la_CFLAGS_EXTRA += $(CODE_COVERAGE_CFLAGS)
+libhns_la_LDFLAGS += $(CODE_COVERAGE_LDFLAGS)
+libhns_la_CFLAGS_EXTRA += $(CODE_COVERAGE_CFLAGS)
 
-libcares_la_CFLAGS = $(AM_CFLAGS) $(libcares_la_CFLAGS_EXTRA)
+libhns_la_CFLAGS = $(AM_CFLAGS) $(libhns_la_CFLAGS_EXTRA)
 
-libcares_la_CPPFLAGS = $(AM_CPPFLAGS) $(libcares_la_CPPFLAGS_EXTRA)
+libhns_la_CPPFLAGS = $(AM_CPPFLAGS) $(libhns_la_CPPFLAGS_EXTRA)
 
 # Makefile.inc provides the CSOURCES and HHEADERS defines
 include Makefile.inc
 
-libcares_la_SOURCES = $(CSOURCES) $(HHEADERS)
+libhns_la_SOURCES = $(CSOURCES) $(HHEADERS)
 
-# where to install the c-ares headers
-libcares_ladir = $(includedir)
+# where to install the hns headers
+libhns_ladir = $(includedir)
 # what headers to install on 'make install':
-libcares_la_HEADERS = ares.h ares_version.h ares_dns.h \
-	ares_build.h ares_rules.h
+libhns_la_HEADERS = hns.h hns_version.h hns_dns.h \
+	hns_build.h hns_rules.h
 
-ahost_SOURCES = ahost.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
-ahost_LDADD = $(top_builddir)/libcares.la
-ahost_CFLAGS = $(AM_CFLAGS)
-ahost_CPPFLAGS = $(AM_CPPFLAGS)
+hhost_SOURCES = hhost.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
+hhost_LDADD = $(top_builddir)/libhns.la
+hhost_CFLAGS = $(AM_CFLAGS)
+hhost_CPPFLAGS = $(AM_CPPFLAGS)
 
-adig_SOURCES = adig.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
-adig_LDADD = $(top_builddir)/libcares.la
-adig_CFLAGS = $(AM_CFLAGS)
-adig_CPPFLAGS = $(AM_CPPFLAGS)
+hdig_SOURCES = hdig.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
+hdig_LDADD = $(top_builddir)/libhns.la
+hdig_CFLAGS = $(AM_CFLAGS)
+hdig_CPPFLAGS = $(AM_CPPFLAGS)
 
-acountry_SOURCES = acountry.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
-acountry_LDADD = $(top_builddir)/libcares.la
-acountry_CFLAGS = $(AM_CFLAGS)
-acountry_CPPFLAGS = $(AM_CPPFLAGS)
+hcountry_SOURCES = hcountry.c $(SAMPLESOURCES) $(SAMPLEHEADERS)
+hcountry_LDADD = $(top_builddir)/libhns.la
+hcountry_CFLAGS = $(AM_CFLAGS)
+hcountry_CPPFLAGS = $(AM_CPPFLAGS)
 
 SOURCEDMANDIR = man3
-SOURCEDMANPAGES = ares_init.3
+SOURCEDMANPAGES = hns_init.3
 
 clean-local: clean-sourced-manpages
 

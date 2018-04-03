@@ -18,13 +18,13 @@
 # serial 46
 
 
-dnl CARES_INCLUDES_ARPA_INET
+dnl HNS_INCLUDES_ARPA_INET
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when arpa/inet.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_ARPA_INET], [
-cares_includes_arpa_inet="\
+AC_DEFUN([HNS_INCLUDES_ARPA_INET], [
+hns_includes_arpa_inet="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -41,17 +41,17 @@ cares_includes_arpa_inet="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h sys/socket.h netinet/in.h arpa/inet.h,
-    [], [], [$cares_includes_arpa_inet])
+    [], [], [$hns_includes_arpa_inet])
 ])
 
 
-dnl CARES_INCLUDES_FCNTL
+dnl HNS_INCLUDES_FCNTL
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when fcntl.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_FCNTL], [
-cares_includes_fcntl="\
+AC_DEFUN([HNS_INCLUDES_FCNTL], [
+hns_includes_fcntl="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -65,17 +65,17 @@ cares_includes_fcntl="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h unistd.h fcntl.h,
-    [], [], [$cares_includes_fcntl])
+    [], [], [$hns_includes_fcntl])
 ])
 
 
-dnl CARES_INCLUDES_NETDB
+dnl HNS_INCLUDES_NETDB
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when netdb.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_NETDB], [
-cares_includes_netdb="\
+AC_DEFUN([HNS_INCLUDES_NETDB], [
+hns_includes_netdb="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -86,17 +86,17 @@ cares_includes_netdb="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h netdb.h,
-    [], [], [$cares_includes_netdb])
+    [], [], [$hns_includes_netdb])
 ])
 
 
-dnl CARES_INCLUDES_SOCKET
+dnl HNS_INCLUDES_SOCKET
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when socket.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_SOCKET], [
-cares_includes_socket="\
+AC_DEFUN([HNS_INCLUDES_SOCKET], [
+hns_includes_socket="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -107,17 +107,17 @@ cares_includes_socket="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h socket.h,
-    [], [], [$cares_includes_socket])
+    [], [], [$hns_includes_socket])
 ])
 
 
-dnl CARES_INCLUDES_STDLIB
+dnl HNS_INCLUDES_STDLIB
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when stdlib.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_STDLIB], [
-cares_includes_stdlib="\
+AC_DEFUN([HNS_INCLUDES_STDLIB], [
+hns_includes_stdlib="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -128,17 +128,17 @@ cares_includes_stdlib="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h stdlib.h,
-    [], [], [$cares_includes_stdlib])
+    [], [], [$hns_includes_stdlib])
 ])
 
 
-dnl CARES_INCLUDES_STRING
+dnl HNS_INCLUDES_STRING
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when string(s).h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_STRING], [
-cares_includes_string="\
+AC_DEFUN([HNS_INCLUDES_STRING], [
+hns_includes_string="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -152,17 +152,17 @@ cares_includes_string="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h string.h strings.h,
-    [], [], [$cares_includes_string])
+    [], [], [$hns_includes_string])
 ])
 
 
-dnl CARES_INCLUDES_STROPTS
+dnl HNS_INCLUDES_STROPTS
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when stropts.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_STROPTS], [
-cares_includes_stropts="\
+AC_DEFUN([HNS_INCLUDES_STROPTS], [
+hns_includes_stropts="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -182,17 +182,17 @@ cares_includes_stropts="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h unistd.h sys/socket.h sys/ioctl.h stropts.h,
-    [], [], [$cares_includes_stropts])
+    [], [], [$hns_includes_stropts])
 ])
 
 
-dnl CARES_INCLUDES_SYS_SOCKET
+dnl HNS_INCLUDES_SYS_SOCKET
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when sys/socket.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_SYS_SOCKET], [
-cares_includes_sys_socket="\
+AC_DEFUN([HNS_INCLUDES_SYS_SOCKET], [
+hns_includes_sys_socket="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -203,17 +203,17 @@ cares_includes_sys_socket="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h sys/socket.h,
-    [], [], [$cares_includes_sys_socket])
+    [], [], [$hns_includes_sys_socket])
 ])
 
 
-dnl CARES_INCLUDES_SYS_TYPES
+dnl HNS_INCLUDES_SYS_TYPES
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when sys/types.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_SYS_TYPES], [
-cares_includes_sys_types="\
+AC_DEFUN([HNS_INCLUDES_SYS_TYPES], [
+hns_includes_sys_types="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -221,17 +221,17 @@ cares_includes_sys_types="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h,
-    [], [], [$cares_includes_sys_types])
+    [], [], [$hns_includes_sys_types])
 ])
 
 
-dnl CARES_INCLUDES_SYS_UIO
+dnl HNS_INCLUDES_SYS_UIO
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when sys/uio.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_SYS_UIO], [
-cares_includes_sys_uio="\
+AC_DEFUN([HNS_INCLUDES_SYS_UIO], [
+hns_includes_sys_uio="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -242,17 +242,17 @@ cares_includes_sys_uio="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h sys/uio.h,
-    [], [], [$cares_includes_sys_uio])
+    [], [], [$hns_includes_sys_uio])
 ])
 
 
-dnl CARES_INCLUDES_UNISTD
+dnl HNS_INCLUDES_UNISTD
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when unistd.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_UNISTD], [
-cares_includes_unistd="\
+AC_DEFUN([HNS_INCLUDES_UNISTD], [
+hns_includes_unistd="\
 /* includes start */
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -263,17 +263,17 @@ cares_includes_unistd="\
 /* includes end */"
   AC_CHECK_HEADERS(
     sys/types.h unistd.h,
-    [], [], [$cares_includes_unistd])
+    [], [], [$hns_includes_unistd])
 ])
 
 
-dnl CARES_INCLUDES_WINSOCK2
+dnl HNS_INCLUDES_WINSOCK2
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when winsock(2).h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_WINSOCK2], [
-cares_includes_winsock2="\
+AC_DEFUN([HNS_INCLUDES_WINSOCK2], [
+hns_includes_winsock2="\
 /* includes start */
 #ifdef HAVE_WINDOWS_H
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -295,13 +295,13 @@ cares_includes_winsock2="\
 ])
 
 
-dnl CARES_INCLUDES_WS2TCPIP
+dnl HNS_INCLUDES_WS2TCPIP
 dnl -------------------------------------------------
 dnl Set up variable with list of headers that must be
 dnl included when ws2tcpip.h is to be included.
 
-AC_DEFUN([CARES_INCLUDES_WS2TCPIP], [
-cares_includes_ws2tcpip="\
+AC_DEFUN([HNS_INCLUDES_WS2TCPIP], [
+hns_includes_ws2tcpip="\
 /* includes start */
 #ifdef HAVE_WINDOWS_H
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -322,13 +322,13 @@ cares_includes_ws2tcpip="\
 ])
 
 
-dnl CARES_PREPROCESS_CALLCONV
+dnl HNS_PREPROCESS_CALLCONV
 dnl -------------------------------------------------
 dnl Set up variable with a preprocessor block which
 dnl defines function calling convention.
 
-AC_DEFUN([CARES_PREPROCESS_CALLCONV], [
-cares_preprocess_callconv="\
+AC_DEFUN([HNS_PREPROCESS_CALLCONV], [
+hns_preprocess_callconv="\
 /* preprocess start */
 #ifdef HAVE_WINDOWS_H
 #  define FUNCALLCONV __stdcall
@@ -339,17 +339,17 @@ cares_preprocess_callconv="\
 ])
 
 
-dnl CARES_CHECK_FUNC_CLOSESOCKET
+dnl HNS_CHECK_FUNC_CLOSESOCKET
 dnl -------------------------------------------------
 dnl Verify if closesocket is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_closesocket, then
+dnl shell variable hns_disallow_closesocket, then
 dnl HAVE_CLOSESOCKET will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_SOCKET])dnl
+AC_DEFUN([HNS_CHECK_FUNC_CLOSESOCKET], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_SOCKET])dnl
   #
   tst_links_closesocket="unknown"
   tst_proto_closesocket="unknown"
@@ -359,8 +359,8 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET], [
   AC_MSG_CHECKING([if closesocket can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_socket
+      $hns_includes_winsock2
+      $hns_includes_socket
     ]],[[
       if(0 != closesocket(0))
         return 1;
@@ -376,8 +376,8 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET], [
   if test "$tst_links_closesocket" = "yes"; then
     AC_MSG_CHECKING([if closesocket is prototyped])
     AC_EGREP_CPP([closesocket],[
-      $cares_includes_winsock2
-      $cares_includes_socket
+      $hns_includes_winsock2
+      $hns_includes_socket
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_closesocket="yes"
@@ -391,8 +391,8 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET], [
     AC_MSG_CHECKING([if closesocket is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_socket
+        $hns_includes_winsock2
+        $hns_includes_socket
       ]],[[
         if(0 != closesocket(0))
           return 1;
@@ -408,7 +408,7 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET], [
   #
   if test "$tst_compi_closesocket" = "yes"; then
     AC_MSG_CHECKING([if closesocket usage allowed])
-    if test "x$cares_disallow_closesocket" != "xyes"; then
+    if test "x$hns_disallow_closesocket" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_closesocket="yes"
     else
@@ -433,16 +433,16 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET], [
 ])
 
 
-dnl CARES_CHECK_FUNC_CLOSESOCKET_CAMEL
+dnl HNS_CHECK_FUNC_CLOSESOCKET_CAMEL
 dnl -------------------------------------------------
 dnl Verify if CloseSocket is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_closesocket_camel,
+dnl shell variable hns_disallow_closesocket_camel,
 dnl then HAVE_CLOSESOCKET_CAMEL will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET_CAMEL], [
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
+AC_DEFUN([HNS_CHECK_FUNC_CLOSESOCKET_CAMEL], [
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
   #
   tst_links_closesocket_camel="unknown"
   tst_proto_closesocket_camel="unknown"
@@ -452,7 +452,7 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET_CAMEL], [
   AC_MSG_CHECKING([if CloseSocket can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_sys_socket
+      $hns_includes_sys_socket
     ]],[[
       if(0 != CloseSocket(0))
         return 1;
@@ -468,7 +468,7 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET_CAMEL], [
   if test "$tst_links_closesocket_camel" = "yes"; then
     AC_MSG_CHECKING([if CloseSocket is prototyped])
     AC_EGREP_CPP([CloseSocket],[
-      $cares_includes_sys_socket
+      $hns_includes_sys_socket
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_closesocket_camel="yes"
@@ -482,7 +482,7 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET_CAMEL], [
     AC_MSG_CHECKING([if CloseSocket is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_sys_socket
+        $hns_includes_sys_socket
       ]],[[
         if(0 != CloseSocket(0))
           return 1;
@@ -498,7 +498,7 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET_CAMEL], [
   #
   if test "$tst_compi_closesocket_camel" = "yes"; then
     AC_MSG_CHECKING([if CloseSocket usage allowed])
-    if test "x$cares_disallow_closesocket_camel" != "xyes"; then
+    if test "x$hns_disallow_closesocket_camel" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_closesocket_camel="yes"
     else
@@ -523,18 +523,18 @@ AC_DEFUN([CARES_CHECK_FUNC_CLOSESOCKET_CAMEL], [
 ])
 
 
-dnl CARES_CHECK_FUNC_CONNECT
+dnl HNS_CHECK_FUNC_CONNECT
 dnl -------------------------------------------------
 dnl Verify if connect is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_connect, then
+dnl shell variable hns_disallow_connect, then
 dnl HAVE_CONNECT will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_CONNECT], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
-  AC_REQUIRE([CARES_INCLUDES_SOCKET])dnl
+AC_DEFUN([HNS_CHECK_FUNC_CONNECT], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
+  AC_REQUIRE([HNS_INCLUDES_SOCKET])dnl
   #
   tst_links_connect="unknown"
   tst_proto_connect="unknown"
@@ -544,9 +544,9 @@ AC_DEFUN([CARES_CHECK_FUNC_CONNECT], [
   AC_MSG_CHECKING([if connect can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_sys_socket
-      $cares_includes_socket
+      $hns_includes_winsock2
+      $hns_includes_sys_socket
+      $hns_includes_socket
     ]],[[
       if(0 != connect(0, 0, 0))
         return 1;
@@ -562,9 +562,9 @@ AC_DEFUN([CARES_CHECK_FUNC_CONNECT], [
   if test "$tst_links_connect" = "yes"; then
     AC_MSG_CHECKING([if connect is prototyped])
     AC_EGREP_CPP([connect],[
-      $cares_includes_winsock2
-      $cares_includes_sys_socket
-      $cares_includes_socket
+      $hns_includes_winsock2
+      $hns_includes_sys_socket
+      $hns_includes_socket
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_connect="yes"
@@ -578,9 +578,9 @@ AC_DEFUN([CARES_CHECK_FUNC_CONNECT], [
     AC_MSG_CHECKING([if connect is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_sys_socket
-        $cares_includes_socket
+        $hns_includes_winsock2
+        $hns_includes_sys_socket
+        $hns_includes_socket
       ]],[[
         if(0 != connect(0, 0, 0))
           return 1;
@@ -596,7 +596,7 @@ AC_DEFUN([CARES_CHECK_FUNC_CONNECT], [
   #
   if test "$tst_compi_connect" = "yes"; then
     AC_MSG_CHECKING([if connect usage allowed])
-    if test "x$cares_disallow_connect" != "xyes"; then
+    if test "x$hns_disallow_connect" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_connect="yes"
     else
@@ -621,16 +621,16 @@ AC_DEFUN([CARES_CHECK_FUNC_CONNECT], [
 ])
 
 
-dnl CARES_CHECK_FUNC_FCNTL
+dnl HNS_CHECK_FUNC_FCNTL
 dnl -------------------------------------------------
 dnl Verify if fcntl is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_fcntl, then
+dnl shell variable hns_disallow_fcntl, then
 dnl HAVE_FCNTL will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_FCNTL], [
-  AC_REQUIRE([CARES_INCLUDES_FCNTL])dnl
+AC_DEFUN([HNS_CHECK_FUNC_FCNTL], [
+  AC_REQUIRE([HNS_INCLUDES_FCNTL])dnl
   #
   tst_links_fcntl="unknown"
   tst_proto_fcntl="unknown"
@@ -651,7 +651,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL], [
   if test "$tst_links_fcntl" = "yes"; then
     AC_MSG_CHECKING([if fcntl is prototyped])
     AC_EGREP_CPP([fcntl],[
-      $cares_includes_fcntl
+      $hns_includes_fcntl
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_fcntl="yes"
@@ -665,7 +665,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL], [
     AC_MSG_CHECKING([if fcntl is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_fcntl
+        $hns_includes_fcntl
       ]],[[
         if(0 != fcntl(0, 0, 0))
           return 1;
@@ -681,7 +681,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL], [
   #
   if test "$tst_compi_fcntl" = "yes"; then
     AC_MSG_CHECKING([if fcntl usage allowed])
-    if test "x$cares_disallow_fcntl" != "xyes"; then
+    if test "x$hns_disallow_fcntl" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_fcntl="yes"
     else
@@ -699,7 +699,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL], [
     AC_DEFINE_UNQUOTED(HAVE_FCNTL, 1,
       [Define to 1 if you have the fcntl function.])
     ac_cv_func_fcntl="yes"
-    CARES_CHECK_FUNC_FCNTL_O_NONBLOCK
+    HNS_CHECK_FUNC_FCNTL_O_NONBLOCK
   else
     AC_MSG_RESULT([no])
     ac_cv_func_fcntl="no"
@@ -707,14 +707,14 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL], [
 ])
 
 
-dnl CARES_CHECK_FUNC_FCNTL_O_NONBLOCK
+dnl HNS_CHECK_FUNC_FCNTL_O_NONBLOCK
 dnl -------------------------------------------------
 dnl Verify if fcntl with status flag O_NONBLOCK is
 dnl available, can be compiled, and seems to work. If
 dnl all of these are true, then HAVE_FCNTL_O_NONBLOCK
 dnl will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_FCNTL_O_NONBLOCK], [
+AC_DEFUN([HNS_CHECK_FUNC_FCNTL_O_NONBLOCK], [
   #
   tst_compi_fcntl_o_nonblock="unknown"
   tst_allow_fcntl_o_nonblock="unknown"
@@ -722,7 +722,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL_O_NONBLOCK], [
   case $host_os in
     sunos4* | aix3* | beos*)
       dnl O_NONBLOCK does not work on these platforms
-      cares_disallow_fcntl_o_nonblock="yes"
+      hns_disallow_fcntl_o_nonblock="yes"
       ;;
   esac
   #
@@ -730,7 +730,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL_O_NONBLOCK], [
     AC_MSG_CHECKING([if fcntl O_NONBLOCK is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_fcntl
+        $hns_includes_fcntl
       ]],[[
         int flags = 0;
         if(0 != fcntl(0, F_SETFL, flags | O_NONBLOCK))
@@ -747,7 +747,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL_O_NONBLOCK], [
   #
   if test "$tst_compi_fcntl_o_nonblock" = "yes"; then
     AC_MSG_CHECKING([if fcntl O_NONBLOCK usage allowed])
-    if test "x$cares_disallow_fcntl_o_nonblock" != "xyes"; then
+    if test "x$hns_disallow_fcntl_o_nonblock" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_fcntl_o_nonblock="yes"
     else
@@ -770,18 +770,18 @@ AC_DEFUN([CARES_CHECK_FUNC_FCNTL_O_NONBLOCK], [
 ])
 
 
-dnl CARES_CHECK_FUNC_FREEADDRINFO
+dnl HNS_CHECK_FUNC_FREEADDRINFO
 dnl -------------------------------------------------
 dnl Verify if freeaddrinfo is available, prototyped,
 dnl and can be compiled. If all of these are true,
 dnl and usage has not been previously disallowed with
-dnl shell variable cares_disallow_freeaddrinfo, then
+dnl shell variable hns_disallow_freeaddrinfo, then
 dnl HAVE_FREEADDRINFO will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_FREEADDRINFO], [
-  AC_REQUIRE([CARES_INCLUDES_WS2TCPIP])dnl
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
-  AC_REQUIRE([CARES_INCLUDES_NETDB])dnl
+AC_DEFUN([HNS_CHECK_FUNC_FREEADDRINFO], [
+  AC_REQUIRE([HNS_INCLUDES_WS2TCPIP])dnl
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
+  AC_REQUIRE([HNS_INCLUDES_NETDB])dnl
   #
   tst_links_freeaddrinfo="unknown"
   tst_proto_freeaddrinfo="unknown"
@@ -791,9 +791,9 @@ AC_DEFUN([CARES_CHECK_FUNC_FREEADDRINFO], [
   AC_MSG_CHECKING([if freeaddrinfo can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_ws2tcpip
-      $cares_includes_sys_socket
-      $cares_includes_netdb
+      $hns_includes_ws2tcpip
+      $hns_includes_sys_socket
+      $hns_includes_netdb
     ]],[[
       freeaddrinfo(0);
     ]])
@@ -808,9 +808,9 @@ AC_DEFUN([CARES_CHECK_FUNC_FREEADDRINFO], [
   if test "$tst_links_freeaddrinfo" = "yes"; then
     AC_MSG_CHECKING([if freeaddrinfo is prototyped])
     AC_EGREP_CPP([freeaddrinfo],[
-      $cares_includes_ws2tcpip
-      $cares_includes_sys_socket
-      $cares_includes_netdb
+      $hns_includes_ws2tcpip
+      $hns_includes_sys_socket
+      $hns_includes_netdb
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_freeaddrinfo="yes"
@@ -824,9 +824,9 @@ AC_DEFUN([CARES_CHECK_FUNC_FREEADDRINFO], [
     AC_MSG_CHECKING([if freeaddrinfo is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_ws2tcpip
-        $cares_includes_sys_socket
-        $cares_includes_netdb
+        $hns_includes_ws2tcpip
+        $hns_includes_sys_socket
+        $hns_includes_netdb
       ]],[[
         freeaddrinfo(0);
       ]])
@@ -841,7 +841,7 @@ AC_DEFUN([CARES_CHECK_FUNC_FREEADDRINFO], [
   #
   if test "$tst_compi_freeaddrinfo" = "yes"; then
     AC_MSG_CHECKING([if freeaddrinfo usage allowed])
-    if test "x$cares_disallow_freeaddrinfo" != "xyes"; then
+    if test "x$hns_disallow_freeaddrinfo" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_freeaddrinfo="yes"
     else
@@ -866,23 +866,23 @@ AC_DEFUN([CARES_CHECK_FUNC_FREEADDRINFO], [
 ])
 
 
-dnl CARES_CHECK_FUNC_GETADDRINFO
+dnl HNS_CHECK_FUNC_GETADDRINFO
 dnl -------------------------------------------------
 dnl Verify if getaddrinfo is available, prototyped, can
 dnl be compiled and seems to work. If all of these are
 dnl true, and usage has not been previously disallowed
-dnl with shell variable cares_disallow_getaddrinfo, then
+dnl with shell variable hns_disallow_getaddrinfo, then
 dnl HAVE_GETADDRINFO will be defined. Additionally when
 dnl HAVE_GETADDRINFO gets defined this will also attempt
 dnl to find out if getaddrinfo happens to be threadsafe,
 dnl defining HAVE_GETADDRINFO_THREADSAFE when true.
 
-AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
-  AC_REQUIRE([CARES_INCLUDES_WS2TCPIP])dnl
-  AC_REQUIRE([CARES_INCLUDES_STDLIB])dnl
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
-  AC_REQUIRE([CARES_INCLUDES_NETDB])dnl
+AC_DEFUN([HNS_CHECK_FUNC_GETADDRINFO], [
+  AC_REQUIRE([HNS_INCLUDES_WS2TCPIP])dnl
+  AC_REQUIRE([HNS_INCLUDES_STDLIB])dnl
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
+  AC_REQUIRE([HNS_INCLUDES_NETDB])dnl
   AC_REQUIRE([CURL_CHECK_NATIVE_WINDOWS])dnl
   #
   tst_links_getaddrinfo="unknown"
@@ -895,9 +895,9 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
   AC_MSG_CHECKING([if getaddrinfo can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_ws2tcpip
-      $cares_includes_sys_socket
-      $cares_includes_netdb
+      $hns_includes_ws2tcpip
+      $hns_includes_sys_socket
+      $hns_includes_netdb
     ]],[[
       if(0 != getaddrinfo(0, 0, 0, 0))
         return 1;
@@ -913,9 +913,9 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
   if test "$tst_links_getaddrinfo" = "yes"; then
     AC_MSG_CHECKING([if getaddrinfo is prototyped])
     AC_EGREP_CPP([getaddrinfo],[
-      $cares_includes_ws2tcpip
-      $cares_includes_sys_socket
-      $cares_includes_netdb
+      $hns_includes_ws2tcpip
+      $hns_includes_sys_socket
+      $hns_includes_netdb
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_getaddrinfo="yes"
@@ -929,9 +929,9 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
     AC_MSG_CHECKING([if getaddrinfo is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_ws2tcpip
-        $cares_includes_sys_socket
-        $cares_includes_netdb
+        $hns_includes_ws2tcpip
+        $hns_includes_sys_socket
+        $hns_includes_netdb
       ]],[[
         if(0 != getaddrinfo(0, 0, 0, 0))
           return 1;
@@ -951,11 +951,11 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
     AC_MSG_CHECKING([if getaddrinfo seems to work])
     AC_RUN_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_ws2tcpip
-        $cares_includes_stdlib
-        $cares_includes_string
-        $cares_includes_sys_socket
-        $cares_includes_netdb
+        $hns_includes_ws2tcpip
+        $hns_includes_stdlib
+        $hns_includes_string
+        $hns_includes_sys_socket
+        $hns_includes_netdb
       ]],[[
         struct addrinfo hints;
         struct addrinfo *ai = 0;
@@ -983,7 +983,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
   if test "$tst_compi_getaddrinfo" = "yes" &&
     test "$tst_works_getaddrinfo" != "no"; then
     AC_MSG_CHECKING([if getaddrinfo usage allowed])
-    if test "x$cares_disallow_getaddrinfo" != "xyes"; then
+    if test "x$hns_disallow_getaddrinfo" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_getaddrinfo="yes"
     else
@@ -1066,8 +1066,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
     fi
     if test "$tst_tsafe_getaddrinfo" = "unknown"; then
       CURL_CHECK_DEF_CC([h_errno], [
-        $cares_includes_sys_socket
-        $cares_includes_netdb
+        $hns_includes_sys_socket
+        $hns_includes_netdb
         ], [silent])
       if test "$curl_cv_have_def_h_errno" = "yes"; then
         tst_h_errno_macro="yes"
@@ -1076,8 +1076,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
       fi
       AC_COMPILE_IFELSE([
         AC_LANG_PROGRAM([[
-          $cares_includes_sys_socket
-          $cares_includes_netdb
+          $hns_includes_sys_socket
+          $hns_includes_netdb
         ]],[[
           h_errno = 2;
           if(0 != h_errno)
@@ -1124,16 +1124,16 @@ AC_DEFUN([CARES_CHECK_FUNC_GETADDRINFO], [
 ])
 
 
-dnl CARES_CHECK_FUNC_GETENV
+dnl HNS_CHECK_FUNC_GETENV
 dnl -------------------------------------------------
 dnl Verify if getenv is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_getenv, then
+dnl shell variable hns_disallow_getenv, then
 dnl HAVE_GETENV will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_GETENV], [
-  AC_REQUIRE([CARES_INCLUDES_STDLIB])dnl
+AC_DEFUN([HNS_CHECK_FUNC_GETENV], [
+  AC_REQUIRE([HNS_INCLUDES_STDLIB])dnl
   #
   tst_links_getenv="unknown"
   tst_proto_getenv="unknown"
@@ -1154,7 +1154,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETENV], [
   if test "$tst_links_getenv" = "yes"; then
     AC_MSG_CHECKING([if getenv is prototyped])
     AC_EGREP_CPP([getenv],[
-      $cares_includes_stdlib
+      $hns_includes_stdlib
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_getenv="yes"
@@ -1168,7 +1168,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETENV], [
     AC_MSG_CHECKING([if getenv is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stdlib
+        $hns_includes_stdlib
       ]],[[
         if(0 != getenv(0))
           return 1;
@@ -1184,7 +1184,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETENV], [
   #
   if test "$tst_compi_getenv" = "yes"; then
     AC_MSG_CHECKING([if getenv usage allowed])
-    if test "x$cares_disallow_getenv" != "xyes"; then
+    if test "x$hns_disallow_getenv" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_getenv="yes"
     else
@@ -1209,17 +1209,17 @@ AC_DEFUN([CARES_CHECK_FUNC_GETENV], [
 ])
 
 
-dnl CARES_CHECK_FUNC_GETHOSTBYADDR
+dnl HNS_CHECK_FUNC_GETHOSTBYADDR
 dnl -------------------------------------------------
 dnl Verify if gethostbyaddr is available, prototyped,
 dnl and can be compiled. If all of these are true,
 dnl and usage has not been previously disallowed with
-dnl shell variable cares_disallow_gethostbyaddr, then
+dnl shell variable hns_disallow_gethostbyaddr, then
 dnl HAVE_GETHOSTBYADDR will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYADDR], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_NETDB])dnl
+AC_DEFUN([HNS_CHECK_FUNC_GETHOSTBYADDR], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_NETDB])dnl
   #
   tst_links_gethostbyaddr="unknown"
   tst_proto_gethostbyaddr="unknown"
@@ -1229,8 +1229,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYADDR], [
   AC_MSG_CHECKING([if gethostbyaddr can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_netdb
+      $hns_includes_winsock2
+      $hns_includes_netdb
     ]],[[
       if(0 != gethostbyaddr(0, 0, 0))
         return 1;
@@ -1246,8 +1246,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYADDR], [
   if test "$tst_links_gethostbyaddr" = "yes"; then
     AC_MSG_CHECKING([if gethostbyaddr is prototyped])
     AC_EGREP_CPP([gethostbyaddr],[
-      $cares_includes_winsock2
-      $cares_includes_netdb
+      $hns_includes_winsock2
+      $hns_includes_netdb
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_gethostbyaddr="yes"
@@ -1261,8 +1261,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYADDR], [
     AC_MSG_CHECKING([if gethostbyaddr is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_netdb
+        $hns_includes_winsock2
+        $hns_includes_netdb
       ]],[[
         if(0 != gethostbyaddr(0, 0, 0))
           return 1;
@@ -1278,7 +1278,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYADDR], [
   #
   if test "$tst_compi_gethostbyaddr" = "yes"; then
     AC_MSG_CHECKING([if gethostbyaddr usage allowed])
-    if test "x$cares_disallow_gethostbyaddr" != "xyes"; then
+    if test "x$hns_disallow_gethostbyaddr" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_gethostbyaddr="yes"
     else
@@ -1303,17 +1303,17 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYADDR], [
 ])
 
 
-dnl CARES_CHECK_FUNC_GETHOSTBYNAME
+dnl HNS_CHECK_FUNC_GETHOSTBYNAME
 dnl -------------------------------------------------
 dnl Verify if gethostbyname is available, prototyped,
 dnl and can be compiled. If all of these are true,
 dnl and usage has not been previously disallowed with
-dnl shell variable cares_disallow_gethostbyname, then
+dnl shell variable hns_disallow_gethostbyname, then
 dnl HAVE_GETHOSTBYNAME will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYNAME], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_NETDB])dnl
+AC_DEFUN([HNS_CHECK_FUNC_GETHOSTBYNAME], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_NETDB])dnl
   #
   tst_links_gethostbyname="unknown"
   tst_proto_gethostbyname="unknown"
@@ -1323,8 +1323,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYNAME], [
   AC_MSG_CHECKING([if gethostbyname can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_netdb
+      $hns_includes_winsock2
+      $hns_includes_netdb
     ]],[[
       if(0 != gethostbyname(0))
         return 1;
@@ -1340,8 +1340,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYNAME], [
   if test "$tst_links_gethostbyname" = "yes"; then
     AC_MSG_CHECKING([if gethostbyname is prototyped])
     AC_EGREP_CPP([gethostbyname],[
-      $cares_includes_winsock2
-      $cares_includes_netdb
+      $hns_includes_winsock2
+      $hns_includes_netdb
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_gethostbyname="yes"
@@ -1355,8 +1355,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYNAME], [
     AC_MSG_CHECKING([if gethostbyname is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_netdb
+        $hns_includes_winsock2
+        $hns_includes_netdb
       ]],[[
         if(0 != gethostbyname(0))
           return 1;
@@ -1372,7 +1372,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYNAME], [
   #
   if test "$tst_compi_gethostbyname" = "yes"; then
     AC_MSG_CHECKING([if gethostbyname usage allowed])
-    if test "x$cares_disallow_gethostbyname" != "xyes"; then
+    if test "x$hns_disallow_gethostbyname" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_gethostbyname="yes"
     else
@@ -1397,18 +1397,18 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTBYNAME], [
 ])
 
 
-dnl CARES_CHECK_FUNC_GETHOSTNAME
+dnl HNS_CHECK_FUNC_GETHOSTNAME
 dnl -------------------------------------------------
 dnl Verify if gethostname is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_gethostname, then
+dnl shell variable hns_disallow_gethostname, then
 dnl HAVE_GETHOSTNAME will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_UNISTD])dnl
-  AC_REQUIRE([CARES_PREPROCESS_CALLCONV])dnl
+AC_DEFUN([HNS_CHECK_FUNC_GETHOSTNAME], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_UNISTD])dnl
+  AC_REQUIRE([HNS_PREPROCESS_CALLCONV])dnl
   #
   tst_links_gethostname="unknown"
   tst_proto_gethostname="unknown"
@@ -1418,8 +1418,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
   AC_MSG_CHECKING([if gethostname can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_unistd
+      $hns_includes_winsock2
+      $hns_includes_unistd
     ]],[[
       if(0 != gethostname(0, 0))
         return 1;
@@ -1435,8 +1435,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
   if test "$tst_links_gethostname" = "yes"; then
     AC_MSG_CHECKING([if gethostname is prototyped])
     AC_EGREP_CPP([gethostname],[
-      $cares_includes_winsock2
-      $cares_includes_unistd
+      $hns_includes_winsock2
+      $hns_includes_unistd
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_gethostname="yes"
@@ -1450,8 +1450,8 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
     AC_MSG_CHECKING([if gethostname is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_unistd
+        $hns_includes_winsock2
+        $hns_includes_unistd
       ]],[[
         if(0 != gethostname(0, 0))
           return 1;
@@ -1473,9 +1473,9 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
         if test "$tst_gethostname_type_arg2" = "unknown"; then
           AC_COMPILE_IFELSE([
             AC_LANG_PROGRAM([[
-              $cares_includes_winsock2
-              $cares_includes_unistd
-              $cares_preprocess_callconv
+              $hns_includes_winsock2
+              $hns_includes_unistd
+              $hns_preprocess_callconv
               extern int FUNCALLCONV gethostname($tst_arg1, $tst_arg2);
             ]],[[
               if(0 != gethostname(0, 0))
@@ -1496,7 +1496,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
   #
   if test "$tst_compi_gethostname" = "yes"; then
     AC_MSG_CHECKING([if gethostname usage allowed])
-    if test "x$cares_disallow_gethostname" != "xyes"; then
+    if test "x$hns_disallow_gethostname" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_gethostname="yes"
     else
@@ -1521,16 +1521,16 @@ AC_DEFUN([CARES_CHECK_FUNC_GETHOSTNAME], [
 ])
 
 
-dnl CARES_CHECK_FUNC_GETSERVBYPORT_R
+dnl HNS_CHECK_FUNC_GETSERVBYPORT_R
 dnl -------------------------------------------------
 dnl Verify if getservbyport_r is available, prototyped,
 dnl and can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_getservbyport_r, then
+dnl shell variable hns_disallow_getservbyport_r, then
 dnl HAVE_GETSERVBYPORT_R will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
-  AC_REQUIRE([CARES_INCLUDES_NETDB])dnl
+AC_DEFUN([HNS_CHECK_FUNC_GETSERVBYPORT_R], [
+  AC_REQUIRE([HNS_INCLUDES_NETDB])dnl
   #
   tst_links_getservbyport_r="unknown"
   tst_proto_getservbyport_r="unknown"
@@ -1552,7 +1552,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
   if test "$tst_links_getservbyport_r" = "yes"; then
     AC_MSG_CHECKING([if getservbyport_r is prototyped])
     AC_EGREP_CPP([getservbyport_r],[
-      $cares_includes_netdb
+      $hns_includes_netdb
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_getservbyport_r="yes"
@@ -1567,7 +1567,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
       AC_MSG_CHECKING([if getservbyport_r takes 4 args.])
       AC_COMPILE_IFELSE([
         AC_LANG_PROGRAM([[
-          $cares_includes_netdb
+          $hns_includes_netdb
         ]],[[
           if(0 != getservbyport_r(0, 0, 0, 0))
             return 1;
@@ -1585,7 +1585,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
       AC_MSG_CHECKING([if getservbyport_r takes 5 args.])
       AC_COMPILE_IFELSE([
         AC_LANG_PROGRAM([[
-          $cares_includes_netdb
+          $hns_includes_netdb
         ]],[[
           if(0 != getservbyport_r(0, 0, 0, 0, 0))
             return 1;
@@ -1603,7 +1603,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
       AC_MSG_CHECKING([if getservbyport_r takes 6 args.])
       AC_COMPILE_IFELSE([
         AC_LANG_PROGRAM([[
-          $cares_includes_netdb
+          $hns_includes_netdb
         ]],[[
           if(0 != getservbyport_r(0, 0, 0, 0, 0, 0))
             return 1;
@@ -1627,7 +1627,7 @@ AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
   #
   if test "$tst_compi_getservbyport_r" = "yes"; then
     AC_MSG_CHECKING([if getservbyport_r usage allowed])
-    if test "x$cares_disallow_getservbyport_r" != "xyes"; then
+    if test "x$hns_disallow_getservbyport_r" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_getservbyport_r="yes"
     else
@@ -1661,18 +1661,18 @@ AC_DEFUN([CARES_CHECK_FUNC_GETSERVBYPORT_R], [
 ])
 
 
-dnl CARES_CHECK_FUNC_INET_NET_PTON
+dnl HNS_CHECK_FUNC_INET_NET_PTON
 dnl -------------------------------------------------
 dnl Verify if inet_net_pton is available, prototyped, can
 dnl be compiled and seems to work. If all of these are
 dnl true, and usage has not been previously disallowed
-dnl with shell variable cares_disallow_inet_net_pton, then
+dnl with shell variable hns_disallow_inet_net_pton, then
 dnl HAVE_INET_NET_PTON will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_INET_NET_PTON], [
-  AC_REQUIRE([CARES_INCLUDES_STDLIB])dnl
-  AC_REQUIRE([CARES_INCLUDES_ARPA_INET])dnl
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_INET_NET_PTON], [
+  AC_REQUIRE([HNS_INCLUDES_STDLIB])dnl
+  AC_REQUIRE([HNS_INCLUDES_ARPA_INET])dnl
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_inet_net_pton="unknown"
   tst_proto_inet_net_pton="unknown"
@@ -1694,7 +1694,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NET_PTON], [
   if test "$tst_links_inet_net_pton" = "yes"; then
     AC_MSG_CHECKING([if inet_net_pton is prototyped])
     AC_EGREP_CPP([inet_net_pton],[
-      $cares_includes_arpa_inet
+      $hns_includes_arpa_inet
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_inet_net_pton="yes"
@@ -1708,7 +1708,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NET_PTON], [
     AC_MSG_CHECKING([if inet_net_pton is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_arpa_inet
+        $hns_includes_arpa_inet
       ]],[[
         if(0 != inet_net_pton(0, 0, 0, 0))
           return 1;
@@ -1728,9 +1728,9 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NET_PTON], [
     AC_MSG_CHECKING([if inet_net_pton seems to work])
     AC_RUN_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stdlib
-        $cares_includes_arpa_inet
-        $cares_includes_string
+        $hns_includes_stdlib
+        $hns_includes_arpa_inet
+        $hns_includes_string
       ]],[[
         unsigned char ipv6a[16+1];
         unsigned char ipv4a[4+1];
@@ -1861,7 +1861,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NET_PTON], [
   if test "$tst_compi_inet_net_pton" = "yes" &&
     test "$tst_works_inet_net_pton" != "no"; then
     AC_MSG_CHECKING([if inet_net_pton usage allowed])
-    if test "x$cares_disallow_inet_net_pton" != "xyes"; then
+    if test "x$hns_disallow_inet_net_pton" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_inet_net_pton="yes"
     else
@@ -1887,18 +1887,18 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NET_PTON], [
 ])
 
 
-dnl CARES_CHECK_FUNC_INET_NTOP
+dnl HNS_CHECK_FUNC_INET_NTOP
 dnl -------------------------------------------------
 dnl Verify if inet_ntop is available, prototyped, can
 dnl be compiled and seems to work. If all of these are
 dnl true, and usage has not been previously disallowed
-dnl with shell variable cares_disallow_inet_ntop, then
+dnl with shell variable hns_disallow_inet_ntop, then
 dnl HAVE_INET_NTOP will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_INET_NTOP], [
-  AC_REQUIRE([CARES_INCLUDES_STDLIB])dnl
-  AC_REQUIRE([CARES_INCLUDES_ARPA_INET])dnl
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_INET_NTOP], [
+  AC_REQUIRE([HNS_INCLUDES_STDLIB])dnl
+  AC_REQUIRE([HNS_INCLUDES_ARPA_INET])dnl
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_inet_ntop="unknown"
   tst_proto_inet_ntop="unknown"
@@ -1920,7 +1920,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NTOP], [
   if test "$tst_links_inet_ntop" = "yes"; then
     AC_MSG_CHECKING([if inet_ntop is prototyped])
     AC_EGREP_CPP([inet_ntop],[
-      $cares_includes_arpa_inet
+      $hns_includes_arpa_inet
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_inet_ntop="yes"
@@ -1934,7 +1934,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NTOP], [
     AC_MSG_CHECKING([if inet_ntop is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_arpa_inet
+        $hns_includes_arpa_inet
       ]],[[
         if(0 != inet_ntop(0, 0, 0, 0))
           return 1;
@@ -1954,9 +1954,9 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NTOP], [
     AC_MSG_CHECKING([if inet_ntop seems to work])
     AC_RUN_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stdlib
-        $cares_includes_arpa_inet
-        $cares_includes_string
+        $hns_includes_stdlib
+        $hns_includes_arpa_inet
+        $hns_includes_string
       ]],[[
         char ipv6res[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")];
         char ipv4res[sizeof "255.255.255.255"];
@@ -2020,7 +2020,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NTOP], [
   if test "$tst_compi_inet_ntop" = "yes" &&
     test "$tst_works_inet_ntop" != "no"; then
     AC_MSG_CHECKING([if inet_ntop usage allowed])
-    if test "x$cares_disallow_inet_ntop" != "xyes"; then
+    if test "x$hns_disallow_inet_ntop" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_inet_ntop="yes"
     else
@@ -2046,18 +2046,18 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_NTOP], [
 ])
 
 
-dnl CARES_CHECK_FUNC_INET_PTON
+dnl HNS_CHECK_FUNC_INET_PTON
 dnl -------------------------------------------------
 dnl Verify if inet_pton is available, prototyped, can
 dnl be compiled and seems to work. If all of these are
 dnl true, and usage has not been previously disallowed
-dnl with shell variable cares_disallow_inet_pton, then
+dnl with shell variable hns_disallow_inet_pton, then
 dnl HAVE_INET_PTON will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_INET_PTON], [
-  AC_REQUIRE([CARES_INCLUDES_STDLIB])dnl
-  AC_REQUIRE([CARES_INCLUDES_ARPA_INET])dnl
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_INET_PTON], [
+  AC_REQUIRE([HNS_INCLUDES_STDLIB])dnl
+  AC_REQUIRE([HNS_INCLUDES_ARPA_INET])dnl
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_inet_pton="unknown"
   tst_proto_inet_pton="unknown"
@@ -2079,7 +2079,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_PTON], [
   if test "$tst_links_inet_pton" = "yes"; then
     AC_MSG_CHECKING([if inet_pton is prototyped])
     AC_EGREP_CPP([inet_pton],[
-      $cares_includes_arpa_inet
+      $hns_includes_arpa_inet
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_inet_pton="yes"
@@ -2093,7 +2093,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_PTON], [
     AC_MSG_CHECKING([if inet_pton is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_arpa_inet
+        $hns_includes_arpa_inet
       ]],[[
         if(0 != inet_pton(0, 0, 0))
           return 1;
@@ -2113,9 +2113,9 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_PTON], [
     AC_MSG_CHECKING([if inet_pton seems to work])
     AC_RUN_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stdlib
-        $cares_includes_arpa_inet
-        $cares_includes_string
+        $hns_includes_stdlib
+        $hns_includes_arpa_inet
+        $hns_includes_string
       ]],[[
         unsigned char ipv6a[16+1];
         unsigned char ipv4a[4+1];
@@ -2172,7 +2172,7 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_PTON], [
   if test "$tst_compi_inet_pton" = "yes" &&
     test "$tst_works_inet_pton" != "no"; then
     AC_MSG_CHECKING([if inet_pton usage allowed])
-    if test "x$cares_disallow_inet_pton" != "xyes"; then
+    if test "x$hns_disallow_inet_pton" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_inet_pton="yes"
     else
@@ -2198,16 +2198,16 @@ AC_DEFUN([CARES_CHECK_FUNC_INET_PTON], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTL
+dnl HNS_CHECK_FUNC_IOCTL
 dnl -------------------------------------------------
 dnl Verify if ioctl is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_ioctl, then
+dnl shell variable hns_disallow_ioctl, then
 dnl HAVE_IOCTL will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTL], [
-  AC_REQUIRE([CARES_INCLUDES_STROPTS])dnl
+AC_DEFUN([HNS_CHECK_FUNC_IOCTL], [
+  AC_REQUIRE([HNS_INCLUDES_STROPTS])dnl
   #
   tst_links_ioctl="unknown"
   tst_proto_ioctl="unknown"
@@ -2228,7 +2228,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL], [
   if test "$tst_links_ioctl" = "yes"; then
     AC_MSG_CHECKING([if ioctl is prototyped])
     AC_EGREP_CPP([ioctl],[
-      $cares_includes_stropts
+      $hns_includes_stropts
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_ioctl="yes"
@@ -2242,7 +2242,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL], [
     AC_MSG_CHECKING([if ioctl is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stropts
+        $hns_includes_stropts
       ]],[[
         if(0 != ioctl(0, 0, 0))
           return 1;
@@ -2258,7 +2258,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL], [
   #
   if test "$tst_compi_ioctl" = "yes"; then
     AC_MSG_CHECKING([if ioctl usage allowed])
-    if test "x$cares_disallow_ioctl" != "xyes"; then
+    if test "x$hns_disallow_ioctl" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctl="yes"
     else
@@ -2276,8 +2276,8 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL], [
     AC_DEFINE_UNQUOTED(HAVE_IOCTL, 1,
       [Define to 1 if you have the ioctl function.])
     ac_cv_func_ioctl="yes"
-    CARES_CHECK_FUNC_IOCTL_FIONBIO
-    CARES_CHECK_FUNC_IOCTL_SIOCGIFADDR
+    HNS_CHECK_FUNC_IOCTL_FIONBIO
+    HNS_CHECK_FUNC_IOCTL_SIOCGIFADDR
   else
     AC_MSG_RESULT([no])
     ac_cv_func_ioctl="no"
@@ -2285,14 +2285,14 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTL_FIONBIO
+dnl HNS_CHECK_FUNC_IOCTL_FIONBIO
 dnl -------------------------------------------------
 dnl Verify if ioctl with the FIONBIO command is
 dnl available, can be compiled, and seems to work. If
 dnl all of these are true, then HAVE_IOCTL_FIONBIO
 dnl will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTL_FIONBIO], [
+AC_DEFUN([HNS_CHECK_FUNC_IOCTL_FIONBIO], [
   #
   tst_compi_ioctl_fionbio="unknown"
   tst_allow_ioctl_fionbio="unknown"
@@ -2301,7 +2301,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL_FIONBIO], [
     AC_MSG_CHECKING([if ioctl FIONBIO is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stropts
+        $hns_includes_stropts
       ]],[[
         int flags = 0;
         if(0 != ioctl(0, FIONBIO, &flags))
@@ -2318,7 +2318,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL_FIONBIO], [
   #
   if test "$tst_compi_ioctl_fionbio" = "yes"; then
     AC_MSG_CHECKING([if ioctl FIONBIO usage allowed])
-    if test "x$cares_disallow_ioctl_fionbio" != "xyes"; then
+    if test "x$hns_disallow_ioctl_fionbio" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctl_fionbio="yes"
     else
@@ -2341,14 +2341,14 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL_FIONBIO], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTL_SIOCGIFADDR
+dnl HNS_CHECK_FUNC_IOCTL_SIOCGIFADDR
 dnl -------------------------------------------------
 dnl Verify if ioctl with the SIOCGIFADDR command is available,
 dnl struct ifreq is defined, they can be compiled, and seem to
 dnl work. If all of these are true, then HAVE_IOCTL_SIOCGIFADDR
 dnl will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTL_SIOCGIFADDR], [
+AC_DEFUN([HNS_CHECK_FUNC_IOCTL_SIOCGIFADDR], [
   #
   tst_compi_ioctl_siocgifaddr="unknown"
   tst_allow_ioctl_siocgifaddr="unknown"
@@ -2357,7 +2357,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL_SIOCGIFADDR], [
     AC_MSG_CHECKING([if ioctl SIOCGIFADDR is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stropts
+        $hns_includes_stropts
         #include <net/if.h>
       ]],[[
         struct ifreq ifr;
@@ -2375,7 +2375,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL_SIOCGIFADDR], [
   #
   if test "$tst_compi_ioctl_siocgifaddr" = "yes"; then
     AC_MSG_CHECKING([if ioctl SIOCGIFADDR usage allowed])
-    if test "x$cares_disallow_ioctl_siocgifaddr" != "xyes"; then
+    if test "x$hns_disallow_ioctl_siocgifaddr" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctl_siocgifaddr="yes"
     else
@@ -2398,16 +2398,16 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTL_SIOCGIFADDR], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTLSOCKET
+dnl HNS_CHECK_FUNC_IOCTLSOCKET
 dnl -------------------------------------------------
 dnl Verify if ioctlsocket is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_ioctlsocket, then
+dnl shell variable hns_disallow_ioctlsocket, then
 dnl HAVE_IOCTLSOCKET will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
+AC_DEFUN([HNS_CHECK_FUNC_IOCTLSOCKET], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
   #
   tst_links_ioctlsocket="unknown"
   tst_proto_ioctlsocket="unknown"
@@ -2417,7 +2417,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
   AC_MSG_CHECKING([if ioctlsocket can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
+      $hns_includes_winsock2
     ]],[[
       if(0 != ioctlsocket(0, 0, 0))
         return 1;
@@ -2433,7 +2433,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
   if test "$tst_links_ioctlsocket" = "yes"; then
     AC_MSG_CHECKING([if ioctlsocket is prototyped])
     AC_EGREP_CPP([ioctlsocket],[
-      $cares_includes_winsock2
+      $hns_includes_winsock2
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_ioctlsocket="yes"
@@ -2447,7 +2447,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
     AC_MSG_CHECKING([if ioctlsocket is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
+        $hns_includes_winsock2
       ]],[[
         if(0 != ioctlsocket(0, 0, 0))
           return 1;
@@ -2463,7 +2463,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
   #
   if test "$tst_compi_ioctlsocket" = "yes"; then
     AC_MSG_CHECKING([if ioctlsocket usage allowed])
-    if test "x$cares_disallow_ioctlsocket" != "xyes"; then
+    if test "x$hns_disallow_ioctlsocket" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctlsocket="yes"
     else
@@ -2481,7 +2481,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
     AC_DEFINE_UNQUOTED(HAVE_IOCTLSOCKET, 1,
       [Define to 1 if you have the ioctlsocket function.])
     ac_cv_func_ioctlsocket="yes"
-    CARES_CHECK_FUNC_IOCTLSOCKET_FIONBIO
+    HNS_CHECK_FUNC_IOCTLSOCKET_FIONBIO
   else
     AC_MSG_RESULT([no])
     ac_cv_func_ioctlsocket="no"
@@ -2489,14 +2489,14 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTLSOCKET_FIONBIO
+dnl HNS_CHECK_FUNC_IOCTLSOCKET_FIONBIO
 dnl -------------------------------------------------
 dnl Verify if ioctlsocket with the FIONBIO command is
 dnl available, can be compiled, and seems to work. If
 dnl all of these are true, then HAVE_IOCTLSOCKET_FIONBIO
 dnl will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_FIONBIO], [
+AC_DEFUN([HNS_CHECK_FUNC_IOCTLSOCKET_FIONBIO], [
   #
   tst_compi_ioctlsocket_fionbio="unknown"
   tst_allow_ioctlsocket_fionbio="unknown"
@@ -2505,7 +2505,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_FIONBIO], [
     AC_MSG_CHECKING([if ioctlsocket FIONBIO is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
+        $hns_includes_winsock2
       ]],[[
         int flags = 0;
         if(0 != ioctlsocket(0, FIONBIO, &flags))
@@ -2522,7 +2522,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_FIONBIO], [
   #
   if test "$tst_compi_ioctlsocket_fionbio" = "yes"; then
     AC_MSG_CHECKING([if ioctlsocket FIONBIO usage allowed])
-    if test "x$cares_disallow_ioctlsocket_fionbio" != "xyes"; then
+    if test "x$hns_disallow_ioctlsocket_fionbio" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctlsocket_fionbio="yes"
     else
@@ -2545,16 +2545,16 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_FIONBIO], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL
+dnl HNS_CHECK_FUNC_IOCTLSOCKET_CAMEL
 dnl -------------------------------------------------
 dnl Verify if IoctlSocket is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_ioctlsocket_camel,
+dnl shell variable hns_disallow_ioctlsocket_camel,
 dnl then HAVE_IOCTLSOCKET_CAMEL will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
-  AC_REQUIRE([CARES_INCLUDES_STROPTS])dnl
+AC_DEFUN([HNS_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
+  AC_REQUIRE([HNS_INCLUDES_STROPTS])dnl
   #
   tst_links_ioctlsocket_camel="unknown"
   tst_proto_ioctlsocket_camel="unknown"
@@ -2575,7 +2575,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
   if test "$tst_links_ioctlsocket_camel" = "yes"; then
     AC_MSG_CHECKING([if IoctlSocket is prototyped])
     AC_EGREP_CPP([IoctlSocket],[
-      $cares_includes_stropts
+      $hns_includes_stropts
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_ioctlsocket_camel="yes"
@@ -2589,7 +2589,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
     AC_MSG_CHECKING([if IoctlSocket is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stropts
+        $hns_includes_stropts
       ]],[[
         if(0 != IoctlSocket(0, 0, 0))
           return 1;
@@ -2605,7 +2605,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
   #
   if test "$tst_compi_ioctlsocket_camel" = "yes"; then
     AC_MSG_CHECKING([if IoctlSocket usage allowed])
-    if test "x$cares_disallow_ioctlsocket_camel" != "xyes"; then
+    if test "x$hns_disallow_ioctlsocket_camel" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctlsocket_camel="yes"
     else
@@ -2623,7 +2623,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
     AC_DEFINE_UNQUOTED(HAVE_IOCTLSOCKET_CAMEL, 1,
       [Define to 1 if you have the IoctlSocket camel case function.])
     ac_cv_func_ioctlsocket_camel="yes"
-    CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO
+    HNS_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO
   else
     AC_MSG_RESULT([no])
     ac_cv_func_ioctlsocket_camel="no"
@@ -2631,13 +2631,13 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL], [
 ])
 
 
-dnl CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO
+dnl HNS_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO
 dnl -------------------------------------------------
 dnl Verify if IoctlSocket with FIONBIO command is available,
 dnl can be compiled, and seems to work. If all of these are
 dnl true, then HAVE_IOCTLSOCKET_CAMEL_FIONBIO will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO], [
+AC_DEFUN([HNS_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO], [
   #
   tst_compi_ioctlsocket_camel_fionbio="unknown"
   tst_allow_ioctlsocket_camel_fionbio="unknown"
@@ -2646,7 +2646,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO], [
     AC_MSG_CHECKING([if IoctlSocket FIONBIO is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_stropts
+        $hns_includes_stropts
       ]],[[
         long flags = 0;
         if(0 != ioctlsocket(0, FIONBIO, &flags))
@@ -2663,7 +2663,7 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO], [
   #
   if test "$tst_compi_ioctlsocket_camel_fionbio" = "yes"; then
     AC_MSG_CHECKING([if IoctlSocket FIONBIO usage allowed])
-    if test "x$cares_disallow_ioctlsocket_camel_fionbio" != "xyes"; then
+    if test "x$hns_disallow_ioctlsocket_camel_fionbio" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_ioctlsocket_camel_fionbio="yes"
     else
@@ -2686,17 +2686,17 @@ AC_DEFUN([CARES_CHECK_FUNC_IOCTLSOCKET_CAMEL_FIONBIO], [
 ])
 
 
-dnl CARES_CHECK_FUNC_SETSOCKOPT
+dnl HNS_CHECK_FUNC_SETSOCKOPT
 dnl -------------------------------------------------
 dnl Verify if setsockopt is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_setsockopt, then
+dnl shell variable hns_disallow_setsockopt, then
 dnl HAVE_SETSOCKOPT will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
+AC_DEFUN([HNS_CHECK_FUNC_SETSOCKOPT], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
   #
   tst_links_setsockopt="unknown"
   tst_proto_setsockopt="unknown"
@@ -2706,8 +2706,8 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
   AC_MSG_CHECKING([if setsockopt can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_sys_socket
+      $hns_includes_winsock2
+      $hns_includes_sys_socket
     ]],[[
       if(0 != setsockopt(0, 0, 0, 0, 0))
         return 1;
@@ -2723,8 +2723,8 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
   if test "$tst_links_setsockopt" = "yes"; then
     AC_MSG_CHECKING([if setsockopt is prototyped])
     AC_EGREP_CPP([setsockopt],[
-      $cares_includes_winsock2
-      $cares_includes_sys_socket
+      $hns_includes_winsock2
+      $hns_includes_sys_socket
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_setsockopt="yes"
@@ -2738,8 +2738,8 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
     AC_MSG_CHECKING([if setsockopt is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_sys_socket
+        $hns_includes_winsock2
+        $hns_includes_sys_socket
       ]],[[
         if(0 != setsockopt(0, 0, 0, 0, 0))
           return 1;
@@ -2755,7 +2755,7 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
   #
   if test "$tst_compi_setsockopt" = "yes"; then
     AC_MSG_CHECKING([if setsockopt usage allowed])
-    if test "x$cares_disallow_setsockopt" != "xyes"; then
+    if test "x$hns_disallow_setsockopt" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_setsockopt="yes"
     else
@@ -2773,7 +2773,7 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
     AC_DEFINE_UNQUOTED(HAVE_SETSOCKOPT, 1,
       [Define to 1 if you have the setsockopt function.])
     ac_cv_func_setsockopt="yes"
-    CARES_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK
+    HNS_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK
   else
     AC_MSG_RESULT([no])
     ac_cv_func_setsockopt="no"
@@ -2781,14 +2781,14 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT], [
 ])
 
 
-dnl CARES_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK
+dnl HNS_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK
 dnl -------------------------------------------------
 dnl Verify if setsockopt with the SO_NONBLOCK command is
 dnl available, can be compiled, and seems to work. If
 dnl all of these are true, then HAVE_SETSOCKOPT_SO_NONBLOCK
 dnl will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK], [
+AC_DEFUN([HNS_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK], [
   #
   tst_compi_setsockopt_so_nonblock="unknown"
   tst_allow_setsockopt_so_nonblock="unknown"
@@ -2797,8 +2797,8 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK], [
     AC_MSG_CHECKING([if setsockopt SO_NONBLOCK is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_sys_socket
+        $hns_includes_winsock2
+        $hns_includes_sys_socket
       ]],[[
         if(0 != setsockopt(0, SOL_SOCKET, SO_NONBLOCK, 0, 0))
           return 1;
@@ -2814,7 +2814,7 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK], [
   #
   if test "$tst_compi_setsockopt_so_nonblock" = "yes"; then
     AC_MSG_CHECKING([if setsockopt SO_NONBLOCK usage allowed])
-    if test "x$cares_disallow_setsockopt_so_nonblock" != "xyes"; then
+    if test "x$hns_disallow_setsockopt_so_nonblock" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_setsockopt_so_nonblock="yes"
     else
@@ -2837,18 +2837,18 @@ AC_DEFUN([CARES_CHECK_FUNC_SETSOCKOPT_SO_NONBLOCK], [
 ])
 
 
-dnl CARES_CHECK_FUNC_SOCKET
+dnl HNS_CHECK_FUNC_SOCKET
 dnl -------------------------------------------------
 dnl Verify if socket is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_socket, then
+dnl shell variable hns_disallow_socket, then
 dnl HAVE_SOCKET will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_SOCKET], [
-  AC_REQUIRE([CARES_INCLUDES_WINSOCK2])dnl
-  AC_REQUIRE([CARES_INCLUDES_SYS_SOCKET])dnl
-  AC_REQUIRE([CARES_INCLUDES_SOCKET])dnl
+AC_DEFUN([HNS_CHECK_FUNC_SOCKET], [
+  AC_REQUIRE([HNS_INCLUDES_WINSOCK2])dnl
+  AC_REQUIRE([HNS_INCLUDES_SYS_SOCKET])dnl
+  AC_REQUIRE([HNS_INCLUDES_SOCKET])dnl
   #
   tst_links_socket="unknown"
   tst_proto_socket="unknown"
@@ -2858,9 +2858,9 @@ AC_DEFUN([CARES_CHECK_FUNC_SOCKET], [
   AC_MSG_CHECKING([if socket can be linked])
   AC_LINK_IFELSE([
     AC_LANG_PROGRAM([[
-      $cares_includes_winsock2
-      $cares_includes_sys_socket
-      $cares_includes_socket
+      $hns_includes_winsock2
+      $hns_includes_sys_socket
+      $hns_includes_socket
     ]],[[
       if(0 != socket(0, 0, 0))
         return 1;
@@ -2876,9 +2876,9 @@ AC_DEFUN([CARES_CHECK_FUNC_SOCKET], [
   if test "$tst_links_socket" = "yes"; then
     AC_MSG_CHECKING([if socket is prototyped])
     AC_EGREP_CPP([socket],[
-      $cares_includes_winsock2
-      $cares_includes_sys_socket
-      $cares_includes_socket
+      $hns_includes_winsock2
+      $hns_includes_sys_socket
+      $hns_includes_socket
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_socket="yes"
@@ -2892,9 +2892,9 @@ AC_DEFUN([CARES_CHECK_FUNC_SOCKET], [
     AC_MSG_CHECKING([if socket is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_winsock2
-        $cares_includes_sys_socket
-        $cares_includes_socket
+        $hns_includes_winsock2
+        $hns_includes_sys_socket
+        $hns_includes_socket
       ]],[[
         if(0 != socket(0, 0, 0))
           return 1;
@@ -2910,7 +2910,7 @@ AC_DEFUN([CARES_CHECK_FUNC_SOCKET], [
   #
   if test "$tst_compi_socket" = "yes"; then
     AC_MSG_CHECKING([if socket usage allowed])
-    if test "x$cares_disallow_socket" != "xyes"; then
+    if test "x$hns_disallow_socket" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_socket="yes"
     else
@@ -2935,16 +2935,16 @@ AC_DEFUN([CARES_CHECK_FUNC_SOCKET], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRCASECMP
+dnl HNS_CHECK_FUNC_STRCASECMP
 dnl -------------------------------------------------
 dnl Verify if strcasecmp is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_strcasecmp, then
+dnl shell variable hns_disallow_strcasecmp, then
 dnl HAVE_STRCASECMP will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRCASECMP], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRCASECMP], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_strcasecmp="unknown"
   tst_proto_strcasecmp="unknown"
@@ -2965,7 +2965,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCASECMP], [
   if test "$tst_links_strcasecmp" = "yes"; then
     AC_MSG_CHECKING([if strcasecmp is prototyped])
     AC_EGREP_CPP([strcasecmp],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_strcasecmp="yes"
@@ -2979,7 +2979,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCASECMP], [
     AC_MSG_CHECKING([if strcasecmp is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != strcasecmp(0, 0))
           return 1;
@@ -2995,7 +2995,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCASECMP], [
   #
   if test "$tst_compi_strcasecmp" = "yes"; then
     AC_MSG_CHECKING([if strcasecmp usage allowed])
-    if test "x$cares_disallow_strcasecmp" != "xyes"; then
+    if test "x$hns_disallow_strcasecmp" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_strcasecmp="yes"
     else
@@ -3020,16 +3020,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCASECMP], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRCMPI
+dnl HNS_CHECK_FUNC_STRCMPI
 dnl -------------------------------------------------
 dnl Verify if strcmpi is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_strcmpi, then
+dnl shell variable hns_disallow_strcmpi, then
 dnl HAVE_STRCMPI will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRCMPI], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRCMPI], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_strcmpi="unknown"
   tst_proto_strcmpi="unknown"
@@ -3050,7 +3050,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCMPI], [
   if test "$tst_links_strcmpi" = "yes"; then
     AC_MSG_CHECKING([if strcmpi is prototyped])
     AC_EGREP_CPP([strcmpi],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_strcmpi="yes"
@@ -3064,7 +3064,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCMPI], [
     AC_MSG_CHECKING([if strcmpi is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != strcmpi(0, 0))
           return 1;
@@ -3080,7 +3080,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCMPI], [
   #
   if test "$tst_compi_strcmpi" = "yes"; then
     AC_MSG_CHECKING([if strcmpi usage allowed])
-    if test "x$cares_disallow_strcmpi" != "xyes"; then
+    if test "x$hns_disallow_strcmpi" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_strcmpi="yes"
     else
@@ -3105,16 +3105,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRCMPI], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRDUP
+dnl HNS_CHECK_FUNC_STRDUP
 dnl -------------------------------------------------
 dnl Verify if strdup is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_strdup, then
+dnl shell variable hns_disallow_strdup, then
 dnl HAVE_STRDUP will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRDUP], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRDUP], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_strdup="unknown"
   tst_proto_strdup="unknown"
@@ -3135,7 +3135,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRDUP], [
   if test "$tst_links_strdup" = "yes"; then
     AC_MSG_CHECKING([if strdup is prototyped])
     AC_EGREP_CPP([strdup],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_strdup="yes"
@@ -3149,7 +3149,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRDUP], [
     AC_MSG_CHECKING([if strdup is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != strdup(0))
           return 1;
@@ -3165,7 +3165,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRDUP], [
   #
   if test "$tst_compi_strdup" = "yes"; then
     AC_MSG_CHECKING([if strdup usage allowed])
-    if test "x$cares_disallow_strdup" != "xyes"; then
+    if test "x$hns_disallow_strdup" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_strdup="yes"
     else
@@ -3190,16 +3190,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRDUP], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRICMP
+dnl HNS_CHECK_FUNC_STRICMP
 dnl -------------------------------------------------
 dnl Verify if stricmp is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_stricmp, then
+dnl shell variable hns_disallow_stricmp, then
 dnl HAVE_STRICMP will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRICMP], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRICMP], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_stricmp="unknown"
   tst_proto_stricmp="unknown"
@@ -3220,7 +3220,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRICMP], [
   if test "$tst_links_stricmp" = "yes"; then
     AC_MSG_CHECKING([if stricmp is prototyped])
     AC_EGREP_CPP([stricmp],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_stricmp="yes"
@@ -3234,7 +3234,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRICMP], [
     AC_MSG_CHECKING([if stricmp is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != stricmp(0, 0))
           return 1;
@@ -3250,7 +3250,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRICMP], [
   #
   if test "$tst_compi_stricmp" = "yes"; then
     AC_MSG_CHECKING([if stricmp usage allowed])
-    if test "x$cares_disallow_stricmp" != "xyes"; then
+    if test "x$hns_disallow_stricmp" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_stricmp="yes"
     else
@@ -3275,16 +3275,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRICMP], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRNCASECMP
+dnl HNS_CHECK_FUNC_STRNCASECMP
 dnl -------------------------------------------------
 dnl Verify if strncasecmp is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_strncasecmp, then
+dnl shell variable hns_disallow_strncasecmp, then
 dnl HAVE_STRNCASECMP will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRNCASECMP], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRNCASECMP], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_strncasecmp="unknown"
   tst_proto_strncasecmp="unknown"
@@ -3305,7 +3305,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCASECMP], [
   if test "$tst_links_strncasecmp" = "yes"; then
     AC_MSG_CHECKING([if strncasecmp is prototyped])
     AC_EGREP_CPP([strncasecmp],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_strncasecmp="yes"
@@ -3319,7 +3319,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCASECMP], [
     AC_MSG_CHECKING([if strncasecmp is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != strncasecmp(0, 0, 0))
           return 1;
@@ -3335,7 +3335,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCASECMP], [
   #
   if test "$tst_compi_strncasecmp" = "yes"; then
     AC_MSG_CHECKING([if strncasecmp usage allowed])
-    if test "x$cares_disallow_strncasecmp" != "xyes"; then
+    if test "x$hns_disallow_strncasecmp" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_strncasecmp="yes"
     else
@@ -3360,16 +3360,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCASECMP], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRNCMPI
+dnl HNS_CHECK_FUNC_STRNCMPI
 dnl -------------------------------------------------
 dnl Verify if strncmpi is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_strncmpi, then
+dnl shell variable hns_disallow_strncmpi, then
 dnl HAVE_STRNCMPI will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRNCMPI], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRNCMPI], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_strncmpi="unknown"
   tst_proto_strncmpi="unknown"
@@ -3390,7 +3390,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCMPI], [
   if test "$tst_links_strncmpi" = "yes"; then
     AC_MSG_CHECKING([if strncmpi is prototyped])
     AC_EGREP_CPP([strncmpi],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_strncmpi="yes"
@@ -3404,7 +3404,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCMPI], [
     AC_MSG_CHECKING([if strncmpi is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != strncmpi(0, 0))
           return 1;
@@ -3420,7 +3420,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCMPI], [
   #
   if test "$tst_compi_strncmpi" = "yes"; then
     AC_MSG_CHECKING([if strncmpi usage allowed])
-    if test "x$cares_disallow_strncmpi" != "xyes"; then
+    if test "x$hns_disallow_strncmpi" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_strncmpi="yes"
     else
@@ -3445,16 +3445,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNCMPI], [
 ])
 
 
-dnl CARES_CHECK_FUNC_STRNICMP
+dnl HNS_CHECK_FUNC_STRNICMP
 dnl -------------------------------------------------
 dnl Verify if strnicmp is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_strnicmp, then
+dnl shell variable hns_disallow_strnicmp, then
 dnl HAVE_STRNICMP will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_STRNICMP], [
-  AC_REQUIRE([CARES_INCLUDES_STRING])dnl
+AC_DEFUN([HNS_CHECK_FUNC_STRNICMP], [
+  AC_REQUIRE([HNS_INCLUDES_STRING])dnl
   #
   tst_links_strnicmp="unknown"
   tst_proto_strnicmp="unknown"
@@ -3475,7 +3475,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNICMP], [
   if test "$tst_links_strnicmp" = "yes"; then
     AC_MSG_CHECKING([if strnicmp is prototyped])
     AC_EGREP_CPP([strnicmp],[
-      $cares_includes_string
+      $hns_includes_string
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_strnicmp="yes"
@@ -3489,7 +3489,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNICMP], [
     AC_MSG_CHECKING([if strnicmp is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_string
+        $hns_includes_string
       ]],[[
         if(0 != strnicmp(0, 0))
           return 1;
@@ -3505,7 +3505,7 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNICMP], [
   #
   if test "$tst_compi_strnicmp" = "yes"; then
     AC_MSG_CHECKING([if strnicmp usage allowed])
-    if test "x$cares_disallow_strnicmp" != "xyes"; then
+    if test "x$hns_disallow_strnicmp" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_strnicmp="yes"
     else
@@ -3530,16 +3530,16 @@ AC_DEFUN([CARES_CHECK_FUNC_STRNICMP], [
 ])
 
 
-dnl CARES_CHECK_FUNC_WRITEV
+dnl HNS_CHECK_FUNC_WRITEV
 dnl -------------------------------------------------
 dnl Verify if writev is available, prototyped, and
 dnl can be compiled. If all of these are true, and
 dnl usage has not been previously disallowed with
-dnl shell variable cares_disallow_writev, then
+dnl shell variable hns_disallow_writev, then
 dnl HAVE_WRITEV will be defined.
 
-AC_DEFUN([CARES_CHECK_FUNC_WRITEV], [
-  AC_REQUIRE([CARES_INCLUDES_SYS_UIO])dnl
+AC_DEFUN([HNS_CHECK_FUNC_WRITEV], [
+  AC_REQUIRE([HNS_INCLUDES_SYS_UIO])dnl
   #
   tst_links_writev="unknown"
   tst_proto_writev="unknown"
@@ -3560,7 +3560,7 @@ AC_DEFUN([CARES_CHECK_FUNC_WRITEV], [
   if test "$tst_links_writev" = "yes"; then
     AC_MSG_CHECKING([if writev is prototyped])
     AC_EGREP_CPP([writev],[
-      $cares_includes_sys_uio
+      $hns_includes_sys_uio
     ],[
       AC_MSG_RESULT([yes])
       tst_proto_writev="yes"
@@ -3574,7 +3574,7 @@ AC_DEFUN([CARES_CHECK_FUNC_WRITEV], [
     AC_MSG_CHECKING([if writev is compilable])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM([[
-        $cares_includes_sys_uio
+        $hns_includes_sys_uio
       ]],[[
         if(0 != writev(0, 0, 0))
           return 1;
@@ -3590,7 +3590,7 @@ AC_DEFUN([CARES_CHECK_FUNC_WRITEV], [
   #
   if test "$tst_compi_writev" = "yes"; then
     AC_MSG_CHECKING([if writev usage allowed])
-    if test "x$cares_disallow_writev" != "xyes"; then
+    if test "x$hns_disallow_writev" != "xyes"; then
       AC_MSG_RESULT([yes])
       tst_allow_writev="yes"
     else

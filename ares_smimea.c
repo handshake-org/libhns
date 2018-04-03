@@ -15,11 +15,11 @@
  */
 
 #include <assert.h>
-#include "ares_setup.h"
-#include "ares.h"
-#include "ares_private.h"
-#include "ares_dane.h"
-#include "ares_sha256.h"
+#include "hns_setup.h"
+#include "hns.h"
+#include "hns_private.h"
+#include "hns_dane.h"
+#include "hns_sha256.h"
 
 static char
 to_char(uint8_t n) {
@@ -66,7 +66,7 @@ encode_hex(unsigned char *data, size_t data_len, char *str) {
 }
 
 int
-ares_smimea_encode_name(
+hns_smimea_encode_name(
   const char *name,
   const char *email,
   char *out,
@@ -75,7 +75,7 @@ ares_smimea_encode_name(
   if (name == NULL || email == NULL)
     return 0;
 
-  size_t size = ares_smimea_name_size(name, email);
+  size_t size = hns_smimea_name_size(name, email);
 
   if (size > out_len)
     return 0;
@@ -83,10 +83,10 @@ ares_smimea_encode_name(
   unsigned char hash[32];
   char hex[57];
 
-  ares_sha256_ctx ctx;
-  ares_sha256_init(&ctx);
-  ares_sha256_update(&ctx, email, strlen(email));
-  ares_sha256_final(&ctx, hash);
+  hns_sha256_ctx ctx;
+  hns_sha256_init(&ctx);
+  hns_sha256_update(&ctx, email, strlen(email));
+  hns_sha256_final(&ctx, hash);
 
   assert(encode_hex(hash, 28, hex) == 1);
 
@@ -94,15 +94,15 @@ ares_smimea_encode_name(
 }
 
 size_t
-ares_smimea_name_size(const char *name, const char *email) {
+hns_smimea_name_size(const char *name, const char *email) {
   return 1 + 56 + 1 + 1 + 6 + 1 + strlen(name);
 }
 
 int
-ares_smimea_verify(
-  struct ares_smimea_reply *smimea_reply,
+hns_smimea_verify(
+  struct hns_smimea_reply *smimea_reply,
   unsigned char *cert,
   size_t cert_len
 ) {
-  return ares_dane_verify(smimea_reply, cert, cert_len);
+  return hns_dane_verify(smimea_reply, cert, cert_len);
 }

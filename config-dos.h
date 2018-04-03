@@ -3,10 +3,10 @@
 
 
 /* ================================================================ */
-/*       ares/config-dos.h - Hand crafted config file for DOS       */
+/*       hns/config-dos.h - Hand crafted config file for DOS       */
 /* ================================================================ */
 
-#define PACKAGE  "c-ares"
+#define PACKAGE  "hns"
 
 #define HAVE_ERRNO_H           1
 #define HAVE_GETENV            1

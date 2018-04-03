@@ -14,21 +14,21 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
-#include "ares.h"
-#include "ares_nowarn.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_nowarn.h"
+#include "hns_private.h"
 
 /* This is an internal function.  Its contract is to read a line from
  * a file into a dynamically allocated buffer, zeroing the trailing
  * newline if there is one.  The calling routine may call
- * ares__read_line multiple times with the same buf and bufsize
+ * hns__read_line multiple times with the same buf and bufsize
  * pointers; *buf will be reallocated and *bufsize adjusted as
  * appropriate.  The initial value of *buf should be NULL.  After the
  * calling routine is done reading lines, it should free *buf.
  */
-int ares__read_line(FILE *fp, char **buf, size_t *bufsize)
+int hns__read_line(FILE *fp, char **buf, size_t *bufsize)
 {
   char *newbuf;
   size_t offset = 0;
@@ -36,18 +36,18 @@ int ares__read_line(FILE *fp, char **buf, size_t *bufsize)
 
   if (*buf == NULL)
     {
-      *buf = ares_malloc(128);
+      *buf = hns_malloc(128);
       if (!*buf)
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
       *bufsize = 128;
     }
 
   for (;;)
     {
-      int bytestoread = aresx_uztosi(*bufsize - offset);
+      int bytestoread = hnsx_uztosi(*bufsize - offset);
 
       if (!fgets(*buf + offset, bytestoread, fp))
-        return (offset != 0) ? 0 : (ferror(fp)) ? ARES_EFILE : ARES_EOF;
+        return (offset != 0) ? 0 : (ferror(fp)) ? HNS_EFILE : HNS_EOF;
       len = offset + strlen(*buf + offset);
       if ((*buf)[len - 1] == '\n')
         {
@@ -59,15 +59,15 @@ int ares__read_line(FILE *fp, char **buf, size_t *bufsize)
         continue;
 
       /* Allocate more space. */
-      newbuf = ares_realloc(*buf, *bufsize * 2);
+      newbuf = hns_realloc(*buf, *bufsize * 2);
       if (!newbuf)
         {
-          ares_free(*buf);
+          hns_free(*buf);
           *buf = NULL;
-          return ARES_ENOMEM;
+          return HNS_ENOMEM;
         }
       *buf = newbuf;
       *bufsize *= 2;
     }
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }

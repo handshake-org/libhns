@@ -1,4 +1,4 @@
-# c-ares license
+# hns license
 
 Copyright (c) 2007 - 2018, Daniel Stenberg with many contributors, see AUTHORS
 file.

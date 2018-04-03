@@ -14,11 +14,11 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares.h"
+#include "hns_setup.h"
+#include "hns.h"
 
-int ares_mkquery(const char *name, int dnsclass, int type, unsigned short id,
+int hns_mkquery(const char *name, int dnsclass, int type, unsigned short id,
                  int rd, unsigned char **buf, int *buflen)
 {
-  return ares_create_query(name, dnsclass, type, id, rd, buf, buflen, 0);
+  return hns_create_query(name, dnsclass, type, id, rd, buf, buflen, 0);
 }

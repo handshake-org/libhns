@@ -1,9 +1,9 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
-// Include ares internal files for DNS protocol details
+// Include hns internal files for DNS protocol details
 #include "nameser.h"
-#include "ares_dns.h"
+#include "hns_dns.h"
 
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
@@ -25,7 +25,7 @@
 #define mkdir_(d, p) mkdir(d, p)
 #endif
 
-namespace ares {
+namespace hns {
 namespace test {
 
 bool verbose = false;
@@ -57,7 +57,7 @@ std::vector<std::pair<int, bool>> families_modes = both_families_both_modes;
 unsigned long long LibraryTest::fails_ = 0;
 std::map<size_t, int> LibraryTest::size_fails_;
 
-void ProcessWork(ares_channel channel,
+void ProcessWork(hns_channel channel,
                  std::function<std::set<int>()> get_extrafds,
                  std::function<void(int)> process_extra) {
   int nfds, count;
@@ -67,7 +67,7 @@ void ProcessWork(ares_channel channel,
     // Retrieve the set of file descriptors that the library wants us to monitor.
     FD_ZERO(&readers);
     FD_ZERO(&writers);
-    nfds = ares_fds(channel, &readers, &writers);
+    nfds = hns_fds(channel, &readers, &writers);
     if (nfds == 0)  // no work left to do in the library
       return;
 
@@ -90,7 +90,7 @@ void ProcessWork(ares_channel channel,
     }
 
     // Let the library process any activity.
-    ares_process(channel, &readers, &writers);
+    hns_process(channel, &readers, &writers);
 
     // Let the provided callback process any activity on the extra FD.
     for (int extrafd : extrafds) {
@@ -295,7 +295,7 @@ void MockServer::ProcessFD(int fd) {
 
   char *name = nullptr;
   long enclen;
-  ares_expand_name(question, data, len, &name, &enclen);
+  hns_expand_name(question, data, len, &name, &enclen);
   if (!name) {
     std::cerr << "Failed to retrieve name" << std::endl;
     return;
@@ -303,7 +303,7 @@ void MockServer::ProcessFD(int fd) {
   qlen -= enclen;
   question += enclen;
   std::string namestr(name);
-  ares_free_string(name);
+  hns_free_string(name);
 
   if (qlen < 4) {
     std::cerr << "Unexpected question size (" << qlen
@@ -389,12 +389,12 @@ MockChannelOptsTest::NiceMockServers MockChannelOptsTest::BuildServers(int count
 MockChannelOptsTest::MockChannelOptsTest(int count,
                                          int family,
                                          bool force_tcp,
-                                         struct ares_options* givenopts,
+                                         struct hns_options* givenopts,
                                          int optmask)
   : servers_(BuildServers(count, family, mock_port)),
     server_(*servers_[0].get()), channel_(nullptr) {
   // Set up channel options.
-  struct ares_options opts;
+  struct hns_options opts;
   if (givenopts) {
     memcpy(&opts, givenopts, sizeof(opts));
   } else {
@@ -403,40 +403,40 @@ MockChannelOptsTest::MockChannelOptsTest(int count,
 
   // Point the library at the first mock server by default (overridden below).
   opts.udp_port = mock_port;
-  optmask |= ARES_OPT_UDP_PORT;
+  optmask |= HNS_OPT_UDP_PORT;
   opts.tcp_port = mock_port;
-  optmask |= ARES_OPT_TCP_PORT;
+  optmask |= HNS_OPT_TCP_PORT;
 
   // If not already overridden, set short-ish timeouts.
-  if (!(optmask & (ARES_OPT_TIMEOUTMS|ARES_OPT_TIMEOUT))) {
+  if (!(optmask & (HNS_OPT_TIMEOUTMS|HNS_OPT_TIMEOUT))) {
     opts.timeout = 1500;
-    optmask |= ARES_OPT_TIMEOUTMS;
+    optmask |= HNS_OPT_TIMEOUTMS;
   }
   // If not already overridden, set 3 retries.
-  if (!(optmask & ARES_OPT_TRIES)) {
+  if (!(optmask & HNS_OPT_TRIES)) {
     opts.tries = 3;
-    optmask |= ARES_OPT_TRIES;
+    optmask |= HNS_OPT_TRIES;
   }
   // If not already overridden, set search domains.
   const char *domains[3] = {"first.com", "second.org", "third.gov"};
-  if (!(optmask & ARES_OPT_DOMAINS)) {
+  if (!(optmask & HNS_OPT_DOMAINS)) {
     opts.ndomains = 3;
     opts.domains = (char**)domains;
-    optmask |= ARES_OPT_DOMAINS;
+    optmask |= HNS_OPT_DOMAINS;
   }
   if (force_tcp) {
-    opts.flags |= ARES_FLAG_USEVC;
-    optmask |= ARES_OPT_FLAGS;
+    opts.flags |= HNS_FLAG_USEVC;
+    optmask |= HNS_OPT_FLAGS;
   }
 
-  EXPECT_EQ(ARES_SUCCESS, ares_init_options(&channel_, &opts, optmask));
+  EXPECT_EQ(HNS_SUCCESS, hns_init_options(&channel_, &opts, optmask));
   EXPECT_NE(nullptr, channel_);
 
   // Set up servers after construction so we can set individual ports
-  struct ares_addr_port_node* prev = nullptr;
-  struct ares_addr_port_node* first = nullptr;
+  struct hns_addr_port_node* prev = nullptr;
+  struct hns_addr_port_node* first = nullptr;
   for (const auto& server : servers_) {
-    struct ares_addr_port_node* node = (struct ares_addr_port_node*)malloc(sizeof(*node));
+    struct hns_addr_port_node* node = (struct hns_addr_port_node*)malloc(sizeof(*node));
     if (prev) {
       prev->next = node;
     } else {
@@ -454,7 +454,7 @@ MockChannelOptsTest::MockChannelOptsTest(int count,
     }
     prev = node;
   }
-  EXPECT_EQ(ARES_SUCCESS, ares_set_servers_ports(channel_, first));
+  EXPECT_EQ(HNS_SUCCESS, hns_set_servers_ports(channel_, first));
 
   while (first) {
     prev = first;
@@ -473,7 +473,7 @@ MockChannelOptsTest::MockChannelOptsTest(int count,
 
 MockChannelOptsTest::~MockChannelOptsTest() {
   if (channel_) {
-    ares_destroy(channel_);
+    hns_destroy(channel_);
   }
   channel_ = nullptr;
 }
@@ -609,10 +609,10 @@ void NameInfoCallback(void *data, int status, int timeouts,
   if (verbose) std::cerr << "NameInfoCallback(" << *result << ")" << std::endl;
 }
 
-std::vector<std::string> GetNameServers(ares_channel channel) {
-  struct ares_addr_port_node* servers = nullptr;
-  EXPECT_EQ(ARES_SUCCESS, ares_get_servers_ports(channel, &servers));
-  struct ares_addr_port_node* server = servers;
+std::vector<std::string> GetNameServers(hns_channel channel) {
+  struct hns_addr_port_node* servers = nullptr;
+  EXPECT_EQ(HNS_SUCCESS, hns_get_servers_ports(channel, &servers));
+  struct hns_addr_port_node* server = servers;
   std::vector<std::string> results;
   while (server) {
     std::stringstream ss;
@@ -639,7 +639,7 @@ std::vector<std::string> GetNameServers(ares_channel channel) {
     results.push_back(ss.str());
     server = server->next;
   }
-  if (servers) ares_free_data(servers);
+  if (servers) hns_free_data(servers);
   return results;
 }
 
@@ -680,19 +680,19 @@ std::string TempNam(const char *dir, const char *prefix) {
 }
 
 TempFile::TempFile(const std::string& contents)
-  : TransientFile(TempNam(nullptr, "ares"), contents) {
+  : TransientFile(TempNam(nullptr, "hns"), contents) {
 
 }
 
-VirtualizeIO::VirtualizeIO(ares_channel c)
+VirtualizeIO::VirtualizeIO(hns_channel c)
   : channel_(c)
 {
-  ares_set_socket_functions(channel_, &default_functions, 0);
+  hns_set_socket_functions(channel_, &default_functions, 0);
 }
 
 VirtualizeIO::~VirtualizeIO() {
-  ares_set_socket_functions(channel_, 0, 0);
+  hns_set_socket_functions(channel_, 0, 0);
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

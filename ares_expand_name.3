@@ -13,20 +13,20 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_EXPAND_NAME 3 "20 Nov 2009"
+.TH HNS_EXPAND_NAME 3 "20 Nov 2009"
 .SH NAME
-ares_expand_name \- Expand a DNS-encoded domain name
+hns_expand_name \- Expand a DNS-encoded domain name
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_expand_name(const unsigned char *\fIencoded\fP,
+.B int hns_expand_name(const unsigned char *\fIencoded\fP,
 .B      const unsigned char *\fIabuf\fP, int \fIalen\fP, char **\fIs\fP,
 .B 	long *\fIenclen\fP)
 .fi
 .SH DESCRIPTION
 The
-.B ares_expand_name
+.B hns_expand_name
 function converts a DNS-encoded domain name to a dot-separated C
 string.  The argument
 .I encoded
@@ -44,21 +44,21 @@ The length of the encoded name is stored in the variable pointed to by
 so that the caller can advance past the encoded domain name to read
 further data in the message.
 
-Use \fIares_free_string(3)\fP to free the allocated hostname.
+Use \fIhns_free_string(3)\fP to free the allocated hostname.
 .SH RETURN VALUES
-.B ares_expand_name
+.B hns_expand_name
 can return any of the following values:
 .TP 15
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 Expansion of the encoded name succeeded.
 .TP 15
-.B ARES_EBADNAME
+.B HNS_EBADNAME
 The encoded domain name was malformed and could not be expanded.
 .TP 15
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .SH SEE ALSO
-.BR ares_mkquery (3), ares_free_string (3)
+.BR hns_mkquery (3), hns_free_string (3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br

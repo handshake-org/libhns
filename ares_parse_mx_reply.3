@@ -13,22 +13,22 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_PARSE_MX_REPLY 3 "4 August 2009"
+.TH HNS_PARSE_MX_REPLY 3 "4 August 2009"
 .SH NAME
-ares_parse_mx_reply \- Parse a reply to a DNS query of type MX
+hns_parse_mx_reply \- Parse a reply to a DNS query of type MX
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_parse_mx_reply(const unsigned char* \fIabuf\fP, int \fIalen\fP,
-.B                          struct ares_mx_reply** \fImx_out\fP);
+.B int hns_parse_mx_reply(const unsigned char* \fIabuf\fP, int \fIalen\fP,
+.B                          struct hns_mx_reply** \fImx_out\fP);
 .fi
 .SH DESCRIPTION
 The
-.B ares_parse_mx_reply
+.B hns_parse_mx_reply
 function parses the response to a query of type MX into a
 linked list of
-.I struct ares_mx_reply 
+.I struct hns_mx_reply 
 The parameters
 .I abuf
 and
@@ -39,16 +39,16 @@ memory and a pointer to it stored into the variable pointed to by
 It is the caller's responsibility to free the resulting
 .IR mx_out
 structure when it is no longer needed using the function
-.B ares_free_data
+.B hns_free_data
 .PP
 The structure 
-.I ares_mx_reply
+.I hns_mx_reply
 contains the following fields:
 .sp
 .in +4n
 .nf
-struct ares_mx_reply {
-    struct ares_mx_reply *next;
+struct hns_mx_reply {
+    struct hns_mx_reply *next;
     char *host;
     unsigned short priority;
 };
@@ -56,24 +56,24 @@ struct ares_mx_reply {
 .in
 .PP
 .SH RETURN VALUES
-.B ares_parse_mx_reply
+.B hns_parse_mx_reply
 can return any of the following values:
 .TP 15
-.B ARES_SUCCESS
+.B HNS_SUCCESS
 The response was successfully parsed.
 .TP 15
-.B ARES_EBADRESP
+.B HNS_EBADRESP
 The response was malformatted.
 .TP 15
-.B ARES_ENODATA
+.B HNS_ENODATA
 The response did not contain an answer to the query.
 .TP 15
-.B ARES_ENOMEM
+.B HNS_ENOMEM
 Memory was exhausted.
 .SH AVAILABILITY
-This function was first introduced in c-ares version 1.7.2.
+This function was first introduced in hns version 1.7.2.
 .SH SEE ALSO
-.BR ares_query (3)
-.BR ares_free_data (3)
+.BR hns_query (3)
+.BR hns_free_data (3)
 .SH AUTHOR
 Written by Jeremy Lal <kapouer@melix.org>

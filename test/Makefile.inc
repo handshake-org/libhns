@@ -1,36 +1,36 @@
-TESTSOURCES = ares-test-main.cc	\
-  ares-test-init.cc			\
-  ares-test.cc				\
-  ares-test-ns.cc			\
-  ares-test-parse.cc			\
-  ares-test-parse-a.cc			\
-  ares-test-parse-aaaa.cc		\
-  ares-test-parse-mx.cc		\
-  ares-test-parse-naptr.cc		\
-  ares-test-parse-ns.cc		\
-  ares-test-parse-ptr.cc		\
-  ares-test-parse-soa.cc		\
-  ares-test-parse-srv.cc		\
-  ares-test-parse-txt.cc		\
-  ares-test-parse-smimea.cc		\
-  ares-test-parse-sshfp.cc		\
-  ares-test-parse-tlsa.cc		\
-  ares-test-parse-openpgpkey.cc		\
-  ares-test-misc.cc			\
-  ares-test-live.cc			\
-  ares-test-mock.cc			\
-  ares-test-internal.cc		\
+TESTSOURCES = hns-test-main.cc	\
+  hns-test-init.cc			\
+  hns-test.cc				\
+  hns-test-ns.cc			\
+  hns-test-parse.cc			\
+  hns-test-parse-a.cc			\
+  hns-test-parse-aaaa.cc		\
+  hns-test-parse-mx.cc		\
+  hns-test-parse-naptr.cc		\
+  hns-test-parse-ns.cc		\
+  hns-test-parse-ptr.cc		\
+  hns-test-parse-soa.cc		\
+  hns-test-parse-srv.cc		\
+  hns-test-parse-txt.cc		\
+  hns-test-parse-smimea.cc		\
+  hns-test-parse-sshfp.cc		\
+  hns-test-parse-tlsa.cc		\
+  hns-test-parse-openpgpkey.cc		\
+  hns-test-misc.cc			\
+  hns-test-live.cc			\
+  hns-test-mock.cc			\
+  hns-test-internal.cc		\
   dns-proto.cc				\
   dns-proto-test.cc
 
-TESTHEADERS = ares-test.h		\
+TESTHEADERS = hns-test.h		\
   dns-proto.h
 
-FUZZSOURCES = ares-test-fuzz.c		\
-  ares-fuzz.c
+FUZZSOURCES = hns-test-fuzz.c		\
+  hns-fuzz.c
 
-FUZZNAMESOURCES = ares-test-fuzz-name.c	\
-  ares-fuzz.c
+FUZZNAMESOURCES = hns-test-fuzz-name.c	\
+  hns-fuzz.c
 
 DUMPSOURCES = dns-proto.cc		\
   dns-dump.cc

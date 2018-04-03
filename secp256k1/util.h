@@ -4,11 +4,11 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_UTIL_H
-#define ARES_SECP256K1_UTIL_H
+#ifndef HNS_SECP256K1_UTIL_H
+#define HNS_SECP256K1_UTIL_H
 
 #if defined HAVE_CONFIG_H
-#include "ares_config.h"
+#include "hns_config.h"
 #endif
 
 #include <stdlib.h>
@@ -18,9 +18,9 @@
 typedef struct {
     void (*fn)(const char *text, void* data);
     const void* data;
-} ares_secp256k1_callback;
+} hns_secp256k1_callback;
 
-static ARES_SECP256K1_INLINE void ares_secp256k1_callback_call(const ares_secp256k1_callback * const cb, const char * const text) {
+static HNS_SECP256K1_INLINE void hns_secp256k1_callback_call(const hns_secp256k1_callback * const cb, const char * const text) {
     cb->fn(text, (void*)cb->data);
 }
 
@@ -68,36 +68,36 @@ static ARES_SECP256K1_INLINE void ares_secp256k1_callback_call(const ares_secp25
 #define VERIFY_SETUP(stmt)
 #endif
 
-static ARES_SECP256K1_INLINE void *checked_malloc(const ares_secp256k1_callback* cb, size_t size) {
+static HNS_SECP256K1_INLINE void *checked_malloc(const hns_secp256k1_callback* cb, size_t size) {
     void *ret = malloc(size);
     if (ret == NULL) {
-        ares_secp256k1_callback_call(cb, "Out of memory");
+        hns_secp256k1_callback_call(cb, "Out of memory");
     }
     return ret;
 }
 
-static ARES_SECP256K1_INLINE void *checked_realloc(const ares_secp256k1_callback* cb, void *ptr, size_t size) {
+static HNS_SECP256K1_INLINE void *checked_realloc(const hns_secp256k1_callback* cb, void *ptr, size_t size) {
     void *ret = realloc(ptr, size);
     if (ret == NULL) {
-        ares_secp256k1_callback_call(cb, "Out of memory");
+        hns_secp256k1_callback_call(cb, "Out of memory");
     }
     return ret;
 }
 
 /* Macro for restrict, when available and not in a VERIFY build. */
-#if defined(CARES_BUILDING_LIBRARY) && defined(VERIFY)
-# define ARES_SECP256K1_RESTRICT
+#if defined(HNS_BUILDING_LIBRARY) && defined(VERIFY)
+# define HNS_SECP256K1_RESTRICT
 #else
 # if (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L) )
-#  if ARES_SECP256K1_GNUC_PREREQ(3,0)
-#   define ARES_SECP256K1_RESTRICT __restrict__
+#  if HNS_SECP256K1_GNUC_PREREQ(3,0)
+#   define HNS_SECP256K1_RESTRICT __restrict__
 #  elif (defined(_MSC_VER) && _MSC_VER >= 1400)
-#   define ARES_SECP256K1_RESTRICT __restrict
+#   define HNS_SECP256K1_RESTRICT __restrict
 #  else
-#   define ARES_SECP256K1_RESTRICT
+#   define HNS_SECP256K1_RESTRICT
 #  endif
 # else
-#  define ARES_SECP256K1_RESTRICT restrict
+#  define HNS_SECP256K1_RESTRICT restrict
 # endif
 #endif
 
@@ -111,11 +111,11 @@ static ARES_SECP256K1_INLINE void *checked_realloc(const ares_secp256k1_callback
 
 #if defined(HAVE___INT128)
 # if defined(__GNUC__)
-#  define ARES_SECP256K1_GNUC_EXT __extension__
+#  define HNS_SECP256K1_GNUC_EXT __extension__
 # else
-#  define ARES_SECP256K1_GNUC_EXT
+#  define HNS_SECP256K1_GNUC_EXT
 # endif
-ARES_SECP256K1_GNUC_EXT typedef unsigned __int128 uint128_t;
+HNS_SECP256K1_GNUC_EXT typedef unsigned __int128 uint128_t;
 #endif
 
-#endif /* ARES_SECP256K1_UTIL_H */
+#endif /* HNS_SECP256K1_UTIL_H */

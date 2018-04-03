@@ -1,8 +1,8 @@
-.TH ADIG "1" "April 2011" "c-ares utilities"
+.TH ADIG "1" "April 2011" "hns utilities"
 .SH NAME
-adig \- print information collected from Domain Name System (DNS) servers
+hdig \- print information collected from Domain Name System (DNS) servers
 .SH SYNOPSIS
-.B adig
+.B hdig
 [\fIOPTION\fR]... \fINAME\fR...
 .SH DESCRIPTION
 .PP
@@ -12,7 +12,7 @@ Send queries to DNS servers about \fINAME\fR and print received
 information, where \fINAME\fR is a valid DNS name (e.g. www.example.com,
 1.2.3.10.in-addr.arpa).
 .PP
-This utility comes with the \fBc\-ares\fR asynchronous resolver library.
+This utility comes with the \fBc\-hns\fR asynchronous resolver library.
 .SH OPTIONS
 .TP
 \fB\-c\fR class
@@ -47,13 +47,13 @@ PTR, PX, RP, RT, SIG, SOA, SRV, TXT, WKS, X25,
 \fB\-U\fR port
 Use specified UDP port to connect to DNS server.
 .SH "REPORTING BUGS"
-Report bugs to the c-ares mailing list:
+Report bugs to the hns mailing list:
 \fBhttp://cool.haxx.se/mailman/listinfo/c-ares\fR
 .SH "SEE ALSO"
 .PP
-acountry(1), ahost(1).
+hcountry(1), hhost(1).
 .SH COPYRIGHT
-This utility is based on code/ideas contained in sofware written by Greg Hudson (ares)
+This utility is based on code/ideas contained in sofware written by Greg Hudson (hns)
 carrying the following notice:
 .br
 Copyright 1998 by the Massachusetts Institute of Technology.

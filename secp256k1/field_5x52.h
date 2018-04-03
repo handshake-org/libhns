@@ -4,8 +4,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#ifndef ARES_SECP256K1_FIELD_REPR_H
-#define ARES_SECP256K1_FIELD_REPR_H
+#ifndef HNS_SECP256K1_FIELD_REPR_H
+#define HNS_SECP256K1_FIELD_REPR_H
 
 #include <stdint.h>
 
@@ -16,10 +16,10 @@ typedef struct {
     int magnitude;
     int normalized;
 #endif
-} ares_secp256k1_fe;
+} hns_secp256k1_fe;
 
 /* Unpacks a constant into a overlapping multi-limbed FE element. */
-#define ARES_SECP256K1_FE_CONST_INNER(d7, d6, d5, d4, d3, d2, d1, d0) { \
+#define HNS_SECP256K1_FE_CONST_INNER(d7, d6, d5, d4, d3, d2, d1, d0) { \
     (d0) | (((uint64_t)(d1) & 0xFFFFFUL) << 32), \
     ((uint64_t)(d1) >> 20) | (((uint64_t)(d2)) << 12) | (((uint64_t)(d3) & 0xFFUL) << 44), \
     ((uint64_t)(d3) >> 8) | (((uint64_t)(d4) & 0xFFFFFFFUL) << 24), \
@@ -28,20 +28,20 @@ typedef struct {
 }
 
 #ifdef VERIFY
-#define ARES_SECP256K1_FE_CONST(d7, d6, d5, d4, d3, d2, d1, d0) {ARES_SECP256K1_FE_CONST_INNER((d7), (d6), (d5), (d4), (d3), (d2), (d1), (d0)), 1, 1}
+#define HNS_SECP256K1_FE_CONST(d7, d6, d5, d4, d3, d2, d1, d0) {HNS_SECP256K1_FE_CONST_INNER((d7), (d6), (d5), (d4), (d3), (d2), (d1), (d0)), 1, 1}
 #else
-#define ARES_SECP256K1_FE_CONST(d7, d6, d5, d4, d3, d2, d1, d0) {ARES_SECP256K1_FE_CONST_INNER((d7), (d6), (d5), (d4), (d3), (d2), (d1), (d0))}
+#define HNS_SECP256K1_FE_CONST(d7, d6, d5, d4, d3, d2, d1, d0) {HNS_SECP256K1_FE_CONST_INNER((d7), (d6), (d5), (d4), (d3), (d2), (d1), (d0))}
 #endif
 
 typedef struct {
     uint64_t n[4];
-} ares_secp256k1_fe_storage;
+} hns_secp256k1_fe_storage;
 
-#define ARES_SECP256K1_FE_STORAGE_CONST(d7, d6, d5, d4, d3, d2, d1, d0) {{ \
+#define HNS_SECP256K1_FE_STORAGE_CONST(d7, d6, d5, d4, d3, d2, d1, d0) {{ \
     (d0) | (((uint64_t)(d1)) << 32), \
     (d2) | (((uint64_t)(d3)) << 32), \
     (d4) | (((uint64_t)(d5)) << 32), \
     (d6) | (((uint64_t)(d7)) << 32) \
 }}
 
-#endif /* ARES_SECP256K1_FIELD_REPR_H */
+#endif /* HNS_SECP256K1_FIELD_REPR_H */

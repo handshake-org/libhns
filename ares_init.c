@@ -15,7 +15,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -44,43 +44,43 @@
 
 #if defined(ANDROID) || defined(__ANDROID__)
 #include <sys/system_properties.h>
-#include "ares_android.h"
+#include "hns_android.h"
 /* From the Bionic sources */
 #define DNS_PROP_NAME_PREFIX  "net.dns"
 #define MAX_DNS_PROPERTIES    8
 #endif
 
-#if defined(CARES_USE_LIBRESOLV)
+#if defined(HNS_USE_LIBRESOLV)
 #include <resolv.h>
 #endif
 
-#include "ares.h"
-#include "ares_inet_net_pton.h"
-#include "ares_library_init.h"
-#include "ares_nowarn.h"
-#include "ares_platform.h"
-#include "ares_private.h"
-#include "ares_addr.h"
-#include "ares_ns.h"
+#include "hns.h"
+#include "hns_inet_net_pton.h"
+#include "hns_library_init.h"
+#include "hns_nowarn.h"
+#include "hns_platform.h"
+#include "hns_private.h"
+#include "hns_addr.h"
+#include "hns_ns.h"
 
 #ifdef WATT32
 #undef WIN32  /* Redefined in MingW/MSVC headers */
 #endif
 
-static int init_by_options(ares_channel channel,
-                           const struct ares_options *options,
+static int init_by_options(hns_channel channel,
+                           const struct hns_options *options,
                            int optmask);
-static int init_by_environment(ares_channel channel);
-static int init_by_resolv_conf(ares_channel channel);
-static int init_by_hns_conf(ares_channel channel);
-static int init_by_defaults(ares_channel channel);
+static int init_by_environment(hns_channel channel);
+static int init_by_resolv_conf(hns_channel channel);
+static int init_by_hns_conf(hns_channel channel);
+static int init_by_defaults(hns_channel channel);
 
 /* #ifndef WATT32 */
 static int config_nameserver(struct server_state **servers, int *nservers,
                              char *str);
 /* #endif */
-static int set_search(ares_channel channel, const char *str);
-static int set_options(ares_channel channel, const char *str);
+static int set_search(hns_channel channel, const char *str);
+static int set_options(hns_channel channel, const char *str);
 static const char *try_option(const char *p, const char *q, const char *opt);
 static int init_id_key(rc4_key* key,int key_data_len);
 
@@ -88,42 +88,42 @@ static int config_sortlist(struct apattern **sortlist, int *nsort,
                            const char *str);
 static int sortlist_alloc(struct apattern **sortlist, int *nsort,
                           struct apattern *pat);
-static int ip_addr(const char *s, ares_ssize_t len, struct in_addr *addr);
+static int ip_addr(const char *s, hns_ssize_t len, struct in_addr *addr);
 static void natural_mask(struct apattern *pat);
 /* #if !defined(WIN32) && !defined(WATT32) && \ */
-/*     !defined(ANDROID) && !defined(__ANDROID__) && !defined(CARES_USE_LIBRESOLV) */
-static int config_domain(ares_channel channel, char *str);
-static int config_lookup(ares_channel channel, const char *str,
+/*     !defined(ANDROID) && !defined(__ANDROID__) && !defined(HNS_USE_LIBRESOLV) */
+static int config_domain(hns_channel channel, char *str);
+static int config_lookup(hns_channel channel, const char *str,
                          const char *bindch, const char *altbindch,
                          const char *filech);
 static char *try_config(char *s, const char *opt, char scc);
 /* #endif */
 
-#define ARES_CONFIG_CHECK(x) (x->lookups && x->nsort > -1 && \
+#define HNS_CONFIG_CHECK(x) (x->lookups && x->nsort > -1 && \
                              x->nservers > -1 && \
                              x->ndomains > -1 && \
                              x->ndots > -1 && x->timeout > -1 && \
                              x->tries > -1)
 
-int ares_init(ares_channel *channelptr)
+int hns_init(hns_channel *channelptr)
 {
-  return ares_init_options(channelptr, NULL, 0);
+  return hns_init_options(channelptr, NULL, 0);
 }
 
-int ares_init_options(ares_channel *channelptr, struct ares_options *options,
+int hns_init_options(hns_channel *channelptr, struct hns_options *options,
                       int optmask)
 {
-  ares_channel channel;
+  hns_channel channel;
   int i;
-  int status = ARES_SUCCESS;
+  int status = HNS_SUCCESS;
   struct timeval now;
 
 #ifdef CURLDEBUG
-  const char *env = getenv("CARES_MEMDEBUG");
+  const char *env = getenv("HNS_MEMDEBUG");
 
   if (env)
     curl_memdebug(env);
-  env = getenv("CARES_MEMLIMIT");
+  env = getenv("HNS_MEMLIMIT");
   if (env) {
     char *endptr;
     long num = strtol(env, &endptr, 10);
@@ -132,16 +132,16 @@ int ares_init_options(ares_channel *channelptr, struct ares_options *options,
   }
 #endif
 
-  if (ares_library_initialized() != ARES_SUCCESS)
-    return ARES_ENOTINITIALIZED;  /* LCOV_EXCL_LINE: n/a on non-WinSock */
+  if (hns_library_initialized() != HNS_SUCCESS)
+    return HNS_ENOTINITIALIZED;  /* LCOV_EXCL_LINE: n/a on non-WinSock */
 
-  channel = ares_malloc(sizeof(struct ares_channeldata));
+  channel = hns_malloc(sizeof(struct hns_channeldata));
   if (!channel) {
     *channelptr = NULL;
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
   }
 
-  now = ares__tvnow();
+  now = hns__tvnow();
 
   /* Set everything to distinguished values so we know they haven't
    * been set yet.
@@ -181,14 +181,14 @@ int ares_init_options(ares_channel *channelptr, struct ares_options *options,
   memset(&channel->local_ip6, 0, sizeof(channel->local_ip6));
 
   /* Initialize our lists of queries */
-  ares__init_list_head(&(channel->all_queries));
-  for (i = 0; i < ARES_QID_TABLE_SIZE; i++)
+  hns__init_list_head(&(channel->all_queries));
+  for (i = 0; i < HNS_QID_TABLE_SIZE; i++)
     {
-      ares__init_list_head(&(channel->queries_by_qid[i]));
+      hns__init_list_head(&(channel->queries_by_qid[i]));
     }
-  for (i = 0; i < ARES_TIMEOUT_TABLE_SIZE; i++)
+  for (i = 0; i < HNS_TIMEOUT_TABLE_SIZE; i++)
     {
-      ares__init_list_head(&(channel->queries_by_timeout[i]));
+      hns__init_list_head(&(channel->queries_by_timeout[i]));
     }
 
   /* Initialize configuration by each of the four sources, from highest
@@ -196,21 +196,21 @@ int ares_init_options(ares_channel *channelptr, struct ares_options *options,
    */
 
   status = init_by_options(channel, options, optmask);
-  if (status != ARES_SUCCESS) {
+  if (status != HNS_SUCCESS) {
     DEBUGF(fprintf(stderr, "Error: init_by_options failed: %s\n",
-                   ares_strerror(status)));
+                   hns_strerror(status)));
     /* If we fail to apply user-specified options, fail the whole init process */
     goto done;
   }
   status = init_by_environment(channel);
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     DEBUGF(fprintf(stderr, "Error: init_by_environment failed: %s\n",
-                   ares_strerror(status)));
-  if (status == ARES_SUCCESS) {
+                   hns_strerror(status)));
+  if (status == HNS_SUCCESS) {
     status = init_by_resolv_conf(channel);
-    if (status != ARES_SUCCESS)
+    if (status != HNS_SUCCESS)
       DEBUGF(fprintf(stderr, "Error: init_by_resolv_conf failed: %s\n",
-                     ares_strerror(status)));
+                     hns_strerror(status)));
   }
 
   /* Always grab HSK nameservers. */
@@ -221,82 +221,82 @@ int ares_init_options(ares_channel *channelptr, struct ares_options *options,
    * useful behavior for things that we missed.
    */
   status = init_by_defaults(channel);
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     DEBUGF(fprintf(stderr, "Error: init_by_defaults failed: %s\n",
-                   ares_strerror(status)));
+                   hns_strerror(status)));
 
   /* Generate random key */
 
-  if (status == ARES_SUCCESS) {
-    status = init_id_key(&channel->id_key, ARES_ID_KEY_LEN);
-    if (status == ARES_SUCCESS)
-      channel->next_id = ares__generate_new_id(&channel->id_key);
+  if (status == HNS_SUCCESS) {
+    status = init_id_key(&channel->id_key, HNS_ID_KEY_LEN);
+    if (status == HNS_SUCCESS)
+      channel->next_id = hns__generate_new_id(&channel->id_key);
     else
       DEBUGF(fprintf(stderr, "Error: init_id_key failed: %s\n",
-                     ares_strerror(status)));
+                     hns_strerror(status)));
   }
 
 done:
-  if (status != ARES_SUCCESS)
+  if (status != HNS_SUCCESS)
     {
       /* Something failed; clean up memory we may have allocated. */
       if (channel->servers)
-        ares_free(channel->servers);
+        hns_free(channel->servers);
       if (channel->domains)
         {
           for (i = 0; i < channel->ndomains; i++)
-            ares_free(channel->domains[i]);
-          ares_free(channel->domains);
+            hns_free(channel->domains[i]);
+          hns_free(channel->domains);
         }
       if (channel->sortlist)
-        ares_free(channel->sortlist);
+        hns_free(channel->sortlist);
       if(channel->lookups)
-        ares_free(channel->lookups);
-      ares_free(channel);
+        hns_free(channel->lookups);
+      hns_free(channel);
       return status;
     }
 
-  /* Trim to one server if ARES_FLAG_PRIMARY is set. */
-  if ((channel->flags & ARES_FLAG_PRIMARY) && channel->nservers > 1)
+  /* Trim to one server if HNS_FLAG_PRIMARY is set. */
+  if ((channel->flags & HNS_FLAG_PRIMARY) && channel->nservers > 1)
     channel->nservers = 1;
 
-  ares__init_servers_state(channel);
+  hns__init_servers_state(channel);
 
   *channelptr = channel;
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-/* ares_dup() duplicates a channel handle with all its options and returns a
+/* hns_dup() duplicates a channel handle with all its options and returns a
    new channel handle */
-int ares_dup(ares_channel *dest, ares_channel src)
+int hns_dup(hns_channel *dest, hns_channel src)
 {
-  struct ares_options opts;
-  struct ares_addr_port_node *servers;
+  struct hns_options opts;
+  struct hns_addr_port_node *servers;
   int non_v4_default_port = 0;
   int i, rc;
   int optmask;
 
   *dest = NULL; /* in case of failure return NULL explicitly */
 
-  /* First get the options supported by the old ares_save_options() function,
+  /* First get the options supported by the old hns_save_options() function,
      which is most of them */
-  rc = ares_save_options(src, &opts, &optmask);
+  rc = hns_save_options(src, &opts, &optmask);
   if(rc)
   {
-    ares_destroy_options(&opts);
+    hns_destroy_options(&opts);
     return rc;
   }
 
   /* Then create the new channel with those options */
-  rc = ares_init_options(dest, &opts, optmask);
+  rc = hns_init_options(dest, &opts, optmask);
 
   /* destroy the options copy to not leak any memory */
-  ares_destroy_options(&opts);
+  hns_destroy_options(&opts);
 
   if(rc)
     return rc;
 
-  /* Now clone the options that ares_save_options() doesn't support. */
+  /* Now clone the options that hns_save_options() doesn't support. */
   (*dest)->sock_create_cb      = src->sock_create_cb;
   (*dest)->sock_create_cb_data = src->sock_create_cb_data;
   (*dest)->sock_config_cb      = src->sock_config_cb;
@@ -320,56 +320,56 @@ int ares_dup(ares_channel *dest, ares_channel src)
       }
     }
   if (non_v4_default_port) {
-    rc = ares_get_servers_ports(src, &servers);
-    if (rc != ARES_SUCCESS) {
-      ares_destroy(*dest);
+    rc = hns_get_servers_ports(src, &servers);
+    if (rc != HNS_SUCCESS) {
+      hns_destroy(*dest);
       *dest = NULL;
       return rc;
     }
-    rc = ares_set_servers_ports(*dest, servers);
-    ares_free_data(servers);
-    if (rc != ARES_SUCCESS) {
-      ares_destroy(*dest);
+    rc = hns_set_servers_ports(*dest, servers);
+    hns_free_data(servers);
+    if (rc != HNS_SUCCESS) {
+      hns_destroy(*dest);
       *dest = NULL;
       return rc;
     }
   }
 
-  return ARES_SUCCESS; /* everything went fine */
+  return HNS_SUCCESS; /* everything went fine */
 }
 
 /* Save options from initialized channel */
-int ares_save_options(ares_channel channel, struct ares_options *options,
+int hns_save_options(hns_channel channel, struct hns_options *options,
                       int *optmask)
 {
   int i, j;
   int ipv4_nservers = 0;
 
   /* Zero everything out */
-  memset(options, 0, sizeof(struct ares_options));
+  memset(options, 0, sizeof(struct hns_options));
 
-  if (!ARES_CONFIG_CHECK(channel))
-    return ARES_ENODATA;
+  if (!HNS_CONFIG_CHECK(channel))
+    return HNS_ENODATA;
 
   /* Traditionally the optmask wasn't saved in the channel struct so it was
      recreated here. ROTATE is the first option that has no struct field of
      its own in the public config struct */
-  (*optmask) = (ARES_OPT_FLAGS|ARES_OPT_TRIES|ARES_OPT_NDOTS|
-                ARES_OPT_UDP_PORT|ARES_OPT_TCP_PORT|ARES_OPT_SOCK_STATE_CB|
-                ARES_OPT_SERVERS|ARES_OPT_DOMAINS|ARES_OPT_LOOKUPS|
-                ARES_OPT_SORTLIST|ARES_OPT_TIMEOUTMS);
-  (*optmask) |= (channel->rotate ? ARES_OPT_ROTATE : ARES_OPT_NOROTATE);
+  (*optmask) = (HNS_OPT_FLAGS|HNS_OPT_TRIES|HNS_OPT_NDOTS|
+                HNS_OPT_UDP_PORT|HNS_OPT_TCP_PORT|HNS_OPT_SOCK_STATE_CB|
+                HNS_OPT_SERVERS|HNS_OPT_DOMAINS|HNS_OPT_LOOKUPS|
+                HNS_OPT_SORTLIST|HNS_OPT_TIMEOUTMS);
+  (*optmask) |= (channel->rotate ? HNS_OPT_ROTATE : HNS_OPT_NOROTATE);
 
   /* Copy easy stuff */
   options->flags   = channel->flags;
 
   /* We return full millisecond resolution but that's only because we don't
-     set the ARES_OPT_TIMEOUT anymore, only the new ARES_OPT_TIMEOUTMS */
+     set the HNS_OPT_TIMEOUT anymore, only the new HNS_OPT_TIMEOUTMS */
   options->timeout = channel->timeout;
   options->tries   = channel->tries;
   options->ndots   = channel->ndots;
-  options->udp_port = ntohs(aresx_sitous(channel->udp_port));
-  options->tcp_port = ntohs(aresx_sitous(channel->tcp_port));
+  options->udp_port = ntohs(hnsx_sitous(channel->udp_port));
+  options->tcp_port = ntohs(hnsx_sitous(channel->tcp_port));
   options->sock_state_cb     = channel->sock_state_cb;
   options->sock_state_cb_data = channel->sock_state_cb_data;
 
@@ -383,9 +383,9 @@ int ares_save_options(ares_channel channel, struct ares_options *options,
         ipv4_nservers++;
     }
     if (ipv4_nservers) {
-      options->servers = ares_malloc(ipv4_nservers * sizeof(struct in_addr));
+      options->servers = hns_malloc(ipv4_nservers * sizeof(struct in_addr));
       if (!options->servers)
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
       for (i = j = 0; i < channel->nservers; i++)
       {
         if ((channel->servers[i].addr.family == AF_INET) &&
@@ -401,93 +401,93 @@ int ares_save_options(ares_channel channel, struct ares_options *options,
 
   /* copy domains */
   if (channel->ndomains) {
-    options->domains = ares_malloc(channel->ndomains * sizeof(char *));
+    options->domains = hns_malloc(channel->ndomains * sizeof(char *));
     if (!options->domains)
-      return ARES_ENOMEM;
+      return HNS_ENOMEM;
 
     for (i = 0; i < channel->ndomains; i++)
     {
       options->ndomains = i;
-      options->domains[i] = ares_strdup(channel->domains[i]);
+      options->domains[i] = hns_strdup(channel->domains[i]);
       if (!options->domains[i])
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
     }
   }
   options->ndomains = channel->ndomains;
 
   /* copy lookups */
   if (channel->lookups) {
-    options->lookups = ares_strdup(channel->lookups);
+    options->lookups = hns_strdup(channel->lookups);
     if (!options->lookups && channel->lookups)
-      return ARES_ENOMEM;
+      return HNS_ENOMEM;
   }
 
   /* copy sortlist */
   if (channel->nsort) {
-    options->sortlist = ares_malloc(channel->nsort * sizeof(struct apattern));
+    options->sortlist = hns_malloc(channel->nsort * sizeof(struct apattern));
     if (!options->sortlist)
-      return ARES_ENOMEM;
+      return HNS_ENOMEM;
     for (i = 0; i < channel->nsort; i++)
       options->sortlist[i] = channel->sortlist[i];
   }
   options->nsort = channel->nsort;
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-static int init_by_options(ares_channel channel,
-                           const struct ares_options *options,
+static int init_by_options(hns_channel channel,
+                           const struct hns_options *options,
                            int optmask)
 {
   int i;
 
   /* Easy stuff. */
-  if ((optmask & ARES_OPT_FLAGS) && channel->flags == -1)
+  if ((optmask & HNS_OPT_FLAGS) && channel->flags == -1)
     channel->flags = options->flags;
-  if ((optmask & ARES_OPT_TIMEOUTMS) && channel->timeout == -1)
+  if ((optmask & HNS_OPT_TIMEOUTMS) && channel->timeout == -1)
     channel->timeout = options->timeout;
-  else if ((optmask & ARES_OPT_TIMEOUT) && channel->timeout == -1)
+  else if ((optmask & HNS_OPT_TIMEOUT) && channel->timeout == -1)
     channel->timeout = options->timeout * 1000;
-  if ((optmask & ARES_OPT_TRIES) && channel->tries == -1)
+  if ((optmask & HNS_OPT_TRIES) && channel->tries == -1)
     channel->tries = options->tries;
-  if ((optmask & ARES_OPT_NDOTS) && channel->ndots == -1)
+  if ((optmask & HNS_OPT_NDOTS) && channel->ndots == -1)
     channel->ndots = options->ndots;
-  if ((optmask & ARES_OPT_ROTATE) && channel->rotate == -1)
+  if ((optmask & HNS_OPT_ROTATE) && channel->rotate == -1)
     channel->rotate = 1;
-  if ((optmask & ARES_OPT_NOROTATE) && channel->rotate == -1)
+  if ((optmask & HNS_OPT_NOROTATE) && channel->rotate == -1)
     channel->rotate = 0;
-  if ((optmask & ARES_OPT_UDP_PORT) && channel->udp_port == -1)
+  if ((optmask & HNS_OPT_UDP_PORT) && channel->udp_port == -1)
     channel->udp_port = htons(options->udp_port);
-  if ((optmask & ARES_OPT_TCP_PORT) && channel->tcp_port == -1)
+  if ((optmask & HNS_OPT_TCP_PORT) && channel->tcp_port == -1)
     channel->tcp_port = htons(options->tcp_port);
-  if ((optmask & ARES_OPT_SOCK_STATE_CB) && channel->sock_state_cb == NULL)
+  if ((optmask & HNS_OPT_SOCK_STATE_CB) && channel->sock_state_cb == NULL)
     {
       channel->sock_state_cb = options->sock_state_cb;
       channel->sock_state_cb_data = options->sock_state_cb_data;
     }
-  if ((optmask & ARES_OPT_SOCK_SNDBUF)
+  if ((optmask & HNS_OPT_SOCK_SNDBUF)
       && channel->socket_send_buffer_size == -1)
     channel->socket_send_buffer_size = options->socket_send_buffer_size;
-  if ((optmask & ARES_OPT_SOCK_RCVBUF)
+  if ((optmask & HNS_OPT_SOCK_RCVBUF)
       && channel->socket_receive_buffer_size == -1)
     channel->socket_receive_buffer_size = options->socket_receive_buffer_size;
 
-  if ((optmask & ARES_OPT_EDNSPSZ) && channel->ednspsz == -1)
+  if ((optmask & HNS_OPT_EDNSPSZ) && channel->ednspsz == -1)
     channel->ednspsz = options->ednspsz;
 
   /* Copy the IPv4 servers, if given. */
-  if ((optmask & ARES_OPT_SERVERS) && channel->nservers == -1)
+  if ((optmask & HNS_OPT_SERVERS) && channel->nservers == -1)
     {
       /* Avoid zero size allocations at any cost */
       if (options->nservers > 0)
         {
           channel->servers =
-            ares_malloc(options->nservers * sizeof(struct server_state));
+            hns_malloc(options->nservers * sizeof(struct server_state));
           if (!channel->servers)
-            return ARES_ENOMEM;
+            return HNS_ENOMEM;
           for (i = 0; i < options->nservers; i++)
             {
-              ares_addr_init(&channel->servers[i].addr);
+              hns_addr_init(&channel->servers[i].addr);
               channel->servers[i].addr.family = AF_INET;
               channel->servers[i].addr.udp_port = 0;
               channel->servers[i].addr.tcp_port = 0;
@@ -502,39 +502,39 @@ static int init_by_options(ares_channel channel,
   /* Copy the domains, if given.  Keep channel->ndomains consistent so
    * we can clean up in case of error.
    */
-  if ((optmask & ARES_OPT_DOMAINS) && channel->ndomains == -1)
+  if ((optmask & HNS_OPT_DOMAINS) && channel->ndomains == -1)
     {
       /* Avoid zero size allocations at any cost */
       if (options->ndomains > 0)
       {
-        channel->domains = ares_malloc(options->ndomains * sizeof(char *));
+        channel->domains = hns_malloc(options->ndomains * sizeof(char *));
         if (!channel->domains)
-          return ARES_ENOMEM;
+          return HNS_ENOMEM;
         for (i = 0; i < options->ndomains; i++)
           {
             channel->ndomains = i;
-            channel->domains[i] = ares_strdup(options->domains[i]);
+            channel->domains[i] = hns_strdup(options->domains[i]);
             if (!channel->domains[i])
-              return ARES_ENOMEM;
+              return HNS_ENOMEM;
           }
       }
       channel->ndomains = options->ndomains;
     }
 
   /* Set lookups, if given. */
-  if ((optmask & ARES_OPT_LOOKUPS) && !channel->lookups)
+  if ((optmask & HNS_OPT_LOOKUPS) && !channel->lookups)
     {
-      channel->lookups = ares_strdup(options->lookups);
+      channel->lookups = hns_strdup(options->lookups);
       if (!channel->lookups)
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
     }
 
   /* copy sortlist */
-  if ((optmask & ARES_OPT_SORTLIST) && (channel->nsort == -1)) {
+  if ((optmask & HNS_OPT_SORTLIST) && (channel->nsort == -1)) {
     if (options->nsort > 0) {
-      channel->sortlist = ares_malloc(options->nsort * sizeof(struct apattern));
+      channel->sortlist = hns_malloc(options->nsort * sizeof(struct apattern));
       if (!channel->sortlist)
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
       for (i = 0; i < options->nsort; i++)
         channel->sortlist[i] = options->sortlist[i];
     }
@@ -543,10 +543,10 @@ static int init_by_options(ares_channel channel,
 
   channel->optmask = optmask;
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-static int init_by_environment(ares_channel channel)
+static int init_by_environment(hns_channel channel)
 {
   const char *localdomain, *res_options;
   int status;
@@ -555,7 +555,7 @@ static int init_by_environment(ares_channel channel)
   if (localdomain && channel->ndomains == -1)
     {
       status = set_search(channel, localdomain);
-      if (status != ARES_SUCCESS)
+      if (status != HNS_SUCCESS)
         return status;
     }
 
@@ -563,11 +563,11 @@ static int init_by_environment(ares_channel channel)
   if (res_options)
     {
       status = set_options(channel, res_options);
-      if (status != ARES_SUCCESS)
+      if (status != HNS_SUCCESS)
         return status;  /* LCOV_EXCL_LINE: set_options() never fails */
     }
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
 #ifdef WIN32
@@ -599,7 +599,7 @@ static int get_REG_SZ(HKEY hKey, const char *leafKeyName, char **outptr)
 
   /* Allocate buffer of indicated size plus one given that string
      might have been stored without null termination */
-  *outptr = ares_malloc(size+1);
+  *outptr = hns_malloc(size+1);
   if (!*outptr)
     return 0;
 
@@ -608,7 +608,7 @@ static int get_REG_SZ(HKEY hKey, const char *leafKeyName, char **outptr)
                         (unsigned char *)*outptr, &size);
   if ((res != ERROR_SUCCESS) || (size == 1))
   {
-    ares_free(*outptr);
+    hns_free(*outptr);
     *outptr = NULL;
     return 0;
   }
@@ -641,7 +641,7 @@ static int get_REG_SZ_9X(HKEY hKey, const char *leafKeyName, char **outptr)
 
   /* Allocate buffer of indicated size plus one given that string
      might have been stored without null termination */
-  *outptr = ares_malloc(size+1);
+  *outptr = hns_malloc(size+1);
   if (!*outptr)
     return 0;
 
@@ -650,7 +650,7 @@ static int get_REG_SZ_9X(HKEY hKey, const char *leafKeyName, char **outptr)
                         (unsigned char *)*outptr, &size);
   if ((res != ERROR_SUCCESS) || (size == 1))
   {
-    ares_free(*outptr);
+    hns_free(*outptr);
     *outptr = NULL;
     return 0;
   }
@@ -827,7 +827,7 @@ static int get_DNS_Registry(char **outptr)
 
   *outptr = NULL;
 
-  platform = ares__getplatform();
+  platform = hns__getplatform();
 
   if (platform == WIN_NT)
     gotString = get_DNS_Registry_NT(outptr);
@@ -847,7 +847,7 @@ static void commanjoin(char** dst, const char* const src, const size_t len)
 
   /* 1 for terminating 0 and 2 for , and terminating 0 */
   newsize = len + (*dst ? (strlen(*dst) + 2) : 1);
-  newbuf = ares_realloc(*dst, newsize);
+  newbuf = hns_realloc(*dst, newsize);
   if (!newbuf)
     return;
   if (*dst == NULL)
@@ -887,7 +887,7 @@ static void commajoin(char **dst, const char *src)
 static int get_DNS_NetworkParams(char **outptr)
 {
   FIXED_INFO       *fi, *newfi;
-  struct ares_addr namesrvr;
+  struct hns_addr namesrvr;
   char             *txtaddr;
   IP_ADDR_STRING   *ipAddr;
   int              res;
@@ -896,23 +896,23 @@ static int get_DNS_NetworkParams(char **outptr)
   *outptr = NULL;
 
   /* Verify run-time availability of GetNetworkParams() */
-  if (ares_fpGetNetworkParams == ZERO_NULL)
+  if (hns_fpGetNetworkParams == ZERO_NULL)
     return 0;
 
-  fi = ares_malloc(size);
+  fi = hns_malloc(size);
   if (!fi)
     return 0;
 
-  res = (*ares_fpGetNetworkParams) (fi, &size);
+  res = (*hns_fpGetNetworkParams) (fi, &size);
   if ((res != ERROR_BUFFER_OVERFLOW) && (res != ERROR_SUCCESS))
     goto done;
 
-  newfi = ares_realloc(fi, size);
+  newfi = hns_realloc(fi, size);
   if (!newfi)
     goto done;
 
   fi = newfi;
-  res = (*ares_fpGetNetworkParams) (fi, &size);
+  res = (*hns_fpGetNetworkParams) (fi, &size);
   if (res != ERROR_SUCCESS)
     goto done;
 
@@ -920,18 +920,18 @@ static int get_DNS_NetworkParams(char **outptr)
   {
     txtaddr = &ipAddr->IpAddress.String[0];
 
-    ares_addr_init(&namesrvr);
+    hns_addr_init(&namesrvr);
 
     /* Validate converting textual address to binary format. */
-    if (ares_inet_pton(AF_INET, txtaddr, &namesrvr.addrV4) == 1)
+    if (hns_inet_pton(AF_INET, txtaddr, &namesrvr.addrV4) == 1)
     {
       if ((namesrvr.addrV4.S_un.S_addr == INADDR_ANY) ||
           (namesrvr.addrV4.S_un.S_addr == INADDR_NONE))
         continue;
     }
-    else if (ares_inet_pton(AF_INET6, txtaddr, &namesrvr.addrV6) == 1)
+    else if (hns_inet_pton(AF_INET6, txtaddr, &namesrvr.addrV6) == 1)
     {
-      if (memcmp(&namesrvr.addrV6, &ares_in6addr_any,
+      if (memcmp(&namesrvr.addrV6, &hns_in6addr_any,
                  sizeof(namesrvr.addrV6)) == 0)
         continue;
     }
@@ -946,7 +946,7 @@ static int get_DNS_NetworkParams(char **outptr)
 
 done:
   if (fi)
-    ares_free(fi);
+    hns_free(fi);
 
   if (!*outptr)
     return 0;
@@ -954,7 +954,7 @@ done:
   return 1;
 }
 
-static BOOL ares_IsWindowsVistaOrGreater(void)
+static BOOL hns_IsWindowsVistaOrGreater(void)
 {
   OSVERSIONINFO vinfo;
   memset(&vinfo, 0, sizeof(vinfo));
@@ -984,7 +984,7 @@ typedef struct
   size_t orig_idx;
 
   /* Room enough for the string form of any IPv4 or IPv6 address that
-   * ares_inet_ntop() will create.  Based on the existing c-ares practice.
+   * hns_inet_ntop() will create.  Based on the existing hns practice.
    */
   char text[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")];
 } Address;
@@ -1010,7 +1010,7 @@ static int compareAddresses(const void *arg1,
  * mask) specified. Addresses are specified in standard Network Byte Order as
  * 16 bytes, and the netmask is 0 to 128 (bits).
  */
-static int ares_ipv6_subnet_matches(const unsigned char netbase[16],
+static int hns_ipv6_subnet_matches(const unsigned char netbase[16],
                                     unsigned char netmask,
                                     const unsigned char ipaddr[16])
 {
@@ -1037,7 +1037,7 @@ static int ares_ipv6_subnet_matches(const unsigned char netbase[16],
   return 1;
 }
 
-static int ares_ipv6_server_blacklisted(const unsigned char ipaddr[16])
+static int hns_ipv6_server_blacklisted(const unsigned char ipaddr[16])
 {
   const struct {
     const char   *netbase;
@@ -1054,10 +1054,10 @@ static int ares_ipv6_server_blacklisted(const unsigned char ipaddr[16])
   for (i=0; blacklist[i].netbase != NULL; i++) {
     unsigned char netbase[16];
 
-    if (ares_inet_pton(AF_INET6, blacklist[i].netbase, netbase) != 1)
+    if (hns_inet_pton(AF_INET6, blacklist[i].netbase, netbase) != 1)
       continue;
 
-    if (ares_ipv6_subnet_matches(netbase, blacklist[i].netmask, ipaddr))
+    if (hns_ipv6_subnet_matches(netbase, blacklist[i].netmask, ipaddr))
       return 1;
   }
   return 0;
@@ -1103,8 +1103,8 @@ static ULONG getBestRouteMetric(IF_LUID * const luid, /* Can't be const :( */
   /* On this interface, get the best route to that destination. */
   MIB_IPFORWARD_ROW2 row;
   SOCKADDR_INET ignored;
-  if(!ares_fpGetBestRoute2 ||
-     ares_fpGetBestRoute2(/* The interface to use.  The index is ignored since we are
+  if(!hns_fpGetBestRoute2 ||
+     hns_fpGetBestRoute2(/* The interface to use.  The index is ignored since we are
                            * passing a LUID.
                            */
                            luid, 0,
@@ -1178,10 +1178,10 @@ static int get_DNS_AdaptersAddresses(char **outptr)
   *outptr = NULL;
 
   /* Verify run-time availability of GetAdaptersAddresses() */
-  if (ares_fpGetAdaptersAddresses == ZERO_NULL)
+  if (hns_fpGetAdaptersAddresses == ZERO_NULL)
     return 0;
 
-  ipaa = ares_malloc(Bufsz);
+  ipaa = hns_malloc(Bufsz);
   if (!ipaa)
     return 0;
 
@@ -1189,15 +1189,15 @@ static int get_DNS_AdaptersAddresses(char **outptr)
    * as we encounter more.
    */
   addressesSize = 4;
-  addresses = (Address*)ares_malloc(sizeof(Address) * addressesSize);
+  addresses = (Address*)hns_malloc(sizeof(Address) * addressesSize);
   if(addresses == NULL) {
     /* We need room for at least some addresses to function. */
-    ares_free(ipaa);
+    hns_free(ipaa);
     return 0;
   }
 
   /* Usually this call suceeds with initial buffer size */
-  res = (*ares_fpGetAdaptersAddresses) (AF_UNSPEC, AddrFlags, NULL,
+  res = (*hns_fpGetAdaptersAddresses) (AF_UNSPEC, AddrFlags, NULL,
                                         ipaa, &ReqBufsz);
   if ((res != ERROR_BUFFER_OVERFLOW) && (res != ERROR_SUCCESS))
     goto done;
@@ -1206,13 +1206,13 @@ static int get_DNS_AdaptersAddresses(char **outptr)
   {
     if (Bufsz < ReqBufsz)
     {
-      newipaa = ares_realloc(ipaa, ReqBufsz);
+      newipaa = hns_realloc(ipaa, ReqBufsz);
       if (!newipaa)
         goto done;
       Bufsz = ReqBufsz;
       ipaa = newipaa;
     }
-    res = (*ares_fpGetAdaptersAddresses) (AF_UNSPEC, AddrFlags, NULL,
+    res = (*hns_fpGetAdaptersAddresses) (AF_UNSPEC, AddrFlags, NULL,
                                           ipaa, &ReqBufsz);
     if (res == ERROR_SUCCESS)
       break;
@@ -1247,7 +1247,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         if(addressesIndex == addressesSize) {
           const size_t newSize = addressesSize + 4;
           Address * const newMem =
-            (Address*)ares_realloc(addresses, sizeof(Address) * newSize);
+            (Address*)hns_realloc(addresses, sizeof(Address) * newSize);
           if(newMem == NULL) {
             continue;
           }
@@ -1256,7 +1256,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         }
 
         /* Vista required for Luid or Ipv4Metric */
-        if (ares_IsWindowsVistaOrGreater())
+        if (hns_IsWindowsVistaOrGreater())
         {
           /* Save the address as the next element in addresses. */
           addresses[addressesIndex].metric =
@@ -1272,7 +1272,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         /* Record insertion index to make qsort stable */
         addresses[addressesIndex].orig_idx = addressesIndex;
 
-        if (! ares_inet_ntop(AF_INET, &namesrvr.sa4->sin_addr,
+        if (! hns_inet_ntop(AF_INET, &namesrvr.sa4->sin_addr,
                              addresses[addressesIndex].text,
                              sizeof(addresses[0].text))) {
           continue;
@@ -1281,11 +1281,11 @@ static int get_DNS_AdaptersAddresses(char **outptr)
       }
       else if (namesrvr.sa->sa_family == AF_INET6)
       {
-        if (memcmp(&namesrvr.sa6->sin6_addr, &ares_in6addr_any,
+        if (memcmp(&namesrvr.sa6->sin6_addr, &hns_in6addr_any,
                    sizeof(namesrvr.sa6->sin6_addr)) == 0)
           continue;
 
-        if (ares_ipv6_server_blacklisted(
+        if (hns_ipv6_server_blacklisted(
               (const unsigned char *)&namesrvr.sa6->sin6_addr)
            )
           continue;
@@ -1294,7 +1294,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         if(addressesIndex == addressesSize) {
           const size_t newSize = addressesSize + 4;
           Address * const newMem =
-            (Address*)ares_realloc(addresses, sizeof(Address) * newSize);
+            (Address*)hns_realloc(addresses, sizeof(Address) * newSize);
           if(newMem == NULL) {
             continue;
           }
@@ -1303,7 +1303,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         }
 
         /* Vista required for Luid or Ipv4Metric */
-        if (ares_IsWindowsVistaOrGreater())
+        if (hns_IsWindowsVistaOrGreater())
         {
           /* Save the address as the next element in addresses. */
           addresses[addressesIndex].metric =
@@ -1319,7 +1319,7 @@ static int get_DNS_AdaptersAddresses(char **outptr)
         /* Record insertion index to make qsort stable */
         addresses[addressesIndex].orig_idx = addressesIndex;
 
-        if (! ares_inet_ntop(AF_INET6, &namesrvr.sa6->sin6_addr,
+        if (! hns_inet_ntop(AF_INET6, &namesrvr.sa6->sin6_addr,
                              addresses[addressesIndex].text,
                              sizeof(addresses[0].text))) {
           continue;
@@ -1357,10 +1357,10 @@ static int get_DNS_AdaptersAddresses(char **outptr)
   }
 
 done:
-  ares_free(addresses);
+  hns_free(addresses);
 
   if (ipaa)
-    ares_free(ipaa);
+    hns_free(ipaa);
 
   if (!*outptr) {
     return 0;
@@ -1476,7 +1476,7 @@ static int get_SuffixList_Windows(char **outptr)
 
   *outptr = NULL;
 
-  if (ares__getplatform() != WIN_NT)
+  if (hns__getplatform() != WIN_NT)
     return 0;
 
   /* 1. Global DNS Suffix Search List */
@@ -1526,7 +1526,7 @@ static int get_SuffixList_Windows(char **outptr)
         if (!contains_suffix(*outptr, pp, len))
           commanjoin(outptr, pp, len);
       }
-      ares_free(p);
+      hns_free(p);
       p = NULL;
     }
     RegCloseKey(hKeyEnum);
@@ -1539,10 +1539,10 @@ static int get_SuffixList_Windows(char **outptr)
 
 #endif
 
-static int init_by_resolv_conf(ares_channel channel)
+static int init_by_resolv_conf(hns_channel channel)
 {
 #if !defined(ANDROID) && !defined(__ANDROID__) && !defined(WATT32) && \
-    !defined(CARES_USE_LIBRESOLV)
+    !defined(HNS_USE_LIBRESOLV)
   char *line = NULL;
 #endif
   int status = -1, nservers = 0, nsort = 0;
@@ -1551,43 +1551,43 @@ static int init_by_resolv_conf(ares_channel channel)
 
 #ifdef WIN32
 
-  if (channel->nservers > -1)  /* don't override ARES_OPT_SERVER */
-     return ARES_SUCCESS;
+  if (channel->nservers > -1)  /* don't override HNS_OPT_SERVER */
+     return HNS_SUCCESS;
 
 #if 0
   if (get_DNS_Windows(&line))
   {
     status = config_nameserver(&servers, &nservers, line);
-    ares_free(line);
+    hns_free(line);
   }
 #endif
 
   if (channel->ndomains == -1 && get_SuffixList_Windows(&line))
   {
       status = set_search(channel, line);
-      ares_free(line);
+      hns_free(line);
   }
 
-  if (status == ARES_SUCCESS)
-    status = ARES_EOF;
+  if (status == HNS_SUCCESS)
+    status = HNS_EOF;
   else
     /* Catch the case when all the above checks fail (which happens when there
        is no network card or the cable is unplugged) */
-    status = ARES_EFILE;
+    status = HNS_EFILE;
 
 #elif defined(__riscos__)
 
   /* Under RISC OS, name servers are listed in the
      system variable Inet$Resolvers, space separated. */
 
-  status = ARES_EOF;
+  status = HNS_EOF;
 #if 0
   line = getenv("Inet$Resolvers");
   if (line) {
-    char *resolvers = ares_strdup(line), *pos, *space;
+    char *resolvers = hns_strdup(line), *pos, *space;
 
     if (!resolvers)
-      return ARES_ENOMEM;
+      return HNS_ENOMEM;
 
     pos = resolvers;
     do {
@@ -1595,15 +1595,15 @@ static int init_by_resolv_conf(ares_channel channel)
       if (space)
         *space = '\0';
       status = config_nameserver(&servers, &nservers, pos);
-      if (status != ARES_SUCCESS)
+      if (status != HNS_SUCCESS)
         break;
       pos = space + 1;
     } while (space);
 
-    if (status == ARES_SUCCESS)
-      status = ARES_EOF;
+    if (status == HNS_SUCCESS)
+      status = HNS_EOF;
 
-    ares_free(resolvers);
+    hns_free(resolvers);
   }
 #endif
 
@@ -1615,24 +1615,24 @@ static int init_by_resolv_conf(ares_channel channel)
   for (i = 0; def_nameservers[i]; i++)
       ;
   if (i == 0)
-    return ARES_SUCCESS; /* use localhost DNS server */
+    return HNS_SUCCESS; /* use localhost DNS server */
 
   nservers = i;
-  servers = ares_malloc(sizeof(struct server_state));
+  servers = hns_malloc(sizeof(struct server_state));
   if (!servers)
-     return ARES_ENOMEM;
+     return HNS_ENOMEM;
   memset(servers, 0, sizeof(struct server_state));
 
   for (i = 0; def_nameservers[i]; i++)
   {
-    ares_addr_init(&servers[i].addr);
+    hns_addr_init(&servers[i].addr);
     servers[i].addr.addrV4.s_addr = htonl(def_nameservers[i]);
     servers[i].addr.family = AF_INET;
     servers[i].addr.udp_port = 0;
     servers[i].addr.tcp_port = 0;
   }
 #endif
-  status = ARES_EOF;
+  status = HNS_EOF;
 
 #elif defined(ANDROID) || defined(__ANDROID__)
   unsigned int i;
@@ -1642,7 +1642,7 @@ static int init_by_resolv_conf(ares_channel channel)
   size_t num_servers;
 
   /* XXX new */
-  status = ARES_EOF;
+  status = HNS_EOF;
 
   /* Use the Android connectivity manager to get a list
    * of DNS servers. As of Android 8 (Oreo) net.dns#
@@ -1651,21 +1651,21 @@ static int init_by_resolv_conf(ares_channel channel)
    * permission and must use the ConnectivityManager which
    * is Java only. */
 #if 0
-  dns_servers = ares_get_android_server_list(MAX_DNS_PROPERTIES, &num_servers);
+  dns_servers = hns_get_android_server_list(MAX_DNS_PROPERTIES, &num_servers);
   if (dns_servers != NULL)
   {
     for (i = 0; i < num_servers; i++)
     {
       status = config_nameserver(&servers, &nservers, dns_servers[i]);
-      if (status != ARES_SUCCESS)
+      if (status != HNS_SUCCESS)
         break;
-      status = ARES_EOF;
+      status = HNS_EOF;
     }
     for (i = 0; i < num_servers; i++)
     {
-      ares_free(dns_servers[i]);
+      hns_free(dns_servers[i]);
     }
-    ares_free(dns_servers);
+    hns_free(dns_servers);
   }
 
 #  ifdef HAVE___SYSTEM_PROPERTY_GET
@@ -1676,28 +1676,28 @@ static int init_by_resolv_conf(ares_channel channel)
    *
    * We'll only run this if we don't have any dns servers
    * because this will get the same ones (if it works). */
-  if (status != ARES_EOF) {
+  if (status != HNS_EOF) {
     for (i = 1; i <= MAX_DNS_PROPERTIES; i++) {
       snprintf(propname, sizeof(propname), "%s%u", DNS_PROP_NAME_PREFIX, i);
       if (__system_property_get(propname, propvalue) < 1) {
-        status = ARES_EOF;
+        status = HNS_EOF;
         break;
       }
 
       status = config_nameserver(&servers, &nservers, propvalue);
-      if (status != ARES_SUCCESS)
+      if (status != HNS_SUCCESS)
         break;
-      status = ARES_EOF;
+      status = HNS_EOF;
     }
   }
 #  endif /* HAVE___SYSTEM_PROPERTY_GET */
 #endif
-#elif defined(CARES_USE_LIBRESOLV)
+#elif defined(HNS_USE_LIBRESOLV)
   struct __res_state res;
   memset(&res, 0, sizeof(res));
   int result = res_ninit(&res);
   if (result == 0 && (res.options & RES_INIT)) {
-    status = ARES_EOF;
+    status = HNS_EOF;
 
 #if 0
     if (channel->nservers == -1) {
@@ -1708,15 +1708,15 @@ static int init_by_resolv_conf(ares_channel channel)
         int config_status;
         sa_family_t family = addr[i].sin.sin_family;
         if (family == AF_INET) {
-          ares_inet_ntop(family, &addr[i].sin.sin_addr, str, sizeof(str));
+          hns_inet_ntop(family, &addr[i].sin.sin_addr, str, sizeof(str));
         } else if (family == AF_INET6) {
-          ares_inet_ntop(family, &addr[i].sin6.sin6_addr, str, sizeof(str));
+          hns_inet_ntop(family, &addr[i].sin6.sin6_addr, str, sizeof(str));
         } else {
           continue;
         }
 
         config_status = config_nameserver(&servers, &nservers, str);
-        if (config_status != ARES_SUCCESS) {
+        if (config_status != HNS_SUCCESS) {
           status = config_status;
           break;
         }
@@ -1729,15 +1729,15 @@ static int init_by_resolv_conf(ares_channel channel)
       while ((entries < MAXDNSRCH) && res.dnsrch[entries])
         entries++;
 
-      channel->domains = ares_malloc(entries * sizeof(char *));
+      channel->domains = hns_malloc(entries * sizeof(char *));
       if (!channel->domains) {
-        status = ARES_ENOMEM;
+        status = HNS_ENOMEM;
       } else {
         channel->ndomains = entries;
         for (int i = 0; i < channel->ndomains; ++i) {
-          channel->domains[i] = ares_strdup(res.dnsrch[i]);
+          channel->domains[i] = hns_strdup(res.dnsrch[i]);
           if (!channel->domains[i])
-            status = ARES_ENOMEM;
+            status = HNS_ENOMEM;
         }
       }
     }
@@ -1761,15 +1761,15 @@ static int init_by_resolv_conf(ares_channel channel)
     int update_domains;
 
     /* Don't read resolv.conf and friends if we don't have to */
-    if (ARES_CONFIG_CHECK(channel))
-        return ARES_SUCCESS;
+    if (HNS_CONFIG_CHECK(channel))
+        return HNS_SUCCESS;
 
     /* Only update search domains if they're not already specified */
     update_domains = (channel->ndomains == -1);
 
     fp = fopen(PATH_RESOLV_CONF, "r");
     if (fp) {
-      while ((status = ares__read_line(fp, &line, &linesize)) == ARES_SUCCESS)
+      while ((status = hns__read_line(fp, &line, &linesize)) == HNS_SUCCESS)
       {
         if ((p = try_config(line, "domain", ';')) && update_domains)
           status = config_domain(channel, p);
@@ -1788,8 +1788,8 @@ static int init_by_resolv_conf(ares_channel channel)
         else if ((p = try_config(line, "options", ';')))
           status = set_options(channel, p);
         else
-          status = ARES_SUCCESS;
-        if (status != ARES_SUCCESS)
+          status = HNS_SUCCESS;
+        if (status != HNS_SUCCESS)
           break;
       }
       fclose(fp);
@@ -1799,22 +1799,22 @@ static int init_by_resolv_conf(ares_channel channel)
       switch(error) {
       case ENOENT:
       case ESRCH:
-        status = ARES_EOF;
+        status = HNS_EOF;
         break;
       default:
         DEBUGF(fprintf(stderr, "fopen() failed with error: %d %s\n",
                        error, strerror(error)));
         DEBUGF(fprintf(stderr, "Error opening file: %s\n", PATH_RESOLV_CONF));
-        status = ARES_EFILE;
+        status = HNS_EFILE;
       }
     }
 
-    if ((status == ARES_EOF) && (!channel->lookups)) {
+    if ((status == HNS_EOF) && (!channel->lookups)) {
       /* Many systems (Solaris, Linux, BSD's) use nsswitch.conf */
       fp = fopen("/etc/nsswitch.conf", "r");
       if (fp) {
-        while ((status = ares__read_line(fp, &line, &linesize)) ==
-               ARES_SUCCESS)
+        while ((status = hns__read_line(fp, &line, &linesize)) ==
+               HNS_SUCCESS)
         {
           if ((p = try_config(line, "hosts:", '\0')) && !channel->lookups)
             (void)config_lookup(channel, p, "dns", "resolve", "files");
@@ -1835,16 +1835,16 @@ static int init_by_resolv_conf(ares_channel channel)
         }
 
         /* ignore error, maybe we will get luck in next if clause */
-        status = ARES_EOF;
+        status = HNS_EOF;
       }
     }
 
-    if ((status == ARES_EOF) && (!channel->lookups)) {
+    if ((status == HNS_EOF) && (!channel->lookups)) {
       /* Linux / GNU libc 2.x and possibly others have host.conf */
       fp = fopen("/etc/host.conf", "r");
       if (fp) {
-        while ((status = ares__read_line(fp, &line, &linesize)) ==
-               ARES_SUCCESS)
+        while ((status = hns__read_line(fp, &line, &linesize)) ==
+               HNS_SUCCESS)
         {
           if ((p = try_config(line, "order", '\0')) && !channel->lookups)
             /* ignore errors */
@@ -1866,16 +1866,16 @@ static int init_by_resolv_conf(ares_channel channel)
         }
 
         /* ignore error, maybe we will get luck in next if clause */
-        status = ARES_EOF;
+        status = HNS_EOF;
       }
     }
 
-    if ((status == ARES_EOF) && (!channel->lookups)) {
+    if ((status == HNS_EOF) && (!channel->lookups)) {
       /* Tru64 uses /etc/svc.conf */
       fp = fopen("/etc/svc.conf", "r");
       if (fp) {
-        while ((status = ares__read_line(fp, &line, &linesize)) ==
-               ARES_SUCCESS)
+        while ((status = hns__read_line(fp, &line, &linesize)) ==
+               HNS_SUCCESS)
         {
           if ((p = try_config(line, "hosts=", '\0')) && !channel->lookups)
             /* ignore errors */
@@ -1896,22 +1896,22 @@ static int init_by_resolv_conf(ares_channel channel)
         }
 
         /* ignore error, default value will be chosen for `channel->lookups` */
-        status = ARES_EOF;
+        status = HNS_EOF;
       }
     }
 
     if(line)
-      ares_free(line);
+      hns_free(line);
   }
 #endif
 
   /* Handle errors. */
-  if (status != ARES_EOF)
+  if (status != HNS_EOF)
     {
       if (servers != NULL)
-        ares_free(servers);
+        hns_free(servers);
       if (sortlist != NULL)
-        ares_free(sortlist);
+        hns_free(sortlist);
       return status;
     }
 
@@ -1929,7 +1929,7 @@ static int init_by_resolv_conf(ares_channel channel)
       channel->nsort = nsort;
     }
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
 #ifdef WIN32
@@ -1955,7 +1955,7 @@ static int get_hnsconf(char *out, size_t size)
 }
 #endif
 
-static int init_by_hns_conf(ares_channel channel)
+static int init_by_hns_conf(hns_channel channel)
 {
   int status = -1, nservers = 0, nsort = 0;
   struct server_state *servers = NULL;
@@ -1970,7 +1970,7 @@ static int init_by_hns_conf(ares_channel channel)
 
   /* Don't read hns.conf if we don't have to */
   if (channel->nservers > -1)
-    return ARES_SUCCESS;
+    return HNS_SUCCESS;
 
   /* Only update search domains if they're not already specified */
   update_domains = (channel->ndomains == -1);
@@ -1979,7 +1979,7 @@ static int init_by_hns_conf(ares_channel channel)
   char path[256];
 
   if (!get_hnsconf(path, sizeof(path)))
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
 
   fp = fopen(path, "r");
 #else
@@ -1987,7 +1987,7 @@ static int init_by_hns_conf(ares_channel channel)
 #endif
 
   if (fp) {
-    while ((status = ares__read_line(fp, &line, &linesize)) == ARES_SUCCESS)
+    while ((status = hns__read_line(fp, &line, &linesize)) == HNS_SUCCESS)
     {
       if ((p = try_config(line, "domain", ';')) && update_domains)
         status = config_domain(channel, p);
@@ -2004,8 +2004,8 @@ static int init_by_hns_conf(ares_channel channel)
       else if ((p = try_config(line, "options", ';')))
         status = set_options(channel, p);
       else
-        status = ARES_SUCCESS;
-      if (status != ARES_SUCCESS)
+        status = HNS_SUCCESS;
+      if (status != HNS_SUCCESS)
         break;
     }
     fclose(fp);
@@ -2014,26 +2014,26 @@ static int init_by_hns_conf(ares_channel channel)
     switch (error) {
     case ENOENT:
     case ESRCH:
-      status = ARES_EOF;
+      status = HNS_EOF;
       break;
     default:
       DEBUGF(fprintf(stderr, "fopen() failed with error: %d %s\n",
                      error, strerror(error)));
       DEBUGF(fprintf(stderr, "Error opening file: %s\n", PATH_HNS_CONF));
-      status = ARES_EFILE;
+      status = HNS_EFILE;
     }
   }
 
   if (line)
-    ares_free(line);
+    hns_free(line);
 
   /* Handle errors. */
-  if (status != ARES_EOF)
+  if (status != HNS_EOF)
     {
       if (servers != NULL)
-        ares_free(servers);
+        hns_free(servers);
       if (sortlist != NULL)
-        ares_free(sortlist);
+        hns_free(sortlist);
       return status;
     }
 
@@ -2051,13 +2051,13 @@ static int init_by_hns_conf(ares_channel channel)
       channel->nsort = nsort;
     }
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-static int init_by_defaults(ares_channel channel)
+static int init_by_defaults(hns_channel channel)
 {
   char *hostname = NULL;
-  int rc = ARES_SUCCESS;
+  int rc = HNS_SUCCESS;
 #ifdef HAVE_GETHOSTNAME
   char *dot;
 #endif
@@ -2081,7 +2081,7 @@ static int init_by_defaults(ares_channel channel)
     channel->ednspsz = EDNSPACKETSZ;
 
   if (channel->nservers == -1) {
-    char **s = (char **)&ares_default_ns[0];
+    char **s = (char **)&hns_default_ns[0];
     int i;
 
     channel->nservers = 0;
@@ -2089,30 +2089,30 @@ static int init_by_defaults(ares_channel channel)
     while (*s++)
       channel->nservers += 1;
 
-    channel->servers = ares_malloc(
+    channel->servers = hns_malloc(
       sizeof(struct server_state) * channel->nservers);
 
     if (!channel->servers) {
-      rc = ARES_ENOMEM;
+      rc = HNS_ENOMEM;
       goto error;
     }
 
     for (i = 0; i < channel->nservers; i++) {
-      const char *ns = ares_default_ns[i];
-      if (!ares_addr_from_string(&channel->servers[i].addr, ns, 53)) {
-        rc = ARES_ENOMEM;
+      const char *ns = hns_default_ns[i];
+      if (!hns_addr_from_string(&channel->servers[i].addr, ns, 53)) {
+        rc = HNS_ENOMEM;
         goto error;
       }
     }
 
 #if 0
     /* If nobody specified servers, try a local named. */
-    channel->servers = ares_malloc(sizeof(struct server_state));
+    channel->servers = hns_malloc(sizeof(struct server_state));
     if (!channel->servers) {
-      rc = ARES_ENOMEM;
+      rc = HNS_ENOMEM;
       goto error;
     }
-    ares_addr_init(&channel->servers[0].addr);
+    hns_addr_init(&channel->servers[0].addr);
     channel->servers[0].addr.family = AF_INET;
     channel->servers[0].addr.addrV4.s_addr = htonl(INADDR_LOOPBACK);
     channel->servers[0].addr.udp_port = 0;
@@ -2142,9 +2142,9 @@ static int init_by_defaults(ares_channel channel)
     int res;
     channel->ndomains = 0; /* default to none */
 
-    hostname = ares_malloc(len);
+    hostname = hns_malloc(len);
     if(!hostname) {
-      rc = ARES_ENOMEM;
+      rc = HNS_ENOMEM;
       goto error;
     }
 
@@ -2155,9 +2155,9 @@ static int init_by_defaults(ares_channel channel)
         char *p;
         len *= 2;
         lenv *= 2;
-        p = ares_realloc(hostname, len);
+        p = hns_realloc(hostname, len);
         if(!p) {
-          rc = ARES_ENOMEM;
+          rc = HNS_ENOMEM;
           goto error;
         }
         hostname = p;
@@ -2175,14 +2175,14 @@ static int init_by_defaults(ares_channel channel)
     dot = strchr(hostname, '.');
     if (dot) {
       /* a dot was found */
-      channel->domains = ares_malloc(sizeof(char *));
+      channel->domains = hns_malloc(sizeof(char *));
       if (!channel->domains) {
-        rc = ARES_ENOMEM;
+        rc = HNS_ENOMEM;
         goto error;
       }
-      channel->domains[0] = ares_strdup(dot + 1);
+      channel->domains[0] = hns_strdup(dot + 1);
       if (!channel->domains[0]) {
-        rc = ARES_ENOMEM;
+        rc = HNS_ENOMEM;
         goto error;
       }
       channel->ndomains = 1;
@@ -2196,40 +2196,40 @@ static int init_by_defaults(ares_channel channel)
   }
 
   if (!channel->lookups) {
-    channel->lookups = ares_strdup("fb");
+    channel->lookups = hns_strdup("fb");
     if (!channel->lookups)
-      rc = ARES_ENOMEM;
+      rc = HNS_ENOMEM;
   }
 
   error:
   if(rc) {
     if(channel->servers) {
-      ares_free(channel->servers);
+      hns_free(channel->servers);
       channel->servers = NULL;
     }
 
     if(channel->domains && channel->domains[0])
-      ares_free(channel->domains[0]);
+      hns_free(channel->domains[0]);
     if(channel->domains) {
-      ares_free(channel->domains);
+      hns_free(channel->domains);
       channel->domains = NULL;
     }
 
     if(channel->lookups) {
-      ares_free(channel->lookups);
+      hns_free(channel->lookups);
       channel->lookups = NULL;
     }
   }
 
   if(hostname)
-    ares_free(hostname);
+    hns_free(hostname);
 
   return rc;
 }
 
 /* #if !defined(WIN32) && !defined(WATT32) && \ */
-/*     !defined(ANDROID) && !defined(__ANDROID__) && !defined(CARES_USE_LIBRESOLV) */
-static int config_domain(ares_channel channel, char *str)
+/*     !defined(ANDROID) && !defined(__ANDROID__) && !defined(HNS_USE_LIBRESOLV) */
+static int config_domain(hns_channel channel, char *str)
 {
   char *q;
 
@@ -2249,7 +2249,7 @@ static int config_domain(ares_channel channel, char *str)
 # define vqualifier
 #endif
 
-static int config_lookup(ares_channel channel, const char *str,
+static int config_lookup(hns_channel channel, const char *str,
                          const char *bindch, const char *altbindch,
                          const char *filech)
 {
@@ -2277,16 +2277,16 @@ static int config_lookup(ares_channel channel, const char *str,
         p++;
     }
   *l = '\0';
-  channel->lookups = ares_strdup(lookups);
-  return (channel->lookups) ? ARES_SUCCESS : ARES_ENOMEM;
+  channel->lookups = hns_strdup(lookups);
+  return (channel->lookups) ? HNS_SUCCESS : HNS_ENOMEM;
 }
-/* #endif */  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ & !CARES_USE_LIBRESOLV */
+/* #endif */  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ & !HNS_USE_LIBRESOLV */
 
 /* #ifndef WATT32 */
 static int config_nameserver(struct server_state **servers, int *nservers,
                              char *str)
 {
-  struct ares_addr host;
+  struct hns_addr host;
   struct server_state *newserv;
   char *p, *txtaddr;
 
@@ -2315,20 +2315,20 @@ static int config_nameserver(struct server_state **servers, int *nservers,
         /* Reached end of input, done when this address is processed. */
         p = NULL;
 
-      ares_addr_init(&host);
+      hns_addr_init(&host);
 
       /* Parse identity key & host if present. */
-      if (!ares_addr_from_string(&host, txtaddr, 53))
+      if (!hns_addr_from_string(&host, txtaddr, 53))
         continue;
 
       /* Resize servers state array. */
-      newserv = ares_realloc(*servers, (*nservers + 1) *
+      newserv = hns_realloc(*servers, (*nservers + 1) *
                              sizeof(struct server_state));
       if (!newserv)
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
 
       /* Store address data. */
-      ares_addr_init(&newserv[*nservers].addr);
+      hns_addr_init(&newserv[*nservers].addr);
       newserv[*nservers].addr.family = host.family;
       newserv[*nservers].addr.udp_port = 0;
       newserv[*nservers].addr.tcp_port = 0;
@@ -2351,7 +2351,7 @@ static int config_nameserver(struct server_state **servers, int *nservers,
       *nservers += 1;
     }
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 /* #endif */  /* !WATT32 */
 
@@ -2386,7 +2386,7 @@ static int config_sortlist(struct apattern **sortlist, int *nsort,
         ipbufpfx[0] = '\0';
       /* Lets see if it is CIDR */
       /* First we'll try IPv6 */
-      if ((bits = ares_inet_net_pton(AF_INET6, ipbufpfx[0] ? ipbufpfx : ipbuf,
+      if ((bits = hns_inet_net_pton(AF_INET6, ipbufpfx[0] ? ipbufpfx : ipbuf,
                                      &pat.addrV6,
                                      sizeof(pat.addrV6))) > 0)
         {
@@ -2394,22 +2394,22 @@ static int config_sortlist(struct apattern **sortlist, int *nsort,
           pat.mask.bits = (unsigned short)bits;
           pat.family = AF_INET6;
           if (!sortlist_alloc(sortlist, nsort, &pat)) {
-            ares_free(*sortlist);
+            hns_free(*sortlist);
             *sortlist = NULL;
-            return ARES_ENOMEM;
+            return HNS_ENOMEM;
           }
         }
       else if (ipbufpfx[0] &&
-               (bits = ares_inet_net_pton(AF_INET, ipbufpfx, &pat.addrV4,
+               (bits = hns_inet_net_pton(AF_INET, ipbufpfx, &pat.addrV4,
                                           sizeof(pat.addrV4))) > 0)
         {
           pat.type = PATTERN_CIDR;
           pat.mask.bits = (unsigned short)bits;
           pat.family = AF_INET;
           if (!sortlist_alloc(sortlist, nsort, &pat)) {
-            ares_free(*sortlist);
+            hns_free(*sortlist);
             *sortlist = NULL;
-            return ARES_ENOMEM;
+            return HNS_ENOMEM;
           }
         }
       /* See if it is just a regular IP */
@@ -2427,9 +2427,9 @@ static int config_sortlist(struct apattern **sortlist, int *nsort,
           pat.family = AF_INET;
           pat.type = PATTERN_MASK;
           if (!sortlist_alloc(sortlist, nsort, &pat)) {
-            ares_free(*sortlist);
+            hns_free(*sortlist);
             *sortlist = NULL;
-            return ARES_ENOMEM;
+            return HNS_ENOMEM;
           }
         }
       else
@@ -2442,10 +2442,10 @@ static int config_sortlist(struct apattern **sortlist, int *nsort,
         str++;
     }
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-static int set_search(ares_channel channel, const char *str)
+static int set_search(hns_channel channel, const char *str)
 {
   int n;
   const char *p, *q;
@@ -2454,8 +2454,8 @@ static int set_search(ares_channel channel, const char *str)
     /* LCOV_EXCL_START: all callers check ndomains == -1 */
     /* if we already have some domains present, free them first */
     for(n=0; n < channel->ndomains; n++)
-      ares_free(channel->domains[n]);
-    ares_free(channel->domains);
+      hns_free(channel->domains[n]);
+    hns_free(channel->domains);
     channel->domains = NULL;
     channel->ndomains = -1;
   } /* LCOV_EXCL_STOP */
@@ -2475,12 +2475,12 @@ static int set_search(ares_channel channel, const char *str)
   if (!n)
     {
       channel->ndomains = 0;
-      return ARES_SUCCESS;
+      return HNS_SUCCESS;
     }
 
-  channel->domains = ares_malloc(n * sizeof(char *));
+  channel->domains = hns_malloc(n * sizeof(char *));
   if (!channel->domains)
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
 
   /* Now copy the domains. */
   n = 0;
@@ -2491,9 +2491,9 @@ static int set_search(ares_channel channel, const char *str)
       q = p;
       while (*q && !ISSPACE(*q))
         q++;
-      channel->domains[n] = ares_malloc(q - p + 1);
+      channel->domains[n] = hns_malloc(q - p + 1);
       if (!channel->domains[n])
-        return ARES_ENOMEM;
+        return HNS_ENOMEM;
       memcpy(channel->domains[n], p, q - p);
       channel->domains[n][q - p] = 0;
       p = q;
@@ -2503,10 +2503,10 @@ static int set_search(ares_channel channel, const char *str)
     }
   channel->ndomains = n;
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
-static int set_options(ares_channel channel, const char *str)
+static int set_options(hns_channel channel, const char *str)
 {
   const char *p, *q, *val;
 
@@ -2518,13 +2518,13 @@ static int set_options(ares_channel channel, const char *str)
         q++;
       val = try_option(p, q, "ndots:");
       if (val && channel->ndots == -1)
-        channel->ndots = aresx_sltosi(strtol(val, NULL, 10));
+        channel->ndots = hnsx_sltosi(strtol(val, NULL, 10));
       val = try_option(p, q, "retrans:");
       if (val && channel->timeout == -1)
-        channel->timeout = aresx_sltosi(strtol(val, NULL, 10));
+        channel->timeout = hnsx_sltosi(strtol(val, NULL, 10));
       val = try_option(p, q, "retry:");
       if (val && channel->tries == -1)
-        channel->tries = aresx_sltosi(strtol(val, NULL, 10));
+        channel->tries = hnsx_sltosi(strtol(val, NULL, 10));
       val = try_option(p, q, "rotate");
       if (val && channel->rotate == -1)
         channel->rotate = 1;
@@ -2533,7 +2533,7 @@ static int set_options(ares_channel channel, const char *str)
         p++;
     }
 
-  return ARES_SUCCESS;
+  return HNS_SUCCESS;
 }
 
 static const char *try_option(const char *p, const char *q, const char *opt)
@@ -2543,7 +2543,7 @@ static const char *try_option(const char *p, const char *q, const char *opt)
 }
 
 /* #if !defined(WIN32) && !defined(WATT32) && \ */
-/*     !defined(ANDROID) && !defined(__ANDROID__) && !defined(CARES_USE_LIBRESOLV) */
+/*     !defined(ANDROID) && !defined(__ANDROID__) && !defined(HNS_USE_LIBRESOLV) */
 static char *try_config(char *s, const char *opt, char scc)
 {
   size_t len;
@@ -2615,7 +2615,7 @@ static char *try_config(char *s, const char *opt, char scc)
 }
 /* #endif */  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ */
 
-static int ip_addr(const char *ipbuf, ares_ssize_t len, struct in_addr *addr)
+static int ip_addr(const char *ipbuf, hns_ssize_t len, struct in_addr *addr)
 {
 
   /* Four octets and three periods yields at most 15 characters. */
@@ -2652,7 +2652,7 @@ static int sortlist_alloc(struct apattern **sortlist, int *nsort,
                           struct apattern *pat)
 {
   struct apattern *newsort;
-  newsort = ares_realloc(*sortlist, (*nsort + 1) * sizeof(struct apattern));
+  newsort = hns_realloc(*sortlist, (*nsort + 1) * sizeof(struct apattern));
   if (!newsort)
     return 0;
   newsort[*nsort] = *pat;
@@ -2674,9 +2674,9 @@ static void randomize_key(unsigned char* key,int key_data_len)
   int counter=0;
 #ifdef WIN32
   BOOLEAN res;
-  if (ares_fpSystemFunction036)
+  if (hns_fpSystemFunction036)
     {
-      res = (*ares_fpSystemFunction036) (key, key_data_len);
+      res = (*hns_fpSystemFunction036) (key, key_data_len);
       if (res)
         randomized = 1;
     }
@@ -2684,7 +2684,7 @@ static void randomize_key(unsigned char* key,int key_data_len)
 #ifdef RANDOM_FILE
   FILE *f = fopen(RANDOM_FILE, "rb");
   if(f) {
-    counter = aresx_uztosi(fread(key, 1, key_data_len, f));
+    counter = hnsx_uztosi(fread(key, 1, key_data_len, f));
     fclose(f);
   }
 #endif
@@ -2704,9 +2704,9 @@ static int init_id_key(rc4_key* key,int key_data_len)
   short counter;
   unsigned char *key_data_ptr = 0;
 
-  key_data_ptr = ares_malloc(key_data_len);
+  key_data_ptr = hns_malloc(key_data_len);
   if (!key_data_ptr)
-    return ARES_ENOMEM;
+    return HNS_ENOMEM;
   memset(key_data_ptr, 0, key_data_len);
 
   state = &key->state[0];
@@ -2722,28 +2722,28 @@ static int init_id_key(rc4_key* key,int key_data_len)
   {
     index2 = (unsigned char)((key_data_ptr[index1] + state[counter] +
                               index2) % 256);
-    ARES_SWAP_BYTE(&state[counter], &state[index2]);
+    HNS_SWAP_BYTE(&state[counter], &state[index2]);
 
     index1 = (unsigned char)((index1 + 1) % key_data_len);
   }
-  ares_free(key_data_ptr);
-  return ARES_SUCCESS;
+  hns_free(key_data_ptr);
+  return HNS_SUCCESS;
 }
 
-void ares_set_local_ip4(ares_channel channel, unsigned int local_ip)
+void hns_set_local_ip4(hns_channel channel, unsigned int local_ip)
 {
   channel->local_ip4 = local_ip;
 }
 
 /* local_ip6 should be 16 bytes in length */
-void ares_set_local_ip6(ares_channel channel,
+void hns_set_local_ip6(hns_channel channel,
                         const unsigned char* local_ip6)
 {
   memcpy(&channel->local_ip6, local_ip6, sizeof(channel->local_ip6));
 }
 
 /* local_dev_name should be null terminated. */
-void ares_set_local_dev(ares_channel channel,
+void hns_set_local_dev(hns_channel channel,
                         const char* local_dev_name)
 {
   strncpy(channel->local_dev_name, local_dev_name,
@@ -2752,50 +2752,50 @@ void ares_set_local_dev(ares_channel channel,
 }
 
 
-void ares_set_socket_callback(ares_channel channel,
-                              ares_sock_create_callback cb,
+void hns_set_socket_callback(hns_channel channel,
+                              hns_sock_create_callback cb,
                               void *data)
 {
   channel->sock_create_cb = cb;
   channel->sock_create_cb_data = data;
 }
 
-void ares_set_socket_configure_callback(ares_channel channel,
-                                        ares_sock_config_callback cb,
+void hns_set_socket_configure_callback(hns_channel channel,
+                                        hns_sock_config_callback cb,
                                         void *data)
 {
   channel->sock_config_cb = cb;
   channel->sock_config_cb_data = data;
 }
 
-void ares_set_socket_functions(ares_channel channel,
-                               const struct ares_socket_functions * funcs,
+void hns_set_socket_functions(hns_channel channel,
+                               const struct hns_socket_functions * funcs,
                                void *data)
 {
   channel->sock_funcs = funcs;
   channel->sock_func_cb_data = data;
 }
 
-int ares_set_sortlist(ares_channel channel, const char *sortstr)
+int hns_set_sortlist(hns_channel channel, const char *sortstr)
 {
   int nsort = 0;
   struct apattern *sortlist = NULL;
   int status;
 
   if (!channel)
-    return ARES_ENODATA;
+    return HNS_ENODATA;
 
   status = config_sortlist(&sortlist, &nsort, sortstr);
-  if (status == ARES_SUCCESS && sortlist) {
+  if (status == HNS_SUCCESS && sortlist) {
     if (channel->sortlist)
-      ares_free(channel->sortlist);
+      hns_free(channel->sortlist);
     channel->sortlist = sortlist;
     channel->nsort = nsort;
   }
   return status;
 }
 
-void ares__init_servers_state(ares_channel channel)
+void hns__init_servers_state(hns_channel channel)
 {
   struct server_state *server;
   int i;
@@ -2803,8 +2803,8 @@ void ares__init_servers_state(ares_channel channel)
   for (i = 0; i < channel->nservers; i++)
     {
       server = &channel->servers[i];
-      server->udp_socket = ARES_SOCKET_BAD;
-      server->tcp_socket = ARES_SOCKET_BAD;
+      server->udp_socket = HNS_SOCKET_BAD;
+      server->tcp_socket = HNS_SOCKET_BAD;
       server->tcp_connection_generation = ++channel->tcp_connection_generation;
       server->tcp_lenbuf_pos = 0;
       server->tcp_buffer_pos = 0;
@@ -2812,7 +2812,7 @@ void ares__init_servers_state(ares_channel channel)
       server->tcp_length = 0;
       server->qhead = NULL;
       server->qtail = NULL;
-      ares__init_list_head(&server->queries_to_server);
+      hns__init_list_head(&server->queries_to_server);
       server->channel = channel;
       server->is_broken = 0;
     }

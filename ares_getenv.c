@@ -15,12 +15,12 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
-#include "ares_getenv.h"
+#include "hns_setup.h"
+#include "hns_getenv.h"
 
 #ifndef HAVE_GETENV
 
-char *ares_getenv(const char *name)
+char *hns_getenv(const char *name)
 {
 #ifdef _WIN32_WCE
   return NULL;

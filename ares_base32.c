@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ares_base32.h"
+#include "hns_base32.h"
 
 static const char CHARSET[] = "abcdefghijklmnopqrstuvwxyz234567";
 
@@ -33,7 +33,7 @@ static const int TABLE_HEX[] = {
 static const int PADDING[] = { 0, 6, 4, 3, 1 };
 
 static int
-ares_base32_encode2(
+hns_base32_encode2(
   const char *charset,
   unsigned char *data,
   size_t data_len,
@@ -118,7 +118,7 @@ ares_base32_encode2(
 }
 
 static int
-ares_base32_decode2(
+hns_base32_decode2(
   const int *table,
   char *str,
   unsigned char *out,
@@ -252,43 +252,43 @@ ares_base32_decode2(
 }
 
 int
-ares_base32_encode(unsigned char *data, size_t data_len, char *out, int pad) {
-  return ares_base32_encode2(CHARSET, data, data_len, out, pad);
+hns_base32_encode(unsigned char *data, size_t data_len, char *out, int pad) {
+  return hns_base32_encode2(CHARSET, data, data_len, out, pad);
 }
 
 int
-ares_base32_encode_hex(
+hns_base32_encode_hex(
   unsigned char *data,
   size_t data_len,
   char *out,
   int pad
 ) {
-  return ares_base32_encode2(CHARSET_HEX, data, data_len, out, pad);
+  return hns_base32_encode2(CHARSET_HEX, data, data_len, out, pad);
 }
 
 int
-ares_base32_encode_size(unsigned char *data, size_t data_len, int pad) {
-  return ares_base32_encode2(CHARSET, data, data_len, NULL, pad);
+hns_base32_encode_size(unsigned char *data, size_t data_len, int pad) {
+  return hns_base32_encode2(CHARSET, data, data_len, NULL, pad);
 }
 
 int
-ares_base32_encode_hex_size(unsigned char *data, size_t data_len, int pad) {
-  return ares_base32_encode2(CHARSET_HEX, data, data_len, NULL, pad);
+hns_base32_encode_hex_size(unsigned char *data, size_t data_len, int pad) {
+  return hns_base32_encode2(CHARSET_HEX, data, data_len, NULL, pad);
 }
 
 int
-ares_base32_decode(char *str, unsigned char *out, int unpad) {
-  return ares_base32_decode2(TABLE, str, out, unpad);
+hns_base32_decode(char *str, unsigned char *out, int unpad) {
+  return hns_base32_decode2(TABLE, str, out, unpad);
 }
 
 int
-ares_base32_decode_hex(char *str, unsigned char *out, int unpad) {
-  return ares_base32_decode2(TABLE_HEX, str, out, unpad);
+hns_base32_decode_hex(char *str, unsigned char *out, int unpad) {
+  return hns_base32_decode2(TABLE_HEX, str, out, unpad);
 }
 
 int
-ares_base32_decode_size(char *str) {
-  int size = ares_base32_decode2(TABLE, str, NULL, 0);
+hns_base32_decode_size(char *str) {
+  int size = hns_base32_decode2(TABLE, str, NULL, 0);
 
   if (size == -1)
     return strlen(str) * 5 / 8;
@@ -297,8 +297,8 @@ ares_base32_decode_size(char *str) {
 }
 
 int
-ares_base32_decode_hex_size(char *str, unsigned char *out) {
-  int size = ares_base32_decode2(TABLE_HEX, str, NULL, 0);
+hns_base32_decode_hex_size(char *str, unsigned char *out) {
+  int size = hns_base32_decode2(TABLE_HEX, str, NULL, 0);
 
   if (size == -1)
     return strlen(str) * 5 / 8;
@@ -307,11 +307,11 @@ ares_base32_decode_hex_size(char *str, unsigned char *out) {
 }
 
 int
-ares_base32_test(char *str, int unpad) {
-  return ares_base32_decode(str, NULL, unpad) != -1;
+hns_base32_test(char *str, int unpad) {
+  return hns_base32_decode(str, NULL, unpad) != -1;
 }
 
 int
-ares_base32_test_hex(char *str, int unpad) {
-  return ares_base32_decode_hex(str, NULL, unpad) != -1;
+hns_base32_test_hex(char *str, int unpad) {
+  return hns_base32_decode_hex(str, NULL, unpad) != -1;
 }

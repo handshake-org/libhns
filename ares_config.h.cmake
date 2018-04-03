@@ -1,25 +1,25 @@
-/* Generated from ares_config.h.cmake*/
+/* Generated from hns_config.h.cmake*/
 
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
-/* define this if ares is built for a big endian system */
-#undef ARES_BIG_ENDIAN
+/* define this if hns is built for a big endian system */
+#undef HNS_BIG_ENDIAN
 
 /* when building as static part of libcurl */
 #undef BUILDING_LIBCURL
 
 /* Defined for build that exposes internal static functions for testing. */
-#undef CARES_EXPOSE_STATICS
+#undef HNS_EXPOSE_STATICS
 
 /* Defined for build with symbol hiding. */
-#undef CARES_SYMBOL_HIDING
+#undef HNS_SYMBOL_HIDING
 
 /* Definition to make a library symbol externally visible. */
-#undef CARES_SYMBOL_SCOPE_EXTERN
+#undef HNS_SYMBOL_SCOPE_EXTERN
 
-/* Use resolver library to configure cares */
-#cmakedefine CARES_USE_LIBRESOLV
+/* Use resolver library to configure hns */
+#cmakedefine HNS_USE_LIBRESOLV
 
 /* if a /etc/inet dir is being used */
 #undef ETC_INET

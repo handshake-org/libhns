@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_SETUP_H
-#define HEADER_CARES_SETUP_H
+#ifndef HEADER_HNS_SETUP_H
+#define HEADER_HNS_SETUP_H
 
 
 /* Copyright (C) 2004 - 2012 by Daniel Stenberg et al
@@ -29,7 +29,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "ares_config.h"
+#include "hns_config.h"
 #else
 
 #ifdef WIN32
@@ -76,21 +76,21 @@
 /* ================================================================ */
 
 /*
- * c-ares external interface definitions are also used internally,
+ * hns external interface definitions are also used internally,
  * and might also include required system header files to define them.
  */
 
-#include <ares_build.h>
+#include <hns_build.h>
 
 /*
  * Compile time sanity checks must also be done when building the library.
  */
 
-#include <ares_rules.h>
+#include <hns_rules.h>
 
 /* ================================================================= */
 /* No system header file shall be included in this file before this  */
-/* point. The only allowed ones are those included from ares_build.h */
+/* point. The only allowed ones are those included from hns_build.h */
 /* ================================================================= */
 
 /*
@@ -184,7 +184,7 @@
 #endif
 
 /*
- * Recent autoconf versions define these symbols in ares_config.h. We don't
+ * Recent autoconf versions define these symbols in hns_config.h. We don't
  * want them (since they collide with the libcurl ones when we build
  *  --enable-debug) so we undef them again here.
  */
@@ -214,4 +214,4 @@
 #include "setup_once.h"
 #endif
 
-#endif /* HEADER_CARES_SETUP_H */
+#endif /* HEADER_HNS_SETUP_H */

@@ -15,12 +15,12 @@
  * without express or implied warranty.
  */
 
-#ifndef ARES__H
-#define ARES__H
+#ifndef HNS__H
+#define HNS__H
 
-#include "ares_version.h"  /* c-ares version defines   */
-#include "ares_build.h"    /* c-ares build definitions */
-#include "ares_rules.h"    /* c-ares rules enforcement */
+#include "hns_version.h"  /* hns version defines   */
+#include "hns_build.h"    /* hns build definitions */
+#include "hns_rules.h"    /* hns rules enforcement */
 
 /*
  * Define WIN32 when build target is Win32 API
@@ -77,185 +77,185 @@ extern "C" {
 #endif
 
 /*
-** c-ares external API function linkage decorations.
+** hns external API function linkage decorations.
 */
 
-#ifdef CARES_STATICLIB
-#  define CARES_EXTERN
+#ifdef HNS_STATICLIB
+#  define HNS_EXTERN
 #elif defined(WIN32) || defined(_WIN32) || defined(__SYMBIAN32__)
-#  if defined(CARES_BUILDING_LIBRARY)
-#    define CARES_EXTERN  __declspec(dllexport)
+#  if defined(HNS_BUILDING_LIBRARY)
+#    define HNS_EXTERN  __declspec(dllexport)
 #  else
-#    define CARES_EXTERN  __declspec(dllimport)
+#    define HNS_EXTERN  __declspec(dllimport)
 #  endif
-#elif defined(CARES_BUILDING_LIBRARY) && defined(CARES_SYMBOL_HIDING)
-#  define CARES_EXTERN CARES_SYMBOL_SCOPE_EXTERN
+#elif defined(HNS_BUILDING_LIBRARY) && defined(HNS_SYMBOL_HIDING)
+#  define HNS_EXTERN HNS_SYMBOL_SCOPE_EXTERN
 #else
-#  define CARES_EXTERN
+#  define HNS_EXTERN
 #endif
 
 
-#define ARES_SUCCESS            0
+#define HNS_SUCCESS            0
 
-/* Server error codes (ARES_ENODATA indicates no relevant answer) */
-#define ARES_ENODATA            1
-#define ARES_EFORMERR           2
-#define ARES_ESERVFAIL          3
-#define ARES_ENOTFOUND          4
-#define ARES_ENOTIMP            5
-#define ARES_EREFUSED           6
+/* Server error codes (HNS_ENODATA indicates no relevant answer) */
+#define HNS_ENODATA            1
+#define HNS_EFORMERR           2
+#define HNS_ESERVFAIL          3
+#define HNS_ENOTFOUND          4
+#define HNS_ENOTIMP            5
+#define HNS_EREFUSED           6
 
 /* Locally generated error codes */
-#define ARES_EBADQUERY          7
-#define ARES_EBADNAME           8
-#define ARES_EBADFAMILY         9
-#define ARES_EBADRESP           10
-#define ARES_ECONNREFUSED       11
-#define ARES_ETIMEOUT           12
-#define ARES_EOF                13
-#define ARES_EFILE              14
-#define ARES_ENOMEM             15
-#define ARES_EDESTRUCTION       16
-#define ARES_EBADSTR            17
+#define HNS_EBADQUERY          7
+#define HNS_EBADNAME           8
+#define HNS_EBADFAMILY         9
+#define HNS_EBADRESP           10
+#define HNS_ECONNREFUSED       11
+#define HNS_ETIMEOUT           12
+#define HNS_EOF                13
+#define HNS_EFILE              14
+#define HNS_ENOMEM             15
+#define HNS_EDESTRUCTION       16
+#define HNS_EBADSTR            17
 
-/* ares_getnameinfo error codes */
-#define ARES_EBADFLAGS          18
+/* hns_getnameinfo error codes */
+#define HNS_EBADFLAGS          18
 
-/* ares_getaddrinfo error codes */
-#define ARES_ENONAME            19
-#define ARES_EBADHINTS          20
+/* hns_getaddrinfo error codes */
+#define HNS_ENONAME            19
+#define HNS_EBADHINTS          20
 
 /* Uninitialized library error code */
-#define ARES_ENOTINITIALIZED    21          /* introduced in 1.7.0 */
+#define HNS_ENOTINITIALIZED    21          /* introduced in 1.7.0 */
 
-/* ares_library_init error codes */
-#define ARES_ELOADIPHLPAPI           22     /* introduced in 1.7.0 */
-#define ARES_EADDRGETNETWORKPARAMS   23     /* introduced in 1.7.0 */
+/* hns_library_init error codes */
+#define HNS_ELOADIPHLPAPI           22     /* introduced in 1.7.0 */
+#define HNS_EADDRGETNETWORKPARAMS   23     /* introduced in 1.7.0 */
 
 /* More error codes */
-#define ARES_ECANCELLED         24          /* introduced in 1.7.0 */
+#define HNS_ECANCELLED         24          /* introduced in 1.7.0 */
 
 /* Even more error codes */
-#define ARES_EBADSIGNATURE      25
-#define ARES_EINSECURE          26
+#define HNS_EBADSIGNATURE      25
+#define HNS_EINSECURE          26
 
 /* Flag values */
-#define ARES_FLAG_USEVC         (1 << 0)
-#define ARES_FLAG_PRIMARY       (1 << 1)
-#define ARES_FLAG_IGNTC         (1 << 2)
-#define ARES_FLAG_NORECURSE     (1 << 3)
-#define ARES_FLAG_STAYOPEN      (1 << 4)
-#define ARES_FLAG_NOSEARCH      (1 << 5)
-#define ARES_FLAG_NOALIASES     (1 << 6)
-#define ARES_FLAG_NOCHECKRESP   (1 << 7)
-#define ARES_FLAG_EDNS          (1 << 8)
+#define HNS_FLAG_USEVC         (1 << 0)
+#define HNS_FLAG_PRIMARY       (1 << 1)
+#define HNS_FLAG_IGNTC         (1 << 2)
+#define HNS_FLAG_NORECURSE     (1 << 3)
+#define HNS_FLAG_STAYOPEN      (1 << 4)
+#define HNS_FLAG_NOSEARCH      (1 << 5)
+#define HNS_FLAG_NOALIASES     (1 << 6)
+#define HNS_FLAG_NOCHECKRESP   (1 << 7)
+#define HNS_FLAG_EDNS          (1 << 8)
 
 /* Option mask values */
-#define ARES_OPT_FLAGS          (1 << 0)
-#define ARES_OPT_TIMEOUT        (1 << 1)
-#define ARES_OPT_TRIES          (1 << 2)
-#define ARES_OPT_NDOTS          (1 << 3)
-#define ARES_OPT_UDP_PORT       (1 << 4)
-#define ARES_OPT_TCP_PORT       (1 << 5)
-#define ARES_OPT_SERVERS        (1 << 6)
-#define ARES_OPT_DOMAINS        (1 << 7)
-#define ARES_OPT_LOOKUPS        (1 << 8)
-#define ARES_OPT_SOCK_STATE_CB  (1 << 9)
-#define ARES_OPT_SORTLIST       (1 << 10)
-#define ARES_OPT_SOCK_SNDBUF    (1 << 11)
-#define ARES_OPT_SOCK_RCVBUF    (1 << 12)
-#define ARES_OPT_TIMEOUTMS      (1 << 13)
-#define ARES_OPT_ROTATE         (1 << 14)
-#define ARES_OPT_EDNSPSZ        (1 << 15)
-#define ARES_OPT_NOROTATE       (1 << 16)
+#define HNS_OPT_FLAGS          (1 << 0)
+#define HNS_OPT_TIMEOUT        (1 << 1)
+#define HNS_OPT_TRIES          (1 << 2)
+#define HNS_OPT_NDOTS          (1 << 3)
+#define HNS_OPT_UDP_PORT       (1 << 4)
+#define HNS_OPT_TCP_PORT       (1 << 5)
+#define HNS_OPT_SERVERS        (1 << 6)
+#define HNS_OPT_DOMAINS        (1 << 7)
+#define HNS_OPT_LOOKUPS        (1 << 8)
+#define HNS_OPT_SOCK_STATE_CB  (1 << 9)
+#define HNS_OPT_SORTLIST       (1 << 10)
+#define HNS_OPT_SOCK_SNDBUF    (1 << 11)
+#define HNS_OPT_SOCK_RCVBUF    (1 << 12)
+#define HNS_OPT_TIMEOUTMS      (1 << 13)
+#define HNS_OPT_ROTATE         (1 << 14)
+#define HNS_OPT_EDNSPSZ        (1 << 15)
+#define HNS_OPT_NOROTATE       (1 << 16)
 
 /* Nameinfo flag values */
-#define ARES_NI_NOFQDN                  (1 << 0)
-#define ARES_NI_NUMERICHOST             (1 << 1)
-#define ARES_NI_NAMEREQD                (1 << 2)
-#define ARES_NI_NUMERICSERV             (1 << 3)
-#define ARES_NI_DGRAM                   (1 << 4)
-#define ARES_NI_TCP                     0
-#define ARES_NI_UDP                     ARES_NI_DGRAM
-#define ARES_NI_SCTP                    (1 << 5)
-#define ARES_NI_DCCP                    (1 << 6)
-#define ARES_NI_NUMERICSCOPE            (1 << 7)
-#define ARES_NI_LOOKUPHOST              (1 << 8)
-#define ARES_NI_LOOKUPSERVICE           (1 << 9)
+#define HNS_NI_NOFQDN                  (1 << 0)
+#define HNS_NI_NUMERICHOST             (1 << 1)
+#define HNS_NI_NAMEREQD                (1 << 2)
+#define HNS_NI_NUMERICSERV             (1 << 3)
+#define HNS_NI_DGRAM                   (1 << 4)
+#define HNS_NI_TCP                     0
+#define HNS_NI_UDP                     HNS_NI_DGRAM
+#define HNS_NI_SCTP                    (1 << 5)
+#define HNS_NI_DCCP                    (1 << 6)
+#define HNS_NI_NUMERICSCOPE            (1 << 7)
+#define HNS_NI_LOOKUPHOST              (1 << 8)
+#define HNS_NI_LOOKUPSERVICE           (1 << 9)
 /* Reserved for future use */
-#define ARES_NI_IDN                     (1 << 10)
-#define ARES_NI_IDN_ALLOW_UNASSIGNED    (1 << 11)
-#define ARES_NI_IDN_USE_STD3_ASCII_RULES (1 << 12)
+#define HNS_NI_IDN                     (1 << 10)
+#define HNS_NI_IDN_ALLOW_UNASSIGNED    (1 << 11)
+#define HNS_NI_IDN_USE_STD3_ASCII_RULES (1 << 12)
 
 /* Addrinfo flag values */
-#define ARES_AI_CANONNAME               (1 << 0)
-#define ARES_AI_NUMERICHOST             (1 << 1)
-#define ARES_AI_PASSIVE                 (1 << 2)
-#define ARES_AI_NUMERICSERV             (1 << 3)
-#define ARES_AI_V4MAPPED                (1 << 4)
-#define ARES_AI_ALL                     (1 << 5)
-#define ARES_AI_ADDRCONFIG              (1 << 6)
+#define HNS_AI_CANONNAME               (1 << 0)
+#define HNS_AI_NUMERICHOST             (1 << 1)
+#define HNS_AI_PASSIVE                 (1 << 2)
+#define HNS_AI_NUMERICSERV             (1 << 3)
+#define HNS_AI_V4MAPPED                (1 << 4)
+#define HNS_AI_ALL                     (1 << 5)
+#define HNS_AI_ADDRCONFIG              (1 << 6)
 /* Reserved for future use */
-#define ARES_AI_IDN                     (1 << 10)
-#define ARES_AI_IDN_ALLOW_UNASSIGNED    (1 << 11)
-#define ARES_AI_IDN_USE_STD3_ASCII_RULES (1 << 12)
-#define ARES_AI_CANONIDN                (1 << 13)
+#define HNS_AI_IDN                     (1 << 10)
+#define HNS_AI_IDN_ALLOW_UNASSIGNED    (1 << 11)
+#define HNS_AI_IDN_USE_STD3_ASCII_RULES (1 << 12)
+#define HNS_AI_CANONIDN                (1 << 13)
 
-#define ARES_AI_MASK (ARES_AI_CANONNAME|ARES_AI_NUMERICHOST|ARES_AI_PASSIVE| \
-                      ARES_AI_NUMERICSERV|ARES_AI_V4MAPPED|ARES_AI_ALL| \
-                      ARES_AI_ADDRCONFIG)
-#define ARES_GETSOCK_MAXNUM 16 /* ares_getsock() can return info about this
+#define HNS_AI_MASK (HNS_AI_CANONNAME|HNS_AI_NUMERICHOST|HNS_AI_PASSIVE| \
+                      HNS_AI_NUMERICSERV|HNS_AI_V4MAPPED|HNS_AI_ALL| \
+                      HNS_AI_ADDRCONFIG)
+#define HNS_GETSOCK_MAXNUM 16 /* hns_getsock() can return info about this
                                   many sockets */
-#define ARES_GETSOCK_READABLE(bits,num) (bits & (1<< (num)))
-#define ARES_GETSOCK_WRITABLE(bits,num) (bits & (1 << ((num) + \
-                                         ARES_GETSOCK_MAXNUM)))
+#define HNS_GETSOCK_READABLE(bits,num) (bits & (1<< (num)))
+#define HNS_GETSOCK_WRITABLE(bits,num) (bits & (1 << ((num) + \
+                                         HNS_GETSOCK_MAXNUM)))
 
-/* c-ares library initialization flag values */
-#define ARES_LIB_INIT_NONE   (0)
-#define ARES_LIB_INIT_WIN32  (1 << 0)
-#define ARES_LIB_INIT_ALL    (ARES_LIB_INIT_WIN32)
+/* hns library initialization flag values */
+#define HNS_LIB_INIT_NONE   (0)
+#define HNS_LIB_INIT_WIN32  (1 << 0)
+#define HNS_LIB_INIT_ALL    (HNS_LIB_INIT_WIN32)
 
 
 /*
  * Typedef our socket type
  */
 
-#ifndef ares_socket_typedef
+#ifndef hns_socket_typedef
 #ifdef WIN32
-typedef SOCKET ares_socket_t;
-#define ARES_SOCKET_BAD INVALID_SOCKET
+typedef SOCKET hns_socket_t;
+#define HNS_SOCKET_BAD INVALID_SOCKET
 #else
-typedef int ares_socket_t;
-#define ARES_SOCKET_BAD -1
+typedef int hns_socket_t;
+#define HNS_SOCKET_BAD -1
 #endif
-#define ares_socket_typedef
-#endif /* ares_socket_typedef */
+#define hns_socket_typedef
+#endif /* hns_socket_typedef */
 
-typedef void (*ares_sock_state_cb)(void *data,
-                                   ares_socket_t socket_fd,
+typedef void (*hns_sock_state_cb)(void *data,
+                                   hns_socket_t socket_fd,
                                    int readable,
                                    int writable);
 
 struct apattern;
 
-/* NOTE about the ares_options struct to users and developers.
+/* NOTE about the hns_options struct to users and developers.
 
    This struct will remain looking like this. It will not be extended nor
-   shrunk in future releases, but all new options will be set by ares_set_*()
-   options instead of with the ares_init_options() function.
+   shrunk in future releases, but all new options will be set by hns_set_*()
+   options instead of with the hns_init_options() function.
 
    Eventually (in a galaxy far far away), all options will be settable by
-   ares_set_*() options and the ares_init_options() function will become
+   hns_set_*() options and the hns_init_options() function will become
    deprecated.
 
-   When new options are added to c-ares, they are not added to this
-   struct. And they are not "saved" with the ares_save_options() function but
-   instead we encourage the use of the ares_dup() function. Needless to say,
-   if you add config options to c-ares you need to make sure ares_dup()
+   When new options are added to hns, they are not added to this
+   struct. And they are not "saved" with the hns_save_options() function but
+   instead we encourage the use of the hns_dup() function. Needless to say,
+   if you add config options to hns you need to make sure hns_dup()
    duplicates this new option.
 
  */
-struct ares_options {
+struct hns_options {
   int flags;
   int timeout; /* in seconds or milliseconds, depending on options */
   int tries;
@@ -269,7 +269,7 @@ struct ares_options {
   char **domains;
   int ndomains;
   char *lookups;
-  ares_sock_state_cb sock_state_cb;
+  hns_sock_state_cb sock_state_cb;
   void *sock_state_cb_data;
   struct apattern *sortlist;
   int nsort;
@@ -279,96 +279,96 @@ struct ares_options {
 struct hostent;
 struct timeval;
 struct sockaddr;
-struct ares_channeldata;
+struct hns_channeldata;
 
-typedef struct ares_channeldata *ares_channel;
+typedef struct hns_channeldata *hns_channel;
 
-typedef void (*ares_callback)(void *arg,
+typedef void (*hns_callback)(void *arg,
                               int status,
                               int timeouts,
                               unsigned char *abuf,
                               int alen);
 
-typedef void (*ares_host_callback)(void *arg,
+typedef void (*hns_host_callback)(void *arg,
                                    int status,
                                    int timeouts,
                                    struct hostent *hostent);
 
-typedef void (*ares_nameinfo_callback)(void *arg,
+typedef void (*hns_nameinfo_callback)(void *arg,
                                        int status,
                                        int timeouts,
                                        char *node,
                                        char *service);
 
-typedef int  (*ares_sock_create_callback)(ares_socket_t socket_fd,
+typedef int  (*hns_sock_create_callback)(hns_socket_t socket_fd,
                                           int type,
                                           void *data);
 
-typedef int  (*ares_sock_config_callback)(ares_socket_t socket_fd,
+typedef int  (*hns_sock_config_callback)(hns_socket_t socket_fd,
                                           int type,
                                           void *data);
 
-CARES_EXTERN int ares_library_init(int flags);
+HNS_EXTERN int hns_library_init(int flags);
 
-CARES_EXTERN int ares_library_init_mem(int flags,
+HNS_EXTERN int hns_library_init_mem(int flags,
                                        void *(*amalloc)(size_t size),
                                        void (*afree)(void *ptr),
                                        void *(*arealloc)(void *ptr, size_t size));
 
 #if defined(ANDROID) || defined(__ANDROID__)
-CARES_EXTERN void ares_library_init_jvm(JavaVM *jvm);
-CARES_EXTERN int ares_library_init_android(jobject connectivity_manager);
-CARES_EXTERN int ares_library_android_initialized(void);
+HNS_EXTERN void hns_library_init_jvm(JavaVM *jvm);
+HNS_EXTERN int hns_library_init_android(jobject connectivity_manager);
+HNS_EXTERN int hns_library_android_initialized(void);
 #endif
 
-CARES_EXTERN int ares_library_initialized(void);
+HNS_EXTERN int hns_library_initialized(void);
 
-CARES_EXTERN void ares_library_cleanup(void);
+HNS_EXTERN void hns_library_cleanup(void);
 
-CARES_EXTERN const char *ares_version(int *version);
+HNS_EXTERN const char *hns_version(int *version);
 
-CARES_EXTERN int ares_init(ares_channel *channelptr);
+HNS_EXTERN int hns_init(hns_channel *channelptr);
 
-CARES_EXTERN int ares_init_options(ares_channel *channelptr,
-                                   struct ares_options *options,
+HNS_EXTERN int hns_init_options(hns_channel *channelptr,
+                                   struct hns_options *options,
                                    int optmask);
 
-CARES_EXTERN int ares_save_options(ares_channel channel,
-                                   struct ares_options *options,
+HNS_EXTERN int hns_save_options(hns_channel channel,
+                                   struct hns_options *options,
                                    int *optmask);
 
-CARES_EXTERN void ares_destroy_options(struct ares_options *options);
+HNS_EXTERN void hns_destroy_options(struct hns_options *options);
 
-CARES_EXTERN int ares_dup(ares_channel *dest,
-                          ares_channel src);
+HNS_EXTERN int hns_dup(hns_channel *dest,
+                          hns_channel src);
 
-CARES_EXTERN void ares_destroy(ares_channel channel);
+HNS_EXTERN void hns_destroy(hns_channel channel);
 
-CARES_EXTERN void ares_cancel(ares_channel channel);
+HNS_EXTERN void hns_cancel(hns_channel channel);
 
 /* These next 3 configure local binding for the out-going socket
  * connection.  Use these to specify source IP and/or network device
  * on multi-homed systems.
  */
-CARES_EXTERN void ares_set_local_ip4(ares_channel channel, unsigned int local_ip);
+HNS_EXTERN void hns_set_local_ip4(hns_channel channel, unsigned int local_ip);
 
 /* local_ip6 should be 16 bytes in length */
-CARES_EXTERN void ares_set_local_ip6(ares_channel channel,
+HNS_EXTERN void hns_set_local_ip6(hns_channel channel,
                                      const unsigned char* local_ip6);
 
 /* local_dev_name should be null terminated. */
-CARES_EXTERN void ares_set_local_dev(ares_channel channel,
+HNS_EXTERN void hns_set_local_dev(hns_channel channel,
                                      const char* local_dev_name);
 
-CARES_EXTERN void ares_set_socket_callback(ares_channel channel,
-                                           ares_sock_create_callback callback,
+HNS_EXTERN void hns_set_socket_callback(hns_channel channel,
+                                           hns_sock_create_callback callback,
                                            void *user_data);
 
-CARES_EXTERN void ares_set_socket_configure_callback(ares_channel channel,
-                                                     ares_sock_config_callback callback,
+HNS_EXTERN void hns_set_socket_configure_callback(hns_channel channel,
+                                                     hns_sock_config_callback callback,
                                                      void *user_data);
 
-CARES_EXTERN int ares_set_sortlist(ares_channel channel,
+HNS_EXTERN int hns_set_sortlist(hns_channel channel,
                                    const char *sortstr);
 
 /*
@@ -377,87 +377,87 @@ CARES_EXTERN int ares_set_sortlist(ares_channel channel,
  * set, the library will not do any bind nor set any
  * socket options, assuming the client handles these
  * through either socket creation or the
- * ares_sock_config_callback call.
+ * hns_sock_config_callback call.
  */
 struct iovec;
-struct ares_socket_functions {
-   ares_socket_t(*asocket)(int, int, int, void *);
-   int(*aclose)(ares_socket_t, void *);
-   int(*aconnect)(ares_socket_t, const struct sockaddr *, ares_socklen_t, void *);
-   ares_ssize_t(*arecvfrom)(ares_socket_t, void *, size_t, int, struct sockaddr *, ares_socklen_t *, void *);
-   ares_ssize_t(*asendv)(ares_socket_t, const struct iovec *, int, void *);
+struct hns_socket_functions {
+   hns_socket_t(*asocket)(int, int, int, void *);
+   int(*aclose)(hns_socket_t, void *);
+   int(*aconnect)(hns_socket_t, const struct sockaddr *, hns_socklen_t, void *);
+   hns_ssize_t(*arecvfrom)(hns_socket_t, void *, size_t, int, struct sockaddr *, hns_socklen_t *, void *);
+   hns_ssize_t(*asendv)(hns_socket_t, const struct iovec *, int, void *);
 };
 
-CARES_EXTERN void ares_set_socket_functions(ares_channel channel,
-					    const struct ares_socket_functions * funcs,
+HNS_EXTERN void hns_set_socket_functions(hns_channel channel,
+					    const struct hns_socket_functions * funcs,
 					    void *user_data);
 
-CARES_EXTERN void ares_send(ares_channel channel,
+HNS_EXTERN void hns_send(hns_channel channel,
                             const unsigned char *qbuf,
                             int qlen,
-                            ares_callback callback,
+                            hns_callback callback,
                             void *arg);
 
-CARES_EXTERN void ares_query(ares_channel channel,
+HNS_EXTERN void hns_query(hns_channel channel,
                              const char *name,
                              int dnsclass,
                              int type,
-                             ares_callback callback,
+                             hns_callback callback,
                              void *arg);
 
-CARES_EXTERN void ares_search(ares_channel channel,
+HNS_EXTERN void hns_search(hns_channel channel,
                               const char *name,
                               int dnsclass,
                               int type,
-                              ares_callback callback,
+                              hns_callback callback,
                               void *arg);
 
-CARES_EXTERN void ares_gethostbyname(ares_channel channel,
+HNS_EXTERN void hns_gethostbyname(hns_channel channel,
                                      const char *name,
                                      int family,
-                                     ares_host_callback callback,
+                                     hns_host_callback callback,
                                      void *arg);
 
-CARES_EXTERN int ares_gethostbyname_file(ares_channel channel,
+HNS_EXTERN int hns_gethostbyname_file(hns_channel channel,
                                          const char *name,
                                          int family,
                                          struct hostent **host);
 
-CARES_EXTERN void ares_gethostbyaddr(ares_channel channel,
+HNS_EXTERN void hns_gethostbyaddr(hns_channel channel,
                                      const void *addr,
                                      int addrlen,
                                      int family,
-                                     ares_host_callback callback,
+                                     hns_host_callback callback,
                                      void *arg);
 
-CARES_EXTERN void ares_getnameinfo(ares_channel channel,
+HNS_EXTERN void hns_getnameinfo(hns_channel channel,
                                    const struct sockaddr *sa,
-                                   ares_socklen_t salen,
+                                   hns_socklen_t salen,
                                    int flags,
-                                   ares_nameinfo_callback callback,
+                                   hns_nameinfo_callback callback,
                                    void *arg);
 
-CARES_EXTERN int ares_fds(ares_channel channel,
+HNS_EXTERN int hns_fds(hns_channel channel,
                           fd_set *read_fds,
                           fd_set *write_fds);
 
-CARES_EXTERN int ares_getsock(ares_channel channel,
-                              ares_socket_t *socks,
+HNS_EXTERN int hns_getsock(hns_channel channel,
+                              hns_socket_t *socks,
                               int numsocks);
 
-CARES_EXTERN struct timeval *ares_timeout(ares_channel channel,
+HNS_EXTERN struct timeval *hns_timeout(hns_channel channel,
                                           struct timeval *maxtv,
                                           struct timeval *tv);
 
-CARES_EXTERN void ares_process(ares_channel channel,
+HNS_EXTERN void hns_process(hns_channel channel,
                                fd_set *read_fds,
                                fd_set *write_fds);
 
-CARES_EXTERN void ares_process_fd(ares_channel channel,
-                                  ares_socket_t read_fd,
-                                  ares_socket_t write_fd);
+HNS_EXTERN void hns_process_fd(hns_channel channel,
+                                  hns_socket_t read_fd,
+                                  hns_socket_t write_fd);
 
-CARES_EXTERN int ares_create_query(const char *name,
+HNS_EXTERN int hns_create_query(const char *name,
                                    int dnsclass,
                                    int type,
                                    unsigned short id,
@@ -466,7 +466,7 @@ CARES_EXTERN int ares_create_query(const char *name,
                                    int *buflen,
                                    int max_udp_size);
 
-CARES_EXTERN int ares_mkquery(const char *name,
+HNS_EXTERN int hns_mkquery(const char *name,
                               int dnsclass,
                               int type,
                               unsigned short id,
@@ -474,65 +474,65 @@ CARES_EXTERN int ares_mkquery(const char *name,
                               unsigned char **buf,
                               int *buflen);
 
-CARES_EXTERN int ares_expand_name(const unsigned char *encoded,
+HNS_EXTERN int hns_expand_name(const unsigned char *encoded,
                                   const unsigned char *abuf,
                                   int alen,
                                   char **s,
                                   long *enclen);
 
-CARES_EXTERN int ares_expand_string(const unsigned char *encoded,
+HNS_EXTERN int hns_expand_string(const unsigned char *encoded,
                                     const unsigned char *abuf,
                                     int alen,
                                     unsigned char **s,
                                     long *enclen);
 
 /*
- * NOTE: before c-ares 1.7.0 we would most often use the system in6_addr
- * struct below when ares itself was built, but many apps would use this
+ * NOTE: before hns 1.7.0 we would most often use the system in6_addr
+ * struct below when hns itself was built, but many apps would use this
  * private version since the header checked a HAVE_* define for it. Starting
  * with 1.7.0 we always declare and use our own to stop relying on the
  * system's one.
  */
-struct ares_in6_addr {
+struct hns_in6_addr {
   union {
     unsigned char _S6_u8[16];
   } _S6_un;
 };
 
-struct ares_addrttl {
+struct hns_addrttl {
   struct in_addr ipaddr;
   int            ttl;
 };
 
-struct ares_addr6ttl {
-  struct ares_in6_addr ip6addr;
+struct hns_addr6ttl {
+  struct hns_in6_addr ip6addr;
   int             ttl;
 };
 
-struct ares_srv_reply {
-  struct ares_srv_reply  *next;
+struct hns_srv_reply {
+  struct hns_srv_reply  *next;
   char                   *host;
   unsigned short          priority;
   unsigned short          weight;
   unsigned short          port;
 };
 
-struct ares_mx_reply {
-  struct ares_mx_reply   *next;
+struct hns_mx_reply {
+  struct hns_mx_reply   *next;
   char                   *host;
   unsigned short          priority;
 };
 
-struct ares_txt_reply {
-  struct ares_txt_reply  *next;
+struct hns_txt_reply {
+  struct hns_txt_reply  *next;
   unsigned char          *txt;
   size_t                  length;  /* length excludes null termination */
 };
 
-/* NOTE: This structure is a superset of ares_txt_reply
+/* NOTE: This structure is a superset of hns_txt_reply
  */
-struct ares_txt_ext {
-  struct ares_txt_ext      *next;
+struct hns_txt_ext {
+  struct hns_txt_ext      *next;
   unsigned char            *txt;
   size_t                   length;
   /* 1 - if start of new record
@@ -540,8 +540,8 @@ struct ares_txt_ext {
   unsigned char            record_start;
 };
 
-struct ares_naptr_reply {
-  struct ares_naptr_reply *next;
+struct hns_naptr_reply {
+  struct hns_naptr_reply *next;
   unsigned char           *flags;
   unsigned char           *service;
   unsigned char           *regexp;
@@ -550,7 +550,7 @@ struct ares_naptr_reply {
   unsigned short           preference;
 };
 
-struct ares_soa_reply {
+struct hns_soa_reply {
   char        *nsname;
   char        *hostmaster;
   unsigned int serial;
@@ -560,16 +560,16 @@ struct ares_soa_reply {
   unsigned int minttl;
 };
 
-struct ares_sshfp_reply {
-  struct ares_sshfp_reply *next;
+struct hns_sshfp_reply {
+  struct hns_sshfp_reply *next;
   unsigned short           algorithm;
   unsigned short           digest_type;
   unsigned char           *fingerprint;
   size_t                   fingerprint_len;
 };
 
-struct ares_dane_reply {
-  struct ares_dane_reply *next;
+struct hns_dane_reply {
+  struct hns_dane_reply *next;
   unsigned short          usage;
   unsigned short          selector;
   unsigned short          matching_type;
@@ -577,11 +577,11 @@ struct ares_dane_reply {
   size_t                  certificate_len;
 };
 
-#define ares_tlsa_reply ares_dane_reply
-#define ares_smimea_reply ares_dane_reply
+#define hns_tlsa_reply hns_dane_reply
+#define hns_smimea_reply hns_dane_reply
 
-struct ares_openpgpkey_reply {
-  struct ares_openpgpkey_reply *next;
+struct hns_openpgpkey_reply {
+  struct hns_openpgpkey_reply *next;
   unsigned char                *pubkey;
   size_t                        pubkey_len;
 };
@@ -590,8 +590,8 @@ struct ares_openpgpkey_reply {
  * DANE functions
  */
 
-CARES_EXTERN int
-ares_tlsa_encode_name(
+HNS_EXTERN int
+hns_tlsa_encode_name(
   const char *name,
   const char *protocol,
   unsigned int port,
@@ -599,30 +599,30 @@ ares_tlsa_encode_name(
   size_t out_len
 );
 
-CARES_EXTERN size_t
-ares_tlsa_name_size(const char *name, const char *protocol, unsigned int port);
+HNS_EXTERN size_t
+hns_tlsa_name_size(const char *name, const char *protocol, unsigned int port);
 
-CARES_EXTERN int
-ares_tlsa_verify(
-  struct ares_tlsa_reply *tlsa_reply,
+HNS_EXTERN int
+hns_tlsa_verify(
+  struct hns_tlsa_reply *tlsa_reply,
   unsigned char *cert,
   size_t cert_len
 );
 
-CARES_EXTERN int
-ares_smimea_encode_name(
+HNS_EXTERN int
+hns_smimea_encode_name(
   const char *name,
   const char *email,
   char *out,
   size_t out_len
 );
 
-CARES_EXTERN size_t
-ares_smimea_name_size(const char *name, const char *email);
+HNS_EXTERN size_t
+hns_smimea_name_size(const char *name, const char *email);
 
-CARES_EXTERN int
-ares_smimea_verify(
-  struct ares_smimea_reply *smimea_reply,
+HNS_EXTERN int
+hns_smimea_verify(
+  struct hns_smimea_reply *smimea_reply,
   unsigned char *cert,
   size_t cert_len
 );
@@ -631,136 +631,136 @@ ares_smimea_verify(
  * SSHFP functions
  */
 
-CARES_EXTERN int
-ares_sshfp_verify(
-  struct ares_sshfp_reply *sshfp_reply,
+HNS_EXTERN int
+hns_sshfp_verify(
+  struct hns_sshfp_reply *sshfp_reply,
   unsigned char *key,
   size_t key_len
 );
 
 /*
 ** Parse the buffer, starting at *abuf and of length alen bytes, previously
-** obtained from an ares_search call.  Put the results in *host, if nonnull.
+** obtained from an hns_search call.  Put the results in *host, if nonnull.
 ** Also, if addrttls is nonnull, put up to *naddrttls IPv4 addresses along with
 ** their TTLs in that array, and set *naddrttls to the number of addresses
 ** so written.
 */
 
-CARES_EXTERN int ares_parse_a_reply(const unsigned char *abuf,
+HNS_EXTERN int hns_parse_a_reply(const unsigned char *abuf,
                                     int alen,
                                     struct hostent **host,
-                                    struct ares_addrttl *addrttls,
+                                    struct hns_addrttl *addrttls,
                                     int *naddrttls);
 
-CARES_EXTERN int ares_parse_aaaa_reply(const unsigned char *abuf,
+HNS_EXTERN int hns_parse_aaaa_reply(const unsigned char *abuf,
                                        int alen,
                                        struct hostent **host,
-                                       struct ares_addr6ttl *addrttls,
+                                       struct hns_addr6ttl *addrttls,
                                        int *naddrttls);
 
-CARES_EXTERN int ares_parse_ptr_reply(const unsigned char *abuf,
+HNS_EXTERN int hns_parse_ptr_reply(const unsigned char *abuf,
                                       int alen,
                                       const void *addr,
                                       int addrlen,
                                       int family,
                                       struct hostent **host);
 
-CARES_EXTERN int ares_parse_ns_reply(const unsigned char *abuf,
+HNS_EXTERN int hns_parse_ns_reply(const unsigned char *abuf,
                                      int alen,
                                      struct hostent **host);
 
-CARES_EXTERN int ares_parse_srv_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_srv_reply(const unsigned char* abuf,
                                       int alen,
-                                      struct ares_srv_reply** srv_out);
+                                      struct hns_srv_reply** srv_out);
 
-CARES_EXTERN int ares_parse_mx_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_mx_reply(const unsigned char* abuf,
                                       int alen,
-                                      struct ares_mx_reply** mx_out);
+                                      struct hns_mx_reply** mx_out);
 
-CARES_EXTERN int ares_parse_txt_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_txt_reply(const unsigned char* abuf,
                                       int alen,
-                                      struct ares_txt_reply** txt_out);
+                                      struct hns_txt_reply** txt_out);
 
-CARES_EXTERN int ares_parse_txt_reply_ext(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_txt_reply_ext(const unsigned char* abuf,
                                           int alen,
-                                          struct ares_txt_ext** txt_out);
+                                          struct hns_txt_ext** txt_out);
 
-CARES_EXTERN int ares_parse_naptr_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_naptr_reply(const unsigned char* abuf,
                                         int alen,
-                                        struct ares_naptr_reply** naptr_out);
+                                        struct hns_naptr_reply** naptr_out);
 
-CARES_EXTERN int ares_parse_soa_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_soa_reply(const unsigned char* abuf,
 				      int alen,
-				      struct ares_soa_reply** soa_out);
+				      struct hns_soa_reply** soa_out);
 
-CARES_EXTERN int ares_parse_sshfp_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_sshfp_reply(const unsigned char* abuf,
 				      int alen,
-				      struct ares_sshfp_reply** sshfp_out);
+				      struct hns_sshfp_reply** sshfp_out);
 
-CARES_EXTERN int ares_parse_tlsa_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_tlsa_reply(const unsigned char* abuf,
 				      int alen,
-				      struct ares_tlsa_reply** tlsa_out);
+				      struct hns_tlsa_reply** tlsa_out);
 
-CARES_EXTERN int ares_parse_smimea_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_smimea_reply(const unsigned char* abuf,
 				      int alen,
-				      struct ares_smimea_reply** smimea_out);
+				      struct hns_smimea_reply** smimea_out);
 
-CARES_EXTERN int ares_parse_openpgpkey_reply(const unsigned char* abuf,
+HNS_EXTERN int hns_parse_openpgpkey_reply(const unsigned char* abuf,
 				      int alen,
-				      struct ares_openpgpkey_reply** openpgpkey_out);
+				      struct hns_openpgpkey_reply** openpgpkey_out);
 
-CARES_EXTERN void ares_free_string(void *str);
+HNS_EXTERN void hns_free_string(void *str);
 
-CARES_EXTERN void ares_free_hostent(struct hostent *host);
+HNS_EXTERN void hns_free_hostent(struct hostent *host);
 
-CARES_EXTERN void ares_free_data(void *dataptr);
+HNS_EXTERN void hns_free_data(void *dataptr);
 
-CARES_EXTERN const char *ares_strerror(int code);
+HNS_EXTERN const char *hns_strerror(int code);
 
-struct ares_addr_node {
-  struct ares_addr_node *next;
+struct hns_addr_node {
+  struct hns_addr_node *next;
   int family;
   union {
     struct in_addr       addr4;
-    struct ares_in6_addr addr6;
+    struct hns_in6_addr addr6;
   } addr;
 };
 
-struct ares_addr_port_node {
-  struct ares_addr_port_node *next;
+struct hns_addr_port_node {
+  struct hns_addr_port_node *next;
   int family;
   union {
     struct in_addr       addr4;
-    struct ares_in6_addr addr6;
+    struct hns_in6_addr addr6;
   } addr;
   int udp_port;
   int tcp_port;
 };
 
-CARES_EXTERN int ares_set_servers(ares_channel channel,
-                                  struct ares_addr_node *servers);
-CARES_EXTERN int ares_set_servers_ports(ares_channel channel,
-                                        struct ares_addr_port_node *servers);
+HNS_EXTERN int hns_set_servers(hns_channel channel,
+                                  struct hns_addr_node *servers);
+HNS_EXTERN int hns_set_servers_ports(hns_channel channel,
+                                        struct hns_addr_port_node *servers);
 
 /* Incomming string format: host[:port][,host[:port]]... */
-CARES_EXTERN int ares_set_servers_csv(ares_channel channel,
+HNS_EXTERN int hns_set_servers_csv(hns_channel channel,
                                       const char* servers);
-CARES_EXTERN int ares_set_servers_ports_csv(ares_channel channel,
+HNS_EXTERN int hns_set_servers_ports_csv(hns_channel channel,
                                             const char* servers);
 
-CARES_EXTERN int ares_get_servers(ares_channel channel,
-                                  struct ares_addr_node **servers);
-CARES_EXTERN int ares_get_servers_ports(ares_channel channel,
-                                        struct ares_addr_port_node **servers);
+HNS_EXTERN int hns_get_servers(hns_channel channel,
+                                  struct hns_addr_node **servers);
+HNS_EXTERN int hns_get_servers_ports(hns_channel channel,
+                                        struct hns_addr_port_node **servers);
 
-CARES_EXTERN const char *ares_inet_ntop(int af, const void *src, char *dst,
-                                        ares_socklen_t size);
+HNS_EXTERN const char *hns_inet_ntop(int af, const void *src, char *dst,
+                                        hns_socklen_t size);
 
-CARES_EXTERN int ares_inet_pton(int af, const char *src, void *dst);
+HNS_EXTERN int hns_inet_pton(int af, const char *src, void *dst);
 
 
 #ifdef  __cplusplus
 }
 #endif
 
-#endif /* ARES__H */
+#endif /* HNS__H */

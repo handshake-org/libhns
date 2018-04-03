@@ -14,62 +14,62 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_FREE_DATA 3 "5 March 2010"
+.TH HNS_FREE_DATA 3 "5 March 2010"
 .SH NAME
-ares_free_data \- Free data allocated by several c-ares functions
+hns_free_data \- Free data allocated by several hns functions
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B void ares_free_data(void *\fIdataptr\fP)
+.B void hns_free_data(void *\fIdataptr\fP)
 .PP
-.B cc file.c -lcares
+.B cc file.c -lhns
 .fi
 .SH DESCRIPTION
 .PP
 The
-.B ares_free_data(3)
+.B hns_free_data(3)
 function frees one or more data structures allocated and returned
-by several c-ares functions. Specifically the data returned by the
+by several hns functions. Specifically the data returned by the
 following list of functions must be deallocated using this function.
 .TP 5
-.B ares_get_servers(3)
-When used to free the data returned by ares_get_servers(3) this
-will free the whole linked list of ares_addr_node structures returned
-by ares_get_servers(3).
+.B hns_get_servers(3)
+When used to free the data returned by hns_get_servers(3) this
+will free the whole linked list of hns_addr_node structures returned
+by hns_get_servers(3).
 .TP
-.B ares_parse_srv_reply(3)
-When used to free the data returned by ares_parse_srv_reply(3) this
-will free the whole linked list of ares_srv_reply structures returned
-by ares_parse_srv_reply(3), along with any additional storage
+.B hns_parse_srv_reply(3)
+When used to free the data returned by hns_parse_srv_reply(3) this
+will free the whole linked list of hns_srv_reply structures returned
+by hns_parse_srv_reply(3), along with any additional storage
 associated with those structures.
 .TP
-.B ares_parse_mx_reply(3)
-When used to free the data returned by ares_parse_mx_reply(3) this
-will free the whole linked list of ares_mx_reply structures returned
-by ares_parse_mx_reply(3), along with any additional storage
+.B hns_parse_mx_reply(3)
+When used to free the data returned by hns_parse_mx_reply(3) this
+will free the whole linked list of hns_mx_reply structures returned
+by hns_parse_mx_reply(3), along with any additional storage
 associated with those structures.
 .TP
-.B ares_parse_txt_reply(3)
-When used to free the data returned by ares_parse_txt_reply(3) this
-will free the whole linked list of ares_txt_reply structures returned
-by ares_parse_txt_reply(3), along with any additional storage
+.B hns_parse_txt_reply(3)
+When used to free the data returned by hns_parse_txt_reply(3) this
+will free the whole linked list of hns_txt_reply structures returned
+by hns_parse_txt_reply(3), along with any additional storage
 associated with those structures.
 .TP
-.B ares_parse_soa_reply(3)
-When used to free the data returned by ares_parse_soa_reply(3) this
-will free the ares_soa_reply structure, along with any additional storage
+.B hns_parse_soa_reply(3)
+When used to free the data returned by hns_parse_soa_reply(3) this
+will free the hns_soa_reply structure, along with any additional storage
 associated with those structure.
 .SH RETURN VALUE
-The ares_free_data() function does not return a value.
+The hns_free_data() function does not return a value.
 .SH AVAILABILITY
-This function was first introduced in c-ares version 1.7.0.
+This function was first introduced in hns version 1.7.0.
 .SH SEE ALSO
-.BR ares_get_servers(3),
-.BR ares_parse_srv_reply(3),
-.BR ares_parse_mx_reply(3),
-.BR ares_parse_txt_reply(3),
-.BR ares_parse_soa_reply(3)
+.BR hns_get_servers(3),
+.BR hns_parse_srv_reply(3),
+.BR hns_parse_mx_reply(3),
+.BR hns_parse_txt_reply(3),
+.BR hns_parse_soa_reply(3)
 .SH AUTHOR
 Yang Tse
 .PP

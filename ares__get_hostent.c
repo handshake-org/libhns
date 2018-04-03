@@ -14,7 +14,7 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -26,22 +26,22 @@
 #  include <arpa/inet.h>
 #endif
 
-#include "ares.h"
-#include "ares_inet_net_pton.h"
-#include "ares_nowarn.h"
-#include "ares_private.h"
-#include "ares_addr.h"
+#include "hns.h"
+#include "hns_inet_net_pton.h"
+#include "hns_nowarn.h"
+#include "hns_private.h"
+#include "hns_addr.h"
 
-int ares__get_hostent(FILE *fp, int family, struct hostent **host)
+int hns__get_hostent(FILE *fp, int family, struct hostent **host)
 {
   char *line = NULL, *p, *q, **alias;
   char *txtaddr, *txthost, *txtalias;
   int status;
   size_t addrlen, linesize, naliases;
-  struct ares_addr addr;
+  struct hns_addr addr;
   struct hostent *hostent = NULL;
 
-  ares_addr_init(&addr);
+  hns_addr_init(&addr);
 
   *host = NULL; /* Assume failure */
 
@@ -52,10 +52,10 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
     case AF_UNSPEC:
       break;
     default:
-      return ARES_EBADFAMILY;
+      return HNS_EBADFAMILY;
   }
 
-  while ((status = ares__read_line(fp, &line, &linesize)) == ARES_SUCCESS)
+  while ((status = hns__read_line(fp, &line, &linesize)) == HNS_SUCCESS)
     {
 
       /* Trim line comment. */
@@ -151,7 +151,7 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
         }
       if ((family == AF_INET6) || ((family == AF_UNSPEC) && (!addrlen)))
         {
-          if (ares_inet_pton(AF_INET6, txtaddr, &addr.addrV6) > 0)
+          if (hns_inet_pton(AF_INET6, txtaddr, &addr.addrV6) > 0)
             {
               /* Actual network address family and length. */
               addr.family = AF_INET6;
@@ -167,7 +167,7 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
       */
 
       /* Allocate memory for the hostent structure. */
-      hostent = ares_malloc(sizeof(struct hostent));
+      hostent = hns_malloc(sizeof(struct hostent));
       if (!hostent)
         break;
 
@@ -176,16 +176,16 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
       hostent->h_addr_list = NULL;
 
       /* Copy official host name. */
-      hostent->h_name = ares_strdup(txthost);
+      hostent->h_name = hns_strdup(txthost);
       if (!hostent->h_name)
         break;
 
       /* Copy network address. */
-      hostent->h_addr_list = ares_malloc(2 * sizeof(char *));
+      hostent->h_addr_list = hns_malloc(2 * sizeof(char *));
       if (!hostent->h_addr_list)
         break;
       hostent->h_addr_list[1] = NULL;
-      hostent->h_addr_list[0] = ares_malloc(addrlen);
+      hostent->h_addr_list[0] = hns_malloc(addrlen);
       if (!hostent->h_addr_list[0])
         break;
       if (addr.family == AF_INET)
@@ -194,7 +194,7 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
         memcpy(hostent->h_addr_list[0], &addr.addrV6, sizeof(addr.addrV6));
 
       /* Copy aliases. */
-      hostent->h_aliases = ares_malloc((naliases + 1) * sizeof(char *));
+      hostent->h_aliases = hns_malloc((naliases + 1) * sizeof(char *));
       if (!hostent->h_aliases)
         break;
       alias = hostent->h_aliases;
@@ -210,7 +210,7 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
           while (*q && ISSPACE(*q))
             q++;
           *p = '\0';
-          if ((*alias = ares_strdup(txtalias)) == NULL)
+          if ((*alias = hns_strdup(txtalias)) == NULL)
             break;
           alias++;
           txtalias = *q ? q : NULL;
@@ -220,44 +220,44 @@ int ares__get_hostent(FILE *fp, int family, struct hostent **host)
         break;
 
       /* Copy actual network address family and length. */
-      hostent->h_addrtype = aresx_sitoss(addr.family);
-      hostent->h_length = aresx_uztoss(addrlen);
+      hostent->h_addrtype = hnsx_sitoss(addr.family);
+      hostent->h_length = hnsx_uztoss(addrlen);
 
       /* Free line buffer. */
-      ares_free(line);
+      hns_free(line);
 
       /* Return hostent successfully */
       *host = hostent;
-      return ARES_SUCCESS;
+      return HNS_SUCCESS;
 
     }
 
   /* If allocated, free line buffer. */
   if (line)
-    ares_free(line);
+    hns_free(line);
 
-  if (status == ARES_SUCCESS)
+  if (status == HNS_SUCCESS)
     {
       /* Memory allocation failure; clean up. */
       if (hostent)
         {
           if (hostent->h_name)
-            ares_free((char *) hostent->h_name);
+            hns_free((char *) hostent->h_name);
           if (hostent->h_aliases)
             {
               for (alias = hostent->h_aliases; *alias; alias++)
-                ares_free(*alias);
-              ares_free(hostent->h_aliases);
+                hns_free(*alias);
+              hns_free(hostent->h_aliases);
             }
           if (hostent->h_addr_list)
             {
               if (hostent->h_addr_list[0])
-                ares_free(hostent->h_addr_list[0]);
-              ares_free(hostent->h_addr_list);
+                hns_free(hostent->h_addr_list[0]);
+              hns_free(hostent->h_addr_list);
             }
-          ares_free(hostent);
+          hns_free(hostent);
         }
-      return ARES_ENOMEM;
+      return HNS_ENOMEM;
     }
 
   return status;

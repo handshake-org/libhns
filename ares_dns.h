@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_DNS_H
-#define HEADER_CARES_DNS_H
+#ifndef HEADER_HNS_DNS_H
+#define HEADER_HNS_DNS_H
 
 /* Copyright 1998, 2011 by the Massachusetts Institute of Technology.
  *
@@ -104,4 +104,4 @@
 #define DNS_RR_SET_TTL(r, v)            DNS__SET32BIT((r) + 4, v)
 #define DNS_RR_SET_LEN(r, v)            DNS__SET16BIT((r) + 8, v)
 
-#endif /* HEADER_CARES_DNS_H */
+#endif /* HEADER_HNS_DNS_H */

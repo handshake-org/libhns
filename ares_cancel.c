@@ -12,18 +12,18 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 #include <assert.h>
 
-#include "ares.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_private.h"
 
 /*
- * ares_cancel() cancels all ongoing requests/resolves that might be going on
- * on the given channel. It does NOT kill the channel, use ares_destroy() for
+ * hns_cancel() cancels all ongoing requests/resolves that might be going on
+ * on the given channel. It does NOT kill the channel, use hns_destroy() for
  * that.
  */
-void ares_cancel(ares_channel channel)
+void hns_cancel(hns_channel channel)
 {
   struct query *query;
   struct list_node list_head_copy;
@@ -31,7 +31,7 @@ void ares_cancel(ares_channel channel)
   struct list_node* list_node;
   int i;
 
-  if (!ares__is_list_empty(&(channel->all_queries)))
+  if (!hns__is_list_empty(&(channel->all_queries)))
   {
     /* Swap list heads, so that only those queries which were present on entry
      * into this function are cancelled. New queries added by callbacks of
@@ -48,16 +48,16 @@ void ares_cancel(ares_channel channel)
     {
       query = list_node->data;
       list_node = list_node->next;  /* since we're deleting the query */
-      query->callback(query->arg, ARES_ECANCELLED, 0, NULL, 0);
-      ares__free_query(query);
+      query->callback(query->arg, HNS_ECANCELLED, 0, NULL, 0);
+      hns__free_query(query);
     }
   }
-  if (!(channel->flags & ARES_FLAG_STAYOPEN) && ares__is_list_empty(&(channel->all_queries)))
+  if (!(channel->flags & HNS_FLAG_STAYOPEN) && hns__is_list_empty(&(channel->all_queries)))
   {
     if (channel->servers)
     {
       for (i = 0; i < channel->nservers; i++)
-        ares__close_sockets(channel, &channel->servers[i]);
+        hns__close_sockets(channel, &channel->servers[i]);
     }
   }
 }

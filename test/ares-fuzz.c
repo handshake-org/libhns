@@ -25,7 +25,7 @@ static unsigned char afl_buffer[kMaxAflInputSize];
 #define KEEP_FUZZING(count) ((count) < 1)
 #endif
 
-/* In ares-test-fuzz.c and ares-test-fuzz-name.c: */
+/* In hns-test-fuzz.c and hns-test-fuzz-name.c: */
 int LLVMFuzzerTestOneInput(const unsigned char *data, unsigned long size);
 
 static void ProcessFile(int fd) {

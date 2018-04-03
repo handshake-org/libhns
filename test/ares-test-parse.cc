@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 TEST_F(LibraryTest, ParseRootName) {
@@ -15,15 +15,15 @@ TEST_F(LibraryTest, ParseRootName) {
   std::vector<byte> data = pkt.data();
 
   struct hostent *host = nullptr;
-  struct ares_addrttl info[2];
+  struct hns_addrttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_a_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_a_reply(data.data(), data.size(),
                                              &host, info, &count));
   EXPECT_EQ(1, count);
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'' aliases=[] addrs=[2.3.4.5]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 }
 
 TEST_F(LibraryTest, ParseIndirectRootName) {
@@ -49,15 +49,15 @@ TEST_F(LibraryTest, ParseIndirectRootName) {
   };
 
   struct hostent *host = nullptr;
-  struct ares_addrttl info[2];
+  struct hns_addrttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_a_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_a_reply(data.data(), data.size(),
                                              &host, info, &count));
   EXPECT_EQ(1, count);
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'' aliases=[] addrs=[2.3.4.5]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 }
 
 TEST_F(LibraryTest, ParseEscapedName) {
@@ -86,9 +86,9 @@ TEST_F(LibraryTest, ParseEscapedName) {
     0x02, 0x03, 0x04, 0x05,
   };
   struct hostent *host = nullptr;
-  struct ares_addrttl info[2];
+  struct hns_addrttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_a_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_a_reply(data.data(), data.size(),
                                              &host, info, &count));
   EXPECT_EQ(1, count);
   HostEnt hent(host);
@@ -103,7 +103,7 @@ TEST_F(LibraryTest, ParseEscapedName) {
   EXPECT_EQ('\\', hent.name_[4]);
   EXPECT_EQ('.', hent.name_[5]);
   EXPECT_EQ('c', hent.name_[6]);
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 }
 
 TEST_F(LibraryTest, ParsePartialCompressedName) {
@@ -132,15 +132,15 @@ TEST_F(LibraryTest, ParsePartialCompressedName) {
     0x02, 0x03, 0x04, 0x05,
   };
   struct hostent *host = nullptr;
-  struct ares_addrttl info[2];
+  struct hns_addrttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_a_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_a_reply(data.data(), data.size(),
                                              &host, info, &count));
   ASSERT_NE(nullptr, host);
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'www.example.com' aliases=[] addrs=[2.3.4.5]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 }
 
 TEST_F(LibraryTest, ParseFullyCompressedName) {
@@ -168,15 +168,15 @@ TEST_F(LibraryTest, ParseFullyCompressedName) {
     0x02, 0x03, 0x04, 0x05,
   };
   struct hostent *host = nullptr;
-  struct ares_addrttl info[2];
+  struct hns_addrttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_a_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_a_reply(data.data(), data.size(),
                                              &host, info, &count));
   ASSERT_NE(nullptr, host);
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'www.example.com' aliases=[] addrs=[2.3.4.5]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 }
 
 TEST_F(LibraryTest, ParseFullyCompressedName2) {
@@ -204,16 +204,16 @@ TEST_F(LibraryTest, ParseFullyCompressedName2) {
     0x02, 0x03, 0x04, 0x05,
   };
   struct hostent *host = nullptr;
-  struct ares_addrttl info[2];
+  struct hns_addrttl info[2];
   int count = 2;
-  EXPECT_EQ(ARES_SUCCESS, ares_parse_a_reply(data.data(), data.size(),
+  EXPECT_EQ(HNS_SUCCESS, hns_parse_a_reply(data.data(), data.size(),
                                              &host, info, &count));
   ASSERT_NE(nullptr, host);
   std::stringstream ss;
   ss << HostEnt(host);
   EXPECT_EQ("{'www.example.com' aliases=[] addrs=[2.3.4.5]}", ss.str());
-  ares_free_hostent(host);
+  hns_free_hostent(host);
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

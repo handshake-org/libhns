@@ -1,5 +1,5 @@
-#ifndef HEADER_CARES_GETENV_H
-#define HEADER_CARES_GETENV_H
+#ifndef HEADER_HNS_GETENV_H
+#define HEADER_HNS_GETENV_H
 
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
@@ -17,10 +17,10 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifndef HAVE_GETENV
-extern char *ares_getenv(const char *name);
+extern char *hns_getenv(const char *name);
 #endif
 
-#endif /* HEADER_CARES_GETENV_H */
+#endif /* HEADER_HNS_GETENV_H */

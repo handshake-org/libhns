@@ -1,10 +1,10 @@
-#include "ares-test.h"
+#include "hns-test.h"
 #include "dns-proto.h"
 
 #include <sstream>
 #include <vector>
 
-namespace ares {
+namespace hns {
 namespace test {
 
 #define fingerprint_hex \
@@ -25,9 +25,9 @@ TEST_F(LibraryTest, ParseTlsaReplyOK) {
 
   std::vector<byte> data = pkt.data();
 
-  struct ares_tlsa_reply *tlsa = nullptr;
-  EXPECT_EQ(ARES_SUCCESS,
-    ares_parse_tlsa_reply(data.data(), data.size(), &tlsa));
+  struct hns_tlsa_reply *tlsa = nullptr;
+  EXPECT_EQ(HNS_SUCCESS,
+    hns_parse_tlsa_reply(data.data(), data.size(), &tlsa));
   ASSERT_NE(nullptr, tlsa);
 
   ASSERT_EQ(tlsa->usage, 3);
@@ -36,12 +36,12 @@ TEST_F(LibraryTest, ParseTlsaReplyOK) {
   ASSERT_NE(tlsa->certificate, nullptr);
 
   ASSERT_EQ(
-    ares_tlsa_name_size("www.ietf.org", "tcp", 443),
+    hns_tlsa_name_size("www.ietf.org", "tcp", 443),
     strlen("_443._tcp.www.ietf.org"));
 
   char enc_name[256];
 
-  ASSERT_NE(ares_tlsa_encode_name(
+  ASSERT_NE(hns_tlsa_encode_name(
     "www.ietf.org.", "tcp", 443, enc_name, 255), 0);
   ASSERT_EQ(strcmp(enc_name, "_443._tcp.www.ietf.org."), 0);
 
@@ -106,10 +106,10 @@ TEST_F(LibraryTest, ParseTlsaReplyOK) {
     cert.push_back(chr);
   }
 
-  ASSERT_EQ(ares_tlsa_verify(tlsa, cert.data(), cert.size()), 1);
+  ASSERT_EQ(hns_tlsa_verify(tlsa, cert.data(), cert.size()), 1);
 
-  ares_free_data(tlsa);
+  hns_free_data(tlsa);
 }
 
 }  // namespace test
-}  // namespace ares
+}  // namespace hns

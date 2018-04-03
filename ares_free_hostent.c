@@ -14,28 +14,28 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
 
-#include "ares.h"
-#include "ares_private.h" /* for memdebug */
+#include "hns.h"
+#include "hns_private.h" /* for memdebug */
 
-void ares_free_hostent(struct hostent *host)
+void hns_free_hostent(struct hostent *host)
 {
   char **p;
 
   if (!host)
     return;
 
-  ares_free((char *)(host->h_name));
+  hns_free((char *)(host->h_name));
   for (p = host->h_aliases; *p; p++)
-    ares_free(*p);
-  ares_free(host->h_aliases);
-  ares_free(host->h_addr_list[0]); /* no matter if there is one or many entries,
+    hns_free(*p);
+  hns_free(host->h_aliases);
+  hns_free(host->h_addr_list[0]); /* no matter if there is one or many entries,
                                  there is only one malloc for all of them */
-  ares_free(host->h_addr_list);
-  ares_free(host);
+  hns_free(host->h_addr_list);
+  hns_free(host);
 }

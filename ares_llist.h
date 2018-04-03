@@ -1,5 +1,5 @@
-#ifndef __ARES_LLIST_H
-#define __ARES_LLIST_H
+#ifndef __HNS_LLIST_H
+#define __HNS_LLIST_H
 
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
@@ -25,15 +25,15 @@ struct list_node {
   void* data;
 };
 
-void ares__init_list_head(struct list_node* head);
+void hns__init_list_head(struct list_node* head);
 
-void ares__init_list_node(struct list_node* node, void* d);
+void hns__init_list_node(struct list_node* node, void* d);
 
-int ares__is_list_empty(struct list_node* head);
+int hns__is_list_empty(struct list_node* head);
 
-void ares__insert_in_list(struct list_node* new_node,
+void hns__insert_in_list(struct list_node* new_node,
                           struct list_node* old_node);
 
-void ares__remove_from_list(struct list_node* node);
+void hns__remove_from_list(struct list_node* node);
 
-#endif /* __ARES_LLIST_H */
+#endif /* __HNS_LLIST_H */

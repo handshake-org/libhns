@@ -13,27 +13,27 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH ARES_DUP 3 "26 May 2009"
+.TH HNS_DUP 3 "26 May 2009"
 .SH NAME
-ares_dup \- Duplicate a resolver channel
+hns_dup \- Duplicate a resolver channel
 .SH SYNOPSIS
 .nf
-.B #include <ares.h>
+.B #include <hns.h>
 .PP
-.B int ares_dup(ares_channel *\fIdest\fP, ares_channel \fIsource\fP)
+.B int hns_dup(hns_channel *\fIdest\fP, hns_channel \fIsource\fP)
 .fi
 .SH DESCRIPTION
-The \fBares_dup(3)\fP function duplicates an existing communications channel
-for name service lookups.  If it returns successfully, \fBares_dup(3)\fP will
+The \fBhns_dup(3)\fP function duplicates an existing communications channel
+for name service lookups.  If it returns successfully, \fBhns_dup(3)\fP will
 set the variable pointed to by \fIdest\fP to a handle used to identify the
-name service channel.  The caller should invoke \fIares_destroy(3)\fP on the
+name service channel.  The caller should invoke \fIhns_destroy(3)\fP on the
 handle when the channel is no longer needed.
 .SH SEE ALSO
-.BR ares_destroy(3),
-.BR ares_init(3),
-.BR ares_library_init(3)
+.BR hns_destroy(3),
+.BR hns_init(3),
+.BR hns_library_init(3)
 .SH AVAILABILITY
-\fIares_dup(3)\fP was added in c-ares 1.6.0
+\fIhns_dup(3)\fP was added in hns 1.6.0
 .SH AUTHOR
 Daniel Stenberg
 

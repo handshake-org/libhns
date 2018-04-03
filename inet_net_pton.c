@@ -16,7 +16,7 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -33,13 +33,13 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
-#include "ares.h"
-#include "ares_ipv6.h"
-#include "ares_nowarn.h"
-#include "ares_inet_net_pton.h"
+#include "hns.h"
+#include "hns_ipv6.h"
+#include "hns_nowarn.h"
+#include "hns_inet_net_pton.h"
 
 
-const struct ares_in6_addr ares_in6addr_any = { { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } } };
+const struct hns_in6_addr hns_in6addr_any = { { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } } };
 
 
 #ifndef HAVE_INET_NET_PTON
@@ -85,7 +85,7 @@ inet_net_pton_ipv4(const char *src, unsigned char *dst, size_t size)
     while ((ch = *src++) != '\0' && ISASCII(ch) && ISXDIGIT(ch)) {
       if (ISUPPER(ch))
         ch = tolower(ch);
-      n = aresx_sztosi(strchr(xdigits, ch) - xdigits);
+      n = hnsx_sztosi(strchr(xdigits, ch) - xdigits);
       if (dirty == 0)
         tmp = n;
       else
@@ -107,7 +107,7 @@ inet_net_pton_ipv4(const char *src, unsigned char *dst, size_t size)
     for (;;) {
       tmp = 0;
       do {
-        n = aresx_sztosi(strchr(digits, ch) - digits);
+        n = hnsx_sztosi(strchr(digits, ch) - digits);
         tmp *= 10;
         tmp += n;
         if (tmp > 255)
@@ -135,7 +135,7 @@ inet_net_pton_ipv4(const char *src, unsigned char *dst, size_t size)
     ch = *src++;    /* Skip over the /. */
     bits = 0;
     do {
-      n = aresx_sztosi(strchr(digits, ch) - digits);
+      n = hnsx_sztosi(strchr(digits, ch) - digits);
       bits *= 10;
       bits += n;
       if (bits > 32)
@@ -166,7 +166,7 @@ inet_net_pton_ipv4(const char *src, unsigned char *dst, size_t size)
       bits = 8;
     /* If imputed mask is narrower than specified octets, widen. */
     if (bits < ((dst - odst) * 8))
-      bits = aresx_sztosi(dst - odst) * 8;
+      bits = hnsx_sztosi(dst - odst) * 8;
     /*
      * If there are no additional bits specified for a class D
      * address adjust bits to 4.
@@ -209,7 +209,7 @@ getbits(const char *src, int *bitsp)
       if (n++ != 0 && val == 0)       /* no leading zeros */
         return (0);
       val *= 10;
-      val += aresx_sztosi(pch - digits);
+      val += hnsx_sztosi(pch - digits);
       if (val > 128)                  /* range */
         return (0);
       continue;
@@ -241,7 +241,7 @@ getv4(const char *src, unsigned char *dst, int *bitsp)
       if (n++ != 0 && val == 0)       /* no leading zeros */
         return (0);
       val *= 10;
-      val += aresx_sztoui(pch - digits);
+      val += hnsx_sztoui(pch - digits);
       if (val > 255)                  /* range */
         return (0);
       continue;
@@ -301,7 +301,7 @@ inet_net_pton_ipv6(const char *src, unsigned char *dst, size_t size)
       pch = strchr((xdigits = xdigits_u), ch);
     if (pch != NULL) {
       val <<= 4;
-      val |= aresx_sztoui(pch - xdigits);
+      val |= hnsx_sztoui(pch - xdigits);
       if (++digits > 4)
         goto enoent;
       saw_xdigit = 1;
@@ -357,8 +357,8 @@ inet_net_pton_ipv6(const char *src, unsigned char *dst, size_t size)
      * Since some memmove()'s erroneously fail to handle
      * overlapping regions, we'll do the shift by hand.
      */
-    const ares_ssize_t n = tp - colonp;
-    ares_ssize_t i;
+    const hns_ssize_t n = tp - colonp;
+    hns_ssize_t i;
 
     if (tp == endp)
       goto enoent;
@@ -405,7 +405,7 @@ inet_net_pton_ipv6(const char *src, unsigned char *dst, size_t size)
  *      Paul Vixie (ISC), June 1996
  */
 int
-ares_inet_net_pton(int af, const char *src, void *dst, size_t size)
+hns_inet_net_pton(int af, const char *src, void *dst, size_t size)
 {
   switch (af) {
   case AF_INET:
@@ -421,7 +421,7 @@ ares_inet_net_pton(int af, const char *src, void *dst, size_t size)
 #endif /* HAVE_INET_NET_PTON */
 
 #ifndef HAVE_INET_PTON
-int ares_inet_pton(int af, const char *src, void *dst)
+int hns_inet_pton(int af, const char *src, void *dst)
 {
   int result;
   size_t size;
@@ -429,19 +429,19 @@ int ares_inet_pton(int af, const char *src, void *dst)
   if (af == AF_INET)
     size = sizeof(struct in_addr);
   else if (af == AF_INET6)
-    size = sizeof(struct ares_in6_addr);
+    size = sizeof(struct hns_in6_addr);
   else
   {
     SET_ERRNO(EAFNOSUPPORT);
     return -1;
   }
-  result = ares_inet_net_pton(af, src, dst, size);
+  result = hns_inet_net_pton(af, src, dst, size);
   if (result == -1 && ERRNO == ENOENT)
     return 0;
   return (result > -1 ? 1 : -1);
 }
 #else /* HAVE_INET_PTON */
-int ares_inet_pton(int af, const char *src, void *dst)
+int hns_inet_pton(int af, const char *src, void *dst)
 {
   /* just relay this to the underlying function */
   return inet_pton(af, src, dst);

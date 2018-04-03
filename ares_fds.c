@@ -14,20 +14,20 @@
  * without express or implied warranty.
  */
 
-#include "ares_setup.h"
+#include "hns_setup.h"
 
-#include "ares.h"
-#include "ares_nowarn.h"
-#include "ares_private.h"
+#include "hns.h"
+#include "hns_nowarn.h"
+#include "hns_private.h"
 
-int ares_fds(ares_channel channel, fd_set *read_fds, fd_set *write_fds)
+int hns_fds(hns_channel channel, fd_set *read_fds, fd_set *write_fds)
 {
   struct server_state *server;
-  ares_socket_t nfds;
+  hns_socket_t nfds;
   int i;
 
   /* Are there any active queries? */
-  int active_queries = !ares__is_list_empty(&(channel->all_queries));
+  int active_queries = !hns__is_list_empty(&(channel->all_queries));
 
   nfds = 0;
   for (i = 0; i < channel->nservers; i++)
@@ -36,7 +36,7 @@ int ares_fds(ares_channel channel, fd_set *read_fds, fd_set *write_fds)
       /* We only need to register interest in UDP sockets if we have
        * outstanding queries.
        */
-      if (active_queries && server->udp_socket != ARES_SOCKET_BAD)
+      if (active_queries && server->udp_socket != HNS_SOCKET_BAD)
         {
           FD_SET(server->udp_socket, read_fds);
           if (server->udp_socket >= nfds)
@@ -46,7 +46,7 @@ int ares_fds(ares_channel channel, fd_set *read_fds, fd_set *write_fds)
        * when the other side closes the connection, so we don't waste
        * time trying to use a broken connection.
        */
-      if (server->tcp_socket != ARES_SOCKET_BAD)
+      if (server->tcp_socket != HNS_SOCKET_BAD)
        {
          FD_SET(server->tcp_socket, read_fds);
          if (server->qhead)
