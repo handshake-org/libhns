@@ -90,12 +90,12 @@ hns_smimea_encode_name(
 
   assert(encode_hex(hash, 28, hex) == 1);
 
-  return sprintf(out, "_%s._smimea.%s", hex, name);
+  return sprintf(out, "%s._smimea.%s", hex, name);
 }
 
 size_t
 hns_smimea_name_size(const char *name, const char *email) {
-  return 1 + 56 + 1 + 1 + 6 + 1 + strlen(name);
+  return 56 + 1 + 1 + 6 + 1 + strlen(name);
 }
 
 int
