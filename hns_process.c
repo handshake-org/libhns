@@ -1417,10 +1417,12 @@ static void end_query (hns_channel channel, struct query *query, int status,
       if (!hns_ec) {
         status = HNS_ENOTINITIALIZED;
       } else if (key) {
-        if (!hns_sig0_verify(hns_ec, key, abuf, alen))
+        if (!hns_sig0_verify(hns_ec, key, abuf, alen)) {
           status = HNS_EBADSIGNATURE;
-        else
-          printf("verified\n");
+          DEBUGF(fprintf(stderr, "failed sig0 verification.\n"));
+        } else {
+          DEBUGF(fprintf(stderr, "successful sig0 verification.\n"));
+        }
       }
     } else {
       status = HNS_ENOTINITIALIZED;
