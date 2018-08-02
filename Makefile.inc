@@ -29,6 +29,7 @@ CSOURCES = hns__close_sockets.c	\
   hns_create_query.c			\
   hns_nowarn.c				\
   hns_options.c			\
+  hns_openpgpkey.c			\
   hns_parse_a_reply.c			\
   hns_parse_aaaa_reply.c		\
   hns_parse_mx_reply.c			\

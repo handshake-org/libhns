@@ -17,16 +17,16 @@ void
 hns_ec_free(hns_ec_t *ec);
 
 int
-hns_ec_randomize(hns_ec_t *ec, unsigned char *seed);
+hns_ec_randomize(hns_ec_t *ec, const unsigned char *seed);
 
 int
-hns_ec_verify_pubkey(hns_ec_t *ec, unsigned char *key);
+hns_ec_verify_pubkey(hns_ec_t *ec, const unsigned char *key);
 
 int
 hns_ec_verify_msg(
   hns_ec_t *ec,
-  unsigned char *pubkey,
-  unsigned char *msg,
-  unsigned char *sig
+  const unsigned char *pubkey,
+  const unsigned char *msg,
+  const unsigned char *sig
 );
 #endif

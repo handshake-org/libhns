@@ -35,9 +35,11 @@
 #  include <arpa/nameser_compat.h>
 #endif
 
+#include <assert.h>
 #include "hns.h"
 #include "hns_dns.h"
 #include "hns_data.h"
+#include "hns_dane.h"
 #include "hns_private.h"
 #include "hns_sha256.h"
 #include "hns_sha512.h"
@@ -280,11 +282,11 @@ get_pubkeyinfo(
 
 static int
 hns_dane_validate(
-  unsigned char *cert,
+  const unsigned char *cert,
   size_t cert_len,
   unsigned short selector,
   unsigned short matching_type,
-  unsigned char *certificate,
+  const unsigned char *certificate,
   size_t certificate_len
 ) {
   if (cert == NULL || certificate == NULL)
@@ -350,7 +352,7 @@ hns_dane_validate(
 int
 hns_dane_verify(
   struct hns_dane_reply *dane_reply,
-  unsigned char *cert,
+  const unsigned char *cert,
   size_t cert_len
 ) {
   return hns_dane_validate(
@@ -361,6 +363,172 @@ hns_dane_verify(
     dane_reply->certificate,
     dane_reply->certificate_len
   );
+}
+
+static char
+to_char(uint8_t n) {
+  if (n >= 0x00 && n <= 0x09)
+    return n + '0';
+
+  if (n >= 0x0a && n <= 0x0f)
+    return (n - 10) + 'a';
+
+  return -1;
+}
+
+static int
+encode_hex(unsigned char *data, size_t data_len, char *str) {
+  if (data == NULL && data_len != 0)
+    return 0;
+
+  if (str == NULL)
+    return 0;
+
+  size_t size = data_len << 1;
+
+  int i;
+  int p = 0;
+  char ch;
+
+  for (i = 0; i < size; i++) {
+    if (i & 1) {
+      ch = to_char(data[p] & 15);
+      p += 1;
+    } else {
+      ch = to_char(data[p] >> 4);
+    }
+
+    if (ch == -1)
+      return 0;
+
+    str[i] = ch;
+  }
+
+  str[i] = '\0';
+
+  return 1;
+}
+
+static void
+to_lower(char *name) {
+  assert(name);
+
+  char *s = name;
+
+  while (*s) {
+    if (*s >= 'A' && *s <= 'Z')
+      *s += ' ';
+    s += 1;
+  }
+}
+
+int
+hns_dane_encode_email(
+  const char *tag,
+  const char *email,
+  char *out,
+  size_t out_len
+) {
+  if (tag == NULL || email == NULL)
+    return 0;
+
+  size_t email_len = strlen(email);
+
+  if (email_len > 320)
+    return 0;
+
+  char *at = strchr(email, '@');
+
+  if (at == NULL)
+    return 0;
+
+  size_t local_len = at - email;
+
+  if (local_len > 64)
+    return 0;
+
+  char local[65];
+  memcpy(local, email, local_len);
+  local[local_len] = '\0';
+  to_lower(local);
+
+  size_t name_len = email_len - (local_len + 1);
+
+  if (name_len > 254)
+    return 0;
+
+  char name[256];
+  memcpy(name, at + 1, name_len);
+
+  if (name_len == 0 || name[name_len - 1] != '.') {
+    name[name_len] = '.';
+    name_len += 1;
+  }
+
+  name[name_len] = '\0';
+
+  return hns_dane_encode_name(tag, name, local, out, out_len);
+}
+
+int
+hns_dane_encode_name(
+  const char *tag,
+  const char *name,
+  const char *local,
+  char *out,
+  size_t out_len
+) {
+  if (tag == NULL || name == NULL || local == NULL)
+    return 0;
+
+  size_t size = hns_dane_name_size(tag, name);
+
+  if (size > out_len)
+    return 0;
+
+  unsigned char hash[32];
+  char hex[57];
+
+  hns_sha256_ctx ctx;
+  hns_sha256_init(&ctx);
+  hns_sha256_update(&ctx, local, strlen(local));
+  hns_sha256_final(&ctx, hash);
+
+  assert(encode_hex(hash, 28, hex) == 1);
+
+  return sprintf(out, "%s._%s.%s", hex, tag, name);
+}
+
+size_t
+hns_dane_email_size(const char *tag, const char *email) {
+  char *at = strchr(email, '@');
+
+  if (at == NULL)
+    return 0;
+
+  size_t local_len = at - email;
+
+  if (local_len > 64)
+    return 0;
+
+  size_t email_len = strlen(email);
+
+  if (email_len > 320)
+    return 0;
+
+  size_t name_len = email_len - (local_len + 1);
+
+  if (name_len > 254)
+    return 0;
+
+  name_len += 1;
+
+  return 56 + 1 + 1 + strlen(tag) + 1 + name_len;
+}
+
+size_t
+hns_dane_name_size(const char *tag, const char *name) {
+  return 56 + 1 + 1 + strlen(tag) + 1 + strlen(name);
 }
 
 int

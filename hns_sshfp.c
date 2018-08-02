@@ -24,7 +24,7 @@
 int
 hns_sshfp_verify(
   struct hns_sshfp_reply *sshfp_reply,
-  unsigned char *key,
+  const unsigned char *key,
   size_t key_len
 ) {
   if (sshfp_reply == NULL || key == NULL)

@@ -24,13 +24,13 @@ hns_ec_free(hns_ec_t *ec) {
 }
 
 int
-hns_ec_randomize(hns_ec_t *ec, unsigned char *seed) {
+hns_ec_randomize(hns_ec_t *ec, const unsigned char *seed) {
   assert(ec && seed);
   return hns_secp256k1_context_randomize(ec, seed) != 0;
 }
 
 int
-hns_ec_verify_pubkey(hns_ec_t *ec, unsigned char *key) {
+hns_ec_verify_pubkey(hns_ec_t *ec, const unsigned char *key) {
   assert(ec && key);
   hns_secp256k1_pubkey pub;
   return hns_secp256k1_ec_pubkey_parse(ec, &pub, key, 33) != 0;
@@ -39,9 +39,9 @@ hns_ec_verify_pubkey(hns_ec_t *ec, unsigned char *key) {
 int
 hns_ec_verify_msg(
   hns_ec_t *ec,
-  unsigned char *pubkey,
-  unsigned char *msg,
-  unsigned char *sig
+  const unsigned char *pubkey,
+  const unsigned char *msg,
+  const unsigned char *sig
 ) {
   assert(ec && pubkey && msg && sig);
 

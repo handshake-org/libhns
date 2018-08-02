@@ -605,27 +605,58 @@ hns_tlsa_name_size(const char *name, const char *protocol, unsigned int port);
 HNS_EXTERN int
 hns_tlsa_verify(
   struct hns_tlsa_reply *tlsa_reply,
-  unsigned char *cert,
+  const unsigned char *cert,
   size_t cert_len
 );
 
 HNS_EXTERN int
-hns_smimea_encode_name(
-  const char *name,
+hns_smimea_encode_email(
   const char *email,
   char *out,
   size_t out_len
 );
 
+HNS_EXTERN int
+hns_smimea_encode_name(
+  const char *name,
+  const char *local,
+  char *out,
+  size_t out_len
+);
+
 HNS_EXTERN size_t
-hns_smimea_name_size(const char *name, const char *email);
+hns_smimea_email_size(const char *email);
+
+HNS_EXTERN size_t
+hns_smimea_name_size(const char *name);
 
 HNS_EXTERN int
 hns_smimea_verify(
   struct hns_smimea_reply *smimea_reply,
-  unsigned char *cert,
+  const unsigned char *cert,
   size_t cert_len
 );
+
+HNS_EXTERN int
+hns_openpgpkey_encode_email(
+  const char *email,
+  char *out,
+  size_t out_len
+);
+
+HNS_EXTERN int
+hns_openpgpkey_encode_name(
+  const char *name,
+  const char *local,
+  char *out,
+  size_t out_len
+);
+
+HNS_EXTERN size_t
+hns_openpgpkey_email_size(const char *email);
+
+HNS_EXTERN size_t
+hns_openpgpkey_name_size(const char *name);
 
 /*
  * SSHFP functions
@@ -634,7 +665,7 @@ hns_smimea_verify(
 HNS_EXTERN int
 hns_sshfp_verify(
   struct hns_sshfp_reply *sshfp_reply,
-  unsigned char *key,
+  const unsigned char *key,
   size_t key_len
 );
 

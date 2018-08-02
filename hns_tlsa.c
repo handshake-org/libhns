@@ -64,7 +64,7 @@ hns_tlsa_name_size(const char *name, const char *protocol, unsigned int port) {
 int
 hns_tlsa_verify(
   struct hns_tlsa_reply *tlsa_reply,
-  unsigned char *cert,
+  const unsigned char *cert,
   size_t cert_len
 ) {
   return hns_dane_verify(tlsa_reply, cert, cert_len);

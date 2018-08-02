@@ -35,7 +35,7 @@ static const int PADDING[] = { 0, 6, 4, 3, 1 };
 static int
 hns_base32_encode2(
   const char *charset,
-  unsigned char *data,
+  const unsigned char *data,
   size_t data_len,
   char *out,
   int pad
@@ -120,7 +120,7 @@ hns_base32_encode2(
 static int
 hns_base32_decode2(
   const int *table,
-  char *str,
+  const char *str,
   unsigned char *out,
   int unpad
 ) {
@@ -252,13 +252,18 @@ hns_base32_decode2(
 }
 
 int
-hns_base32_encode(unsigned char *data, size_t data_len, char *out, int pad) {
+hns_base32_encode(
+  const unsigned char *data,
+  size_t data_len,
+  char *out,
+  int pad
+) {
   return hns_base32_encode2(CHARSET, data, data_len, out, pad);
 }
 
 int
 hns_base32_encode_hex(
-  unsigned char *data,
+  const unsigned char *data,
   size_t data_len,
   char *out,
   int pad
@@ -267,27 +272,31 @@ hns_base32_encode_hex(
 }
 
 int
-hns_base32_encode_size(unsigned char *data, size_t data_len, int pad) {
+hns_base32_encode_size(const unsigned char *data, size_t data_len, int pad) {
   return hns_base32_encode2(CHARSET, data, data_len, NULL, pad);
 }
 
 int
-hns_base32_encode_hex_size(unsigned char *data, size_t data_len, int pad) {
+hns_base32_encode_hex_size(
+  const unsigned char *data,
+  size_t data_len,
+  int pad
+) {
   return hns_base32_encode2(CHARSET_HEX, data, data_len, NULL, pad);
 }
 
 int
-hns_base32_decode(char *str, unsigned char *out, int unpad) {
+hns_base32_decode(const char *str, unsigned char *out, int unpad) {
   return hns_base32_decode2(TABLE, str, out, unpad);
 }
 
 int
-hns_base32_decode_hex(char *str, unsigned char *out, int unpad) {
+hns_base32_decode_hex(const char *str, unsigned char *out, int unpad) {
   return hns_base32_decode2(TABLE_HEX, str, out, unpad);
 }
 
 int
-hns_base32_decode_size(char *str) {
+hns_base32_decode_size(const char *str) {
   int size = hns_base32_decode2(TABLE, str, NULL, 0);
 
   if (size == -1)
@@ -297,7 +306,7 @@ hns_base32_decode_size(char *str) {
 }
 
 int
-hns_base32_decode_hex_size(char *str, unsigned char *out) {
+hns_base32_decode_hex_size(const char *str, unsigned char *out) {
   int size = hns_base32_decode2(TABLE_HEX, str, NULL, 0);
 
   if (size == -1)
@@ -307,11 +316,11 @@ hns_base32_decode_hex_size(char *str, unsigned char *out) {
 }
 
 int
-hns_base32_test(char *str, int unpad) {
+hns_base32_test(const char *str, int unpad) {
   return hns_base32_decode(str, NULL, unpad) != -1;
 }
 
 int
-hns_base32_test_hex(char *str, int unpad) {
+hns_base32_test_hex(const char *str, int unpad) {
   return hns_base32_decode_hex(str, NULL, unpad) != -1;
 }

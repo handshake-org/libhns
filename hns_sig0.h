@@ -14,24 +14,28 @@
 #define HNS_SIG0_ALG 253
 
 int
-hns_sig0_has_sig(unsigned char *wire, size_t wire_len);
+hns_sig0_has_sig(const unsigned char *wire, size_t wire_len);
 
 int
 hns_sig0_get_sig(
-  unsigned char *wire,
+  const unsigned char *wire,
   size_t wire_len,
   unsigned char *sig,
   unsigned int *tag
 );
 
 int
-hns_sig0_sighash(unsigned char *wire, size_t wire_len, unsigned char *hash);
+hns_sig0_sighash(
+  const unsigned char *wire,
+  size_t wire_len,
+  unsigned char *hash
+);
 
 int
 hns_sig0_verify(
   hns_ec_t *ec,
-  unsigned char *pubkey,
-  unsigned char *wire,
+  const unsigned char *pubkey,
+  const unsigned char *wire,
   size_t wire_len
 );
 #endif

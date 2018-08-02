@@ -7,12 +7,12 @@
 #include "hns_sig0.h"
 
 static unsigned char
-get_u8(unsigned char *data) {
+get_u8(const unsigned char *data) {
   return data[0];
 }
 
 static unsigned int
-get_u16be(unsigned char *data) {
+get_u16be(const unsigned char *data) {
   unsigned int out;
 #ifdef HNS_BIG_ENDIAN
   memcpy(&out, data, 2);
@@ -25,7 +25,7 @@ get_u16be(unsigned char *data) {
 }
 
 static unsigned long
-get_u32be(unsigned char *data) {
+get_u32be(const unsigned char *data) {
   unsigned long out;
 #ifdef HNS_BIG_ENDIAN
   memcpy(&out, data, 4);
@@ -67,7 +67,7 @@ set_u32be(unsigned char *data, unsigned long out) {
 }
 
 int
-hns_sig0_has_sig(unsigned char *wire, size_t wire_len) {
+hns_sig0_has_sig(const unsigned char *wire, size_t wire_len) {
   if (wire_len < HNS_SIG0_RR_SIZE + 12)
     return 0;
 
@@ -76,7 +76,7 @@ hns_sig0_has_sig(unsigned char *wire, size_t wire_len) {
   if (arcount < 1)
     return 0;
 
-  unsigned char *rr = &wire[wire_len - HNS_SIG0_RR_SIZE];
+  const unsigned char *rr = &wire[wire_len - HNS_SIG0_RR_SIZE];
 
   // Name should be `.`.
   if (rr[0] != 0)
@@ -86,7 +86,7 @@ hns_sig0_has_sig(unsigned char *wire, size_t wire_len) {
   unsigned int class = get_u16be(&rr[3]);
   unsigned long ttl = get_u32be(&rr[5]);
   unsigned int size = get_u16be(&rr[9]);
-  unsigned char *rd = &rr[11];
+  const unsigned char *rd = &rr[11];
 
   // Type
   if (type != HNS_SIG0_TYPE)
@@ -115,7 +115,7 @@ hns_sig0_has_sig(unsigned char *wire, size_t wire_len) {
 
 int
 hns_sig0_get_sig(
-  unsigned char *wire,
+  const unsigned char *wire,
   size_t wire_len,
   unsigned char *sig,
   unsigned int *tag
@@ -123,8 +123,8 @@ hns_sig0_get_sig(
   if (!hns_sig0_has_sig(wire, wire_len))
     return 0;
 
-  unsigned char *rr = &wire[wire_len - HNS_SIG0_RR_SIZE];
-  unsigned char *rd = &rr[11];
+  const unsigned char *rr = &wire[wire_len - HNS_SIG0_RR_SIZE];
+  const unsigned char *rd = &rr[11];
 
   unsigned int type_covered = get_u16be(&rd[0]);
   unsigned char algorithm = get_u8(&rd[2]);
@@ -175,7 +175,7 @@ hns_sig0_get_sig(
 
 int
 hns_sig0_sighash(
-  unsigned char *wire,
+  const unsigned char *wire,
   size_t wire_len,
   unsigned char *hash
 ) {
@@ -183,8 +183,8 @@ hns_sig0_sighash(
     return 0;
 
   unsigned int arcount = get_u16be(&wire[10]);
-  unsigned char *rr = &wire[wire_len - HNS_SIG0_RR_SIZE];
-  unsigned char *rd = &rr[11];
+  const unsigned char *rr = &wire[wire_len - HNS_SIG0_RR_SIZE];
+  const unsigned char *rd = &rr[11];
 
   // Decrement arcount.
   unsigned char count[2];
@@ -211,8 +211,8 @@ hns_sig0_sighash(
 int
 hns_sig0_verify(
   hns_ec_t *ec,
-  unsigned char *pubkey,
-  unsigned char *wire,
+  const unsigned char *pubkey,
+  const unsigned char *wire,
   size_t wire_len
 ) {
   unsigned char sig[64];

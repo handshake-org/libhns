@@ -4,37 +4,42 @@
 #include <stdlib.h>
 
 int
-hns_base32_encode(unsigned char *data, size_t data_len, char *out, int pad);
-
-int
-hns_base32_encode_hex(
-  unsigned char *data,
+hns_base32_encode(
+  const unsigned char *data,
   size_t data_len,
   char *out,
   int pad
 );
 
 int
-hns_base32_encode_size(unsigned char *data, size_t data_len, int pad);
+hns_base32_encode_hex(
+  const unsigned char *data,
+  size_t data_len,
+  char *out,
+  int pad
+);
 
 int
-hns_base32_encode_hex_size(unsigned char *data, size_t data_len, int pad);
+hns_base32_encode_size(const unsigned char *data, size_t data_len, int pad);
 
 int
-hns_base32_decode(char *str, unsigned char *out, int unpad);
+hns_base32_encode_hex_size(const unsigned char *data, size_t data_len, int pad);
 
 int
-hns_base32_decode_hex(char *str, unsigned char *out, int unpad);
+hns_base32_decode(const char *str, unsigned char *out, int unpad);
 
 int
-hns_base32_decode_size(char *str);
+hns_base32_decode_hex(const char *str, unsigned char *out, int unpad);
 
 int
-hns_base32_decode_hex_size(char *str, unsigned char *out);
+hns_base32_decode_size(const char *str);
 
 int
-hns_base32_test(char *str, int unpad);
+hns_base32_decode_hex_size(const char *str, unsigned char *out);
 
 int
-hns_base32_test_hex(char *str, int unpad);
+hns_base32_test(const char *str, int unpad);
+
+int
+hns_base32_test_hex(const char *str, int unpad);
 #endif

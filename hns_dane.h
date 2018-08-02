@@ -22,9 +22,32 @@
 int
 hns_dane_verify(
   struct hns_dane_reply *dane_reply,
-  unsigned char *cert,
+  const unsigned char *cert,
   size_t cert_len
 );
+
+int
+hns_dane_encode_email(
+  const char *tag,
+  const char *email,
+  char *out,
+  size_t out_len
+);
+
+int
+hns_dane_encode_name(
+  const char *tag,
+  const char *name,
+  const char *local,
+  char *out,
+  size_t out_len
+);
+
+size_t
+hns_dane_email_size(const char *tag, const char *email);
+
+size_t
+hns_dane_name_size(const char *tag, const char *name);
 
 int
 hns_parse_dane_reply (const unsigned char *abuf, int alen,
