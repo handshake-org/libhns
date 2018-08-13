@@ -1,9 +1,17 @@
 # libhns
 
 An HNS-capable fork of [c-ares]. Currently unstable, but adds a few features
-such as DANE, TLSA certificate verification, OPENPGPKEY verification, SSHFP
-verification, and SIG(0) verification from HNS servers. Supports hns.conf
-parsing.
+which are useful for authenticated DNS, such as [DANE][dane]. See [hdns] for
+a similar node.js implementation.
+
+## Added Features
+
+- [TLSA][tlsa] certificate verification.
+- [SMIMEA][smimea] certificate verification.
+- [OPENPGPKEY][pgp] verification.
+- [SSHFP][sshfp] verification.
+- [SIG(0)][sig0] verification.
+- [hns.conf][conf] parsing.
 
 ## License
 
@@ -27,3 +35,11 @@ M.I.T. makes no representations about the suitability of this software for any
 purpose.  It is provided "as is" without express or implied warranty.
 
 [c-ares]: https://c-ares.haxx.se/
+[dane]: https://tools.ietf.org/html/rfc6698
+[hdns]: https://github.com/handshake-org/hdns
+[tlsa]: https://tools.ietf.org/html/rfc6698
+[smimea]: https://tools.ietf.org/html/rfc8162
+[pgp]: https://tools.ietf.org/html/rfc7929
+[sshfp]: https://tools.ietf.org/html/rfc4255
+[sig0]: https://tools.ietf.org/html/rfc2931
+[conf]: https://handshake.org/files/handshake.txt
